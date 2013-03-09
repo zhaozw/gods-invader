@@ -74,8 +74,6 @@ void Entity::init(const char* pszFileName, int pHorizontalFramesCount, int pVert
 	this->mIsRegisterAsTouchable = false;
 
 	this->scheduleUpdate();
-
-	//this->getTexture()->setAliasTexParameters();
 }
 
 
@@ -120,12 +118,12 @@ float Entity::getHeight()
  *
  */
 
-void Entity::setPosition(int pX, int pY)
+void Entity::setPosition(float pX, float pY)
 {
     CCSprite::setPosition(ccp(pX + this->mWidth / 2, pY - this->mHeight / 2));
 }
 
-void Entity::setCenterPosition(int pX, int pY)
+void Entity::setCenterPosition(float pX, float pY)
 {
     CCSprite::setPosition(ccp(pX, pY));
 }
@@ -297,7 +295,7 @@ void Entity::onExit()
 }
 
 bool Entity::ccTouchBegan(CCTouch* touch, CCEvent* event)
-		{
+{
 	if(!this->mIsRegisterAsTouchable || !this->isVisible() || !this->getParent()->isVisible())
 	{
 		return false;
@@ -354,10 +352,6 @@ void Entity::setRegisterAsTouchable(bool pTouchable)
 }
 
 void Entity::onTouch(CCTouch* touch, CCEvent* event)
-{
-}
-
-void Entity::update(float pDeltaTime)
 {
 }
 

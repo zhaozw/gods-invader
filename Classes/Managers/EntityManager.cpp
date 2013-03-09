@@ -11,7 +11,7 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 	this->mLastElementNumber = -1;
 	this->mCapacity = pCreateCount; // TODO: increase to pMaxCount
 
-	for(int i = 0; i < pCreateCount; i++)
+	for(int i = pCreateCount; i >= 0; i--)
 	{
 		Entity* currentEntity = pEntity->deepCopy();
 
@@ -85,6 +85,34 @@ void EntityManager::clear()
 	for(int i = 0; i < this->getCount(); i++)
 	{
 		((Entity*) this->objectAtIndex(i))->destroy();
+	}
+}
+
+void EntityManager::sortChildrenByYPosition()
+{
+	int length = this->mParent->getChildren()->count();
+	int i;
+
+	for(int j = 0; j < length; j++)
+	{
+		Entity* testValue = (Entity*) this->mParent->getChildren()->objectAtIndex(j);
+
+		for(i = j - 1; i >= 0 && ((Entity*) this->mParent->getChildren()->objectAtIndex(i))->getY() < testValue->getY(); i--)
+		{
+			this->mParent->getChildren()->replaceObjectAtIndex(i + 1, this->mParent->getChildren()->objectAtIndex(i));
+		}
+		
+		this->mParent->getChildren()->replaceObjectAtIndex(i + 1, testValue);
+	}
+
+	for(int i = length; i >= 0; i--)
+	{
+		//this->mParent->removeChild((CCNode*) this->objectAtIndex(i));
+	}
+
+	for(int i = length; i >= 0; i--)
+	{
+		//this->mParent->addChild((CCNode*) this->objectAtIndex(i));
 	}
 }
 

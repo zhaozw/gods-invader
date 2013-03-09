@@ -59,8 +59,8 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		 *
 		 */
 
-		void setPosition(int pX, int pY);
-		void setCenterPosition(int pX, int pY);
+		void setPosition(float pX, float pY);
+		void setCenterPosition(float pX, float pY);
 
 		float getCenterPosition();
 		float getX();
@@ -118,13 +118,12 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		void ccTouchMoved(CCTouch* touch, CCEvent* event);
 
 		void ccTouchEnded(CCTouch* touch, CCEvent* event);
+
 		bool containsTouchLocation(CCTouch* touch);
 
 		void setRegisterAsTouchable(bool pTouchable);
 
 		virtual void onTouch(CCTouch* touch, CCEvent* event);
-
-		virtual void update(float pDeltaTime);
 
 		/**
 		 *

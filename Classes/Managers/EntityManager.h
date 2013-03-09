@@ -31,6 +31,8 @@ class EntityManager : public CCArray
 		int getCapacity();
 
 		void clear();
+
+		void sortChildrenByYPosition();
 };
 
 #endif

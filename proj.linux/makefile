@@ -36,6 +36,8 @@ OBJECTS = ./main.o \
 			../Classes/Options.o \
 			../Classes/AppDelegate.o \
 			../Classes/Entities/Entity.o \
+			../Classes/Entities/Hero.o \
+			../Classes/Entities/BaseEnemy.o \
 			../Classes/Managers/EntityManager.o \
 			../Classes/Screens/Screen.o \
 			../Classes/Screens/Level.o \

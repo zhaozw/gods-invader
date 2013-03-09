@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 
 #include <stdlib.h>
+#include <cmath>
 
 using namespace cocos2d;
 
@@ -13,6 +14,8 @@ class Utils
 		static float randomf(float min, float max);
 		static int random(int min, int max);
 		static float coord(float pCoordinate);
+
+		static float Pi;
 };
 
 #endif

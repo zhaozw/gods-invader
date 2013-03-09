@@ -10,7 +10,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	CCSize 	screenSize 		= EGLView->getFrameSize();
 
 	director->setOpenGLView(EGLView);
-	director->setContentScaleFactor(screenSize.height / designResolutionSize.height);
+	director->setContentScaleFactor(designResolutionSize.height / screenSize.height);
 
 	vector <string> searchPath;
 
@@ -30,7 +30,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	Options::CAMERA_CENTER_X  = screenSize.width / 2;
 	Options::CAMERA_CENTER_Y = screenSize.height / 2;
 
-	director->setDisplayStats(false);
+	director->setDisplayStats(true);
 	director->setAnimationInterval(1.0 / 60);
 
 	Screen* pScene = new Level();

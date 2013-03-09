@@ -3,6 +3,8 @@
 
 #include "Utils.h"
 
+float Utils::Pi = std::atan(1.0) * 4;
+
 float Utils::randomf(float min, float max)
 {
 	return min + (float) rand() / ((float) RAND_MAX / (max - min));
