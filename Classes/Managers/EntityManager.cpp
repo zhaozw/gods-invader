@@ -11,7 +11,7 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 	this->mLastElementNumber = -1;
 	this->mCapacity = pCreateCount; // TODO: increase to pMaxCount
 
-	for(int i = pCreateCount; i >= 0; i--)
+	for(int i = 0; i < pCreateCount; i++)
 	{
 		Entity* currentEntity = pEntity->deepCopy();
 
@@ -51,7 +51,7 @@ Entity* EntityManager::create()
 
 void EntityManager::destroy(int pIndex)
 {
-	if(pIndex > 0 && pIndex < this->mCapacity && this->mLastElementNumber >= 0)
+	if(this->mLastElementNumber >= 0)
 	{
 		this->exchangeObjectAtIndex(pIndex, this->mLastElementNumber);
 
@@ -97,22 +97,12 @@ void EntityManager::sortChildrenByYPosition()
 	{
 		Entity* testValue = (Entity*) this->mParent->getChildren()->objectAtIndex(j);
 
-		for(i = j - 1; i >= 0 && ((Entity*) this->mParent->getChildren()->objectAtIndex(i))->getY() < testValue->getY(); i--)
+		for(i = j - 1; i >= 0 && ((Entity*) this->mParent->getChildren()->objectAtIndex(i))->getY() < testValue->getY() && !testValue->isSetAsShadow(); i--)
 		{
 			this->mParent->getChildren()->replaceObjectAtIndex(i + 1, this->mParent->getChildren()->objectAtIndex(i));
 		}
 		
 		this->mParent->getChildren()->replaceObjectAtIndex(i + 1, testValue);
-	}
-
-	for(int i = length; i >= 0; i--)
-	{
-		//this->mParent->removeChild((CCNode*) this->objectAtIndex(i));
-	}
-
-	for(int i = length; i >= 0; i--)
-	{
-		//this->mParent->addChild((CCNode*) this->objectAtIndex(i));
 	}
 }
 

@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 
 #include "Texture.h"
+#include "Utils.h"
 
 using namespace cocos2d;
 
@@ -25,17 +26,25 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		int mCurrentFrameIndex;
 
-		int* mFramesCoordinatesX;
-		int* mFramesCoordinatesY;
+		float* mFramesCoordinatesX;
+		float* mFramesCoordinatesY;
 
 		bool mWasTouched;
 		bool mIsRegisterAsTouchable;
+		bool mAnimationRunning;
+
+		bool mIsShadow;
+
+		float mAnimationTime;
+		float mAnimationTimeElapsed;
 
 		float mAnimationScaleDownTime;
 		float mAnimationScaleUpTime;
 
 		float mAnimationScaleDownFactor;
 		float mAnimationScaleUpFactor;
+
+		int mAnimationRepeatCount;
 
 		int id; // For the entities which is childs of EntityManagers
 		EntityManager* mEntityManager;
@@ -52,6 +61,12 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		
 		float getWidth();
 		float getHeight();
+
+		void setIsShadow();
+
+		bool isSetAsShadow();
+		bool collideWith(Entity* pEntity);
+		bool collideCoordinatesWith(float x, float y, Entity* pEntity);
 		
 		/**
 		 *
@@ -74,10 +89,10 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		 *
 		 */
 
-		Entity* create();
+		virtual Entity* create();
 
-		void destroy();
-		void destroy(bool pManage);
+		virtual void destroy();
+		virtual void destroy(bool pManage);
 
 		void setEntityManager(EntityManager* pEntityManager);
 
@@ -103,6 +118,11 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		void changeTexture(Texture* pTexture);
 
+		void animate(float pAnimationTime);
+		void animate(float pAnimationTime, int pRepeatCount);
+
+		virtual void onAnimationEnd();
+
 		/**
 		 *
 		 * Checing for touch detector
@@ -123,6 +143,10 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		void setRegisterAsTouchable(bool pTouchable);
 
+		virtual void update(float pDeltaTime);
+
+		virtual void draw();
+		
 		virtual void onTouch(CCTouch* touch, CCEvent* event);
 
 		/**

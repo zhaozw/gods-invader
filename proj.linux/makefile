@@ -35,14 +35,16 @@ DEFINES = -DLINUX
 OBJECTS = ./main.o \
 			../Classes/Options.o \
 			../Classes/AppDelegate.o \
+			../Classes/Utils/Utils.o \
 			../Classes/Entities/Entity.o \
 			../Classes/Entities/Hero.o \
 			../Classes/Entities/Castle.o \
 			../Classes/Entities/BaseEnemy.o \
+			../Classes/Entities/BaseBullet.o \
+			../Classes/Entities/BaseExplosion.o \
 			../Classes/Managers/EntityManager.o \
 			../Classes/Screens/Screen.o \
 			../Classes/Screens/Level.o \
-			../Classes/Utils/Utils.o \
 			../Classes/Graphics/Texture.o \
 
 LBITS := $(shell getconf LONG_BIT)

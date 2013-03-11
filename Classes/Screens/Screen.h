@@ -24,9 +24,7 @@ class Screen : public CCScene, public CCTargetedTouchDelegate
 	 */
 
 	bool ccTouchBegan(CCTouch* touch, CCEvent* event);
-
 	void ccTouchMoved(CCTouch* touch, CCEvent* event);
-
 	void ccTouchEnded(CCTouch* touch, CCEvent* event);
 		
 	bool containsTouchLocation(CCTouch* touch);

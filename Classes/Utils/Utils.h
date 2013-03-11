@@ -14,6 +14,7 @@ class Utils
 		static float randomf(float min, float max);
 		static int random(int min, int max);
 		static float coord(float pCoordinate);
+		static float distance(float dX0, float dY0, float dX1, float dY1);
 
 		static float Pi;
 };

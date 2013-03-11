@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "AppDelegate.h"
 #include "EntityManager.h"
+#include "CCGL.h"
 
 void Entity::init(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent)
 {
@@ -29,6 +30,8 @@ void Entity::init(const char* pszFileName, int pHorizontalFramesCount, int pVert
 
 	this->mWasTouched = false;
 
+	this->mIsShadow = false;
+
 	/**
 	 *
 	 * We must remember all coordinates of each frame
@@ -36,8 +39,8 @@ void Entity::init(const char* pszFileName, int pHorizontalFramesCount, int pVert
 	 *
 	 */
 
-	this->mFramesCoordinatesX = new int[this->mVerticalFramesCount];
-	this->mFramesCoordinatesY = new int[this->mHorizontalFramesCount];
+	this->mFramesCoordinatesX = new float[this->mFramesCount];
+	this->mFramesCoordinatesY = new float[this->mFramesCount];
 
 	int counter = 0;
 
@@ -65,6 +68,11 @@ void Entity::init(const char* pszFileName, int pHorizontalFramesCount, int pVert
 	 *
 	 */
 
+	this->mAnimationTime = 0;
+	this->mAnimationTimeElapsed = 0;
+
+	this->mAnimationRunning = false;
+
 	this->mAnimationScaleDownTime = 0.2;
 	this->mAnimationScaleUpTime = 0.2;
 
@@ -73,7 +81,12 @@ void Entity::init(const char* pszFileName, int pHorizontalFramesCount, int pVert
 
 	this->mIsRegisterAsTouchable = false;
 
+	this->mAnimationRepeatCount = -1;
+
 	this->scheduleUpdate();
+
+	this->retain();
+	this->release();
 }
 
 
@@ -111,7 +124,14 @@ float Entity::getHeight()
 {
 	return this->getContentSize().height;
 }
-		
+
+void Entity::setIsShadow()
+{
+	this->setOpacity(150);
+
+	this->mIsShadow = true;
+}	
+
 /**
  *
  * Take care about careful position
@@ -152,6 +172,37 @@ float Entity::getCenterX()
 float Entity::getCenterY()
 {
 	return this->getPosition().y + this->getContentSize().height / 2;
+}
+
+bool Entity::isSetAsShadow()
+{
+	return this->mIsShadow;
+}
+
+bool Entity::collideWith(Entity* pEntity)
+{
+	if (this->getX() - this->getWidth() / 2 < pEntity->getX() + pEntity->getWidth() / 2 &&
+		this->getX() + this->getWidth() / 2 > pEntity->getX() - pEntity->getWidth() / 2 &&
+		this->getY() - this->getHeight() / 2 < pEntity->getY() + pEntity->getHeight() / 2 &&
+		this->getY() + this->getHeight() / 2 > pEntity->getY() - pEntity->getHeight() / 2)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Entity::collideCoordinatesWith(float x, float y, Entity* pEntity)
+{
+	if (x - this->getWidth() / 2 < pEntity->getX() + pEntity->getWidth() / 2 &&
+		x + this->getWidth() / 2 > pEntity->getX() - pEntity->getWidth() / 2 &&
+		y - this->getHeight() / 2 < pEntity->getY() + pEntity->getHeight() / 2 &&
+		y + this->getHeight() / 2 > pEntity->getY() - pEntity->getHeight() / 2)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 /**
@@ -274,6 +325,24 @@ void Entity::changeTexture(Texture* pTexture)
 	this->setCurrentFrameIndex(0);
 }
 
+void Entity::animate(float pAnimationTime)
+{
+	this->mAnimationTime = pAnimationTime;
+
+	this->mAnimationRunning = true;
+}
+
+void Entity::animate(float pAnimationTime, int pRepeatCount)
+{
+	this->mAnimationRepeatCount = pRepeatCount;
+
+	this->animate(pAnimationTime);
+}
+
+void Entity::onAnimationEnd()
+{
+}
+
 /**
  *
  * Checing for touch detector
@@ -364,6 +433,38 @@ void Entity::onTouch(CCTouch* touch, CCEvent* event)
 Entity* Entity::deepCopy()
 {
 	return this;
+}
+
+void Entity::update(float pDeltaTime)
+{
+	if(this->mAnimationRunning && (this->mAnimationRepeatCount > 0 || this->mAnimationRepeatCount < 0))
+	{
+		this->mAnimationTimeElapsed += pDeltaTime;
+
+		if(this->mAnimationTimeElapsed >= this->mAnimationTime)
+		{
+			if(this->mAnimationRepeatCount > 0 && this->getCurrentFrameIndex() == this->mFramesCount - 1)
+			{
+				this->mAnimationRepeatCount--;
+
+				if(this->mAnimationRepeatCount == 0)
+				{
+					this->mAnimationRunning = false;
+
+					this->onAnimationEnd();
+				}
+			}
+
+			this->mAnimationTimeElapsed = 0;
+
+			this->nextFrameIndex();
+		}
+	}
+}
+
+void Entity::draw()
+{
+  CCSprite::draw();
 }
 
 #endif
