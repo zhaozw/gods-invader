@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 
-#include "Entity.h"
+#include "HealthEntity.h"
 #include "BaseBullet.h"
 #include "Hero.h"
 #include "Options.h"
@@ -11,12 +11,11 @@
 
 using namespace cocos2d;
 
-class BaseEnemy : public Entity
+class BaseEnemy : public HealthEntity
 {
 	protected:
 		float mSpeed;
 		float mSpeedStandart;
-		float mHealth;
 
 		Hero* mHero;
 
@@ -37,16 +36,12 @@ class BaseEnemy : public Entity
 		BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero);
 
 		float getSpeed();
-		float getHealth();
 
 		void setSpeed(float pSpeed);
-		void setHealth(float pHealth);
 
 		void onCollide(BaseBullet* pBullet);
 
 		void update(float pDeltaTime);
-
-		virtual void draw();
 
 		/**
 		 *

@@ -3,19 +3,18 @@
 
 #include "cocos2d.h"
 
-#include "Entity.h"
+#include "HealthEntity.h"
 #include "BaseBullet.h"
 #include "EntityManager.h"
 #include "Utils.h"
 
 using namespace cocos2d;
 
-class Hero : public Entity
+class Hero : public HealthEntity
 {
 	protected:
 		float mSpeed;
 		float mSpeedStandart;
-		float mHealth;
 		float mPatrons;
 
 		float mFollowCoordinateX;
@@ -36,11 +35,9 @@ class Hero : public Entity
 		Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount);
 
 		float getSpeed();
-		float getHealth();
 		float getPatrons();
 
 		void setSpeed(float pSpeed);
-		void setHealth(float pHealth);
 		void setPatrons(float pPatrons);
 
 		void setFollowCoordinates(float pX, float pY);

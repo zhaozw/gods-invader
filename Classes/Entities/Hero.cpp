@@ -4,7 +4,7 @@
 #include "Hero.h"
 
 Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount) :
-	Entity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
+	HealthEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
 		this->mBulletsManager = pBulletsManager;
 
@@ -14,7 +14,8 @@ Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizon
 		this->addChild(this->mShadow);
 
 		this->setPatrons(100);
-		this->setHealth(99);
+		this->setHealth(100);
+		this->removeHealth(2);
 
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(50));
 		this->mShadow->setScale(2);
@@ -37,11 +38,6 @@ float Hero::getSpeed()
 	return this->mSpeed;
 }
 
-float Hero::getHealth()
-{
-	return this->mHealth;
-}
-
 float Hero::getPatrons()
 {
 	return this->mPatrons;
@@ -50,11 +46,6 @@ float Hero::getPatrons()
 void Hero::setSpeed(float pSpeed)
 {
 	this->mSpeed = pSpeed;
-}
-
-void Hero::setHealth(float pHealth)
-{
-	this->mHealth = pHealth;
 }
 
 void Hero::setPatrons(float pPatrons)
@@ -158,7 +149,7 @@ void Hero::update(float pDeltaTime)
 
 void Hero::draw()
 {
-	Entity::draw();
+	HealthEntity::draw();
 
 	float x1;
 	float x2;

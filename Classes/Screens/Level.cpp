@@ -188,7 +188,7 @@ void Level::checkCollisions()
 
 			if(this->mHero->collideWith(enemy))
 			{
-				this->mHero->setHealth(this->mHero->getHealth() - 1);
+				this->mHero->removeHealth(1);
 			}
 		}
 	}

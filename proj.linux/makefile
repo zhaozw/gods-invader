@@ -37,6 +37,7 @@ OBJECTS = ./main.o \
 			../Classes/AppDelegate.o \
 			../Classes/Utils/Utils.o \
 			../Classes/Entities/Entity.o \
+			../Classes/Entities/HealthEntity.o \
 			../Classes/Entities/Hero.o \
 			../Classes/Entities/Castle.o \
 			../Classes/Entities/BaseEnemy.o \

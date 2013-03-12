@@ -2,11 +2,9 @@
 #define CONST_ENTITY
 
 #include "Entity.h"
-#include "AppDelegate.h"
 #include "EntityManager.h"
-#include "CCGL.h"
 
-void Entity::init(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent)
+void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent)
 {
 	CCSize screenSize = CCEGLView::sharedOpenGLView()->getFrameSize();
 
@@ -96,22 +94,22 @@ Entity::Entity()
 
 Entity::Entity(const char* pszFileName)
 {
-	this->init(pszFileName, 1, 1, NULL);
+	this->constructor(pszFileName, 1, 1, NULL);
 }
 
 Entity::Entity(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount)
 {
-	this->init(pszFileName, pHorizontalFramesCount, pVerticalFramesCount, NULL);
+	this->constructor(pszFileName, pHorizontalFramesCount, pVerticalFramesCount, NULL);
 }
 
 Entity::Entity(const char* pszFileName, CCNode* pParent)
 {
-	this->init(pszFileName, 1, 1, pParent);
+	this->constructor(pszFileName, 1, 1, pParent);
 }
 
 Entity::Entity(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent)
 {
-	this->init(pszFileName, pHorizontalFramesCount, pVerticalFramesCount, pParent);
+	this->constructor(pszFileName, pHorizontalFramesCount, pVerticalFramesCount, pParent);
 }
 
 

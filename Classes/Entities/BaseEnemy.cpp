@@ -9,7 +9,7 @@ BaseEnemy::BaseEnemy(Hero* pHero)
 }
 
 BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero) :
-	Entity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
+	HealthEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
 		this->mHero = pHero;
 
@@ -43,24 +43,14 @@ float BaseEnemy::getSpeed()
 	return this->mSpeed;
 }
 
-float BaseEnemy::getHealth()
-{
-	return this->mHealth;
-}
-
 void BaseEnemy::setSpeed(float pSpeed)
 {
 	this->mSpeed = pSpeed;
 }
 
-void BaseEnemy::setHealth(float pHealth)
-{
-	this->mHealth = pHealth;
-}
-
 void BaseEnemy::onCollide(BaseBullet* pBullet)
 {
-	this->mHealth -= pBullet->getPower();
+	this->removeHealth(pBullet->getPower());
 	
 	this->mShootVectorX = pBullet->mVectorX;
 	this->mShootVectorY = pBullet->mVectorY;
@@ -119,55 +109,6 @@ void BaseEnemy::update(float pDeltaTime)
 			{
 				this->setCenterPosition(this->getX() - (this->getX() > this->mHero->getX() ? 1 : -1), this->getY());
 			}
-		}
-	}
-}
-
-void BaseEnemy::draw()
-{
-	Entity::draw();
-
-	if(this->getHealth() < 100)
-	{
-		float x1 = 4;
-		float x2 = this->getWidth() - 4;
-
-		float y1 = -12;
-		float y2 = -16;
-
-		CCPoint vertices1[] = {
-			ccp(x1, y1),
-			ccp(x2, y1),
-			ccp(x2, y2),
-			ccp(x1, y2)
-		};
-
-		x1 = 5;
-		x2 = (this->getWidth() - 5) * (this->getHealth() / 100);
-
-		y1 = -13;
-		y2 = -15;
-
-		CCPoint vertices2[] = {
-			ccp(x1, y1),
-			ccp(x2, y1),
-			ccp(x2, y2),
-			ccp(x1, y2)
-		};
-
-		ccDrawSolidPoly(vertices1, 4, ccc4f(0.0f / 255.0f, 000.0f / 255.0f, 0.0f / 255.0f, 1));
-
-		if(this->getHealth() > 75)
-		{
-			ccDrawSolidPoly(vertices2, 4, ccc4f(0.0f / 255.0f, 255.0f / 255.0f, 0.0f / 255.0f, 1));
-		}
-		else if(this->getHealth() > 45)
-		{
-			ccDrawSolidPoly(vertices2, 4, ccc4f(255.0f / 255.0f, 255.0f / 255.0f, 0.0f / 255.0f, 1));
-		}
-		else
-		{
-			ccDrawSolidPoly(vertices2, 4, ccc4f(255.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 1));
 		}
 	}
 }

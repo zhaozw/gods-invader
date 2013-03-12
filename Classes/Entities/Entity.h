@@ -50,7 +50,7 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		EntityManager* mEntityManager;
 
 	private:
-		void init(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent);
+		void constructor(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent);
 
 	public:
 		Entity();
