@@ -3,16 +3,18 @@
 
 #include "cocos2d.h"
 
-#include "HealthEntity.h"
+#include "BarEntity.h"
 #include "BaseBullet.h"
+#include "Gas.h"
 #include "EntityManager.h"
 #include "Utils.h"
 
 using namespace cocos2d;
 
-class Hero : public HealthEntity
+class Hero : public BarEntity
 {
 	protected:
+		float mAltitude;
 		float mSpeed;
 		float mSpeedStandart;
 		float mPatrons;
@@ -23,13 +25,21 @@ class Hero : public HealthEntity
 		float mShootPaddingStandart;
 		float mShootPadding;
 
+		float mGasesAnimationTime;
+		float mGasesAnimationTimeElapsed;
+
+		bool mIsMove;
+
 		EntityManager* mBulletsManager;
 
-		Entity* mShadow;
 
 	private:
 
 	public:
+		EntityManager* mGases;
+
+		Entity* mShadow;
+
 		bool mIsShouldFire;
 
 		Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount);
@@ -43,7 +53,7 @@ class Hero : public HealthEntity
 		void setFollowCoordinates(float pX, float pY);
 		void follow();
 
-		void fire(float pX, float pY);
+		void fire(float pVectorX, float pVectorY);
 
 		void update(float pDeltaTime);
 

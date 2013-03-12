@@ -9,27 +9,27 @@ BaseEnemy::BaseEnemy(Hero* pHero)
 }
 
 BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero) :
-	HealthEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
+	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
 		this->mHero = pHero;
+
+		this->setBarsManagement(true, false);
 
 		this->mShadow = new Entity("stolen/shadow.png");
 		this->mShadow->setIsShadow();
 
 		this->addChild(this->mShadow);
 
-		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(20)); // I should remove this to the own class
+		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(40)); // I should remove this to the own class
 
 		this->mFollowPaddingX = 0;//Utils::randomf(-200.0, 200.0); // for shooting enemies
 		this->mFollowPaddingY = 0;//Utils::randomf(-200.0, 200.0);
 
 		this->setHealth(100);
 
-		this->mSpeedStandart = Utils::randomf(0.2, 2.0);
+		this->mSpeedStandart = Utils::randomf(20.0, 100.0);
 
 		this->setSpeed(this->mSpeedStandart); // I should remove this
-
-		this->setScale(2);
 
 		this->animate(0.3);
 
@@ -38,9 +38,9 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 		this->resumeSchedulerAndActions();
 	}
 
-float BaseEnemy::getSpeed()
+float BaseEnemy::getSpeed(float pDeltaTime)
 {
-	return this->mSpeed;
+	return this->mSpeed * pDeltaTime;
 }
 
 void BaseEnemy::setSpeed(float pSpeed)
@@ -65,7 +65,7 @@ BaseEnemy* BaseEnemy::deepCopy()
 
 void BaseEnemy::update(float pDeltaTime)
 {
-	Entity::update(pDeltaTime);
+	BarEntity::update(pDeltaTime);
 	
     // padding on collide
 
@@ -80,7 +80,10 @@ void BaseEnemy::update(float pDeltaTime)
 		x = this->getX() + speedX;
 		y = this->getY() + speedY;
 
-		this->setCenterPosition(x, y);
+		if(!this->collideCoordinatesWith(x, y, Options::BASE))
+		{
+			this->setCenterPosition(x, y);
+		}
 
 		this->mShootPadding -= 0.5;
 	}
@@ -89,8 +92,8 @@ void BaseEnemy::update(float pDeltaTime)
 		float x = this->getX() - this->mHero->getX() - this->mFollowPaddingX;
 		float y = this->getY() - this->mHero->getY() - this->mFollowPaddingY;
 
-		float speedX = x / sqrt(x * x + y * y) * this->getSpeed();
-		float speedY = y / sqrt(x * x + y * y) * this->getSpeed();
+		float speedX = x / sqrt(x * x + y * y) * this->getSpeed(pDeltaTime);
+		float speedY = y / sqrt(x * x + y * y) * this->getSpeed(pDeltaTime);
 
 		x = this->getX() - speedX;
 		y = this->getY() - speedY;
@@ -101,11 +104,11 @@ void BaseEnemy::update(float pDeltaTime)
 		}
 		else
 		{
-			if(x < Options::BASE->getX() - Options::BASE->getWidth() / 2 - 15 || x > Options::BASE->getX() + Options::BASE->getWidth() / 2 + 15)
+			if(x < Options::BASE->getX() - Options::BASE->getWidth() / 2 - 25 || x > Options::BASE->getX() + Options::BASE->getWidth() / 2 + 25)
 			{
 				this->setCenterPosition(this->getX(), this->getY() - (this->getY() > this->mHero->getY() ? 1 : -1));
 			}
-			if(y< Options::BASE->getY() - Options::BASE->getHeight() / 2 - 15 || y > Options::BASE->getY() + Options::BASE->getHeight() / 2 + 15)
+			if(y< Options::BASE->getY() - Options::BASE->getHeight() / 2 - 25 || y > Options::BASE->getY() + Options::BASE->getHeight() / 2 + 25)
 			{
 				this->setCenterPosition(this->getX() - (this->getX() > this->mHero->getX() ? 1 : -1), this->getY());
 			}

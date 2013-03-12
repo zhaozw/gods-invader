@@ -4,21 +4,27 @@
 #include "Hero.h"
 
 Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount) :
-	HealthEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
+	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
+		this->mAltitude = 0;
+
+		this->mGasesAnimationTime = 0.12f;
+		this->mGasesAnimationTimeElapsed = 0;
+
+		this->mGases = new EntityManager(10, new Gas(this));
+
 		this->mBulletsManager = pBulletsManager;
+
+		this->setBarsManagement(true, true);
+		this->setFireTime(0.3);
 
 		this->mShadow = new Entity("stolen/shadow.png");
 		this->mShadow->setIsShadow();
 
-		this->addChild(this->mShadow);
-
 		this->setPatrons(100);
-		this->setHealth(100);
-		this->removeHealth(2);
 
-		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(50));
-		this->mShadow->setScale(2);
+		this->setHealth(100);
+		this->removeHealth(50);
 
 		this->mSpeedStandart = 200;
 
@@ -31,6 +37,8 @@ Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizon
 
 		this->mShootPaddingStandart = 200;
 		this->mShootPadding = this->mShootPaddingStandart;
+
+		this->mIsMove = false;
 	}
 
 float Hero::getSpeed()
@@ -55,18 +63,20 @@ void Hero::setPatrons(float pPatrons)
 
 void Hero::setFollowCoordinates(float pX, float pY)
 {
+	this->mIsMove = true;
+
 	this->mFollowCoordinateX = pX;
 	this->mFollowCoordinateY = pY;
 }
 
 void Hero::follow()
 {
-	if(this->mFollowCoordinateX != 0 && this->mFollowCoordinateY != 0)
+	if(this->mIsMove)
 	{
 		float x = this->getX() - this->mFollowCoordinateX / this->getSpeed();
 		float y = this->getY() - this->mFollowCoordinateY / this->getSpeed();
 
-		if(!this->collideWith(Options::BASE))
+		if(!this->collideCoordinatesWith(x, y, Options::BASE))
 		{
 			this->setCenterPosition(x, y);
 		}
@@ -79,19 +89,24 @@ void Hero::follow()
 	}
 }
 
-void Hero::fire(float pX, float pY)
+void Hero::fire(float pVectorX, float pVectorY)
 {
-	((BaseBullet*) this->mBulletsManager->create())->fire(this->getX(), this->getY(), pX, pY);
+	if(BarEntity::fire(pVectorX, pVectorY))
+	{
+		((BaseBullet*) this->mBulletsManager->create())->fire(this->getX(), this->getY(), pVectorX, pVectorY);
 	
-	this->mShootPadding = 170;
+		this->mShootPadding = 100;
 
-	this->setSpeed(this->mSpeedStandart * 10);
+		this->setSpeed(this->mSpeedStandart * 10);
 
-	this->mPatrons--;
+		this->mPatrons--;
+	}
 }
 
 void Hero::update(float pDeltaTime)
 {
+	BarEntity::update(pDeltaTime);
+
 	this->follow();
 
 	int pontencialFrame = 2;
@@ -137,20 +152,43 @@ void Hero::update(float pDeltaTime)
 
 	if(this->mShootPadding < this->mShootPaddingStandart)
 	{
-		this->setCenterPosition(this->getX() + this->mFollowCoordinateX / this->mShootPadding, this->getY() + this->mFollowCoordinateY / this->mShootPadding);
+		float x = this->getX() + this->mFollowCoordinateX / this->mShootPadding;
+		float y = this->getY() + this->mFollowCoordinateY / this->mShootPadding;
+
+		if(!this->collideCoordinatesWith(x, y, Options::BASE))
+		{
+			this->setCenterPosition(x, y);
+		}
 
 		this->mShootPadding += 3;
 	}
 	else if(this->getSpeed() > this->mSpeedStandart)
 	{
 		this->setSpeed(this->getSpeed() - 50);
+
+		this->mIsMove = false;
 	}
+
+	//this->mAltitude = this->mGas->getCurrentFrameIndex();
+
+	this->mShadow->setCenterPosition(this->getX(), this->getY() - Utils::coord(50));
+
+	
+		this->mGasesAnimationTimeElapsed += pDeltaTime;
+
+		if(this->mGasesAnimationTimeElapsed >= this->mGasesAnimationTime)
+		{
+			this->mGasesAnimationTimeElapsed = 0;
+
+			this->mGases->create();
+		}
+	
 }
 
 void Hero::draw()
 {
-	HealthEntity::draw();
-
+	BarEntity::draw();
+return;
 	float x1;
 	float x2;
 

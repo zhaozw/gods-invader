@@ -69,6 +69,9 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mAnimationTime = 0;
 	this->mAnimationTimeElapsed = 0;
 
+	this->mPauseBeforeNewAnimationCircleTime = 0;
+	this->mPauseBeforeNewAnimationCircleTimeElapsed = 0;
+
 	this->mAnimationRunning = false;
 
 	this->mAnimationScaleDownTime = 0.2;
@@ -125,7 +128,7 @@ float Entity::getHeight()
 
 void Entity::setIsShadow()
 {
-	this->setOpacity(150);
+	this->setOpacity(80);
 
 	this->mIsShadow = true;
 }	
@@ -337,8 +340,27 @@ void Entity::animate(float pAnimationTime, int pRepeatCount)
 	this->animate(pAnimationTime);
 }
 
+void Entity::animate(float pAnimationTime, float pPauseBeforeNewAnimationCircleTime)
+{
+	this->mPauseBeforeNewAnimationCircleTime = pPauseBeforeNewAnimationCircleTime;
+
+	this->animate(pAnimationTime);
+}
+
+void Entity::animate(float pAnimationTime, int pRepeatCount, float pPauseBeforeNewAnimationCircleTime)
+{
+	this->mPauseBeforeNewAnimationCircleTime = pPauseBeforeNewAnimationCircleTime;
+
+	this->animate(pAnimationTime, pRepeatCount);
+}
+
 void Entity::onAnimationEnd()
 {
+}
+
+void Entity::onAnimationCircleEnd()
+{
+	
 }
 
 /**
@@ -437,6 +459,7 @@ void Entity::update(float pDeltaTime)
 {
 	if(this->mAnimationRunning && (this->mAnimationRepeatCount > 0 || this->mAnimationRepeatCount < 0))
 	{
+
 		this->mAnimationTimeElapsed += pDeltaTime;
 
 		if(this->mAnimationTimeElapsed >= this->mAnimationTime)
@@ -450,6 +473,25 @@ void Entity::update(float pDeltaTime)
 					this->mAnimationRunning = false;
 
 					this->onAnimationEnd();
+				}
+			}
+
+			if(this->getCurrentFrameIndex() == this->mFramesCount - 1)
+			{
+				this->onAnimationCircleEnd();
+
+				if(this->mPauseBeforeNewAnimationCircleTime > 0)
+				{
+					this->mPauseBeforeNewAnimationCircleTimeElapsed += pDeltaTime;
+
+					if(this->mPauseBeforeNewAnimationCircleTimeElapsed < this->mPauseBeforeNewAnimationCircleTime)
+					{
+						return;
+					}
+					else
+					{
+						this->mPauseBeforeNewAnimationCircleTimeElapsed = 0;
+					}
 				}
 			}
 

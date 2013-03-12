@@ -1,21 +1,29 @@
-#ifndef CONST_HEALTHENTITY_H
-#define CONST_HEALTHENTITY_H
+#ifndef CONST_CLOUD_H
+#define CONST_CLOUD_H
 
 #include "cocos2d.h"
 
 #include "Entity.h"
+#include "Options.h"
+#include "Utils.h"
 
 using namespace cocos2d;
 
-class HealthEntity : public Entity
+class Cloud : public Entity
 {
 	protected:
 		// ===========================================================
 		// Protected fields
 		// ===========================================================
 
-		float mHealth;
-		float mMaxHealth;
+		float mVectorX;
+		float mVectorY;
+
+		float mAltitude;
+
+		bool mIsMove;
+
+		Entity* mShadow;
 
 	private:
 		// ===========================================================
@@ -28,51 +36,25 @@ class HealthEntity : public Entity
 		// Private fields
 		// ===========================================================
 
-		bool mIsShow;
-
-		CCPoint mRectangleVerticles1[4];
-		CCPoint mRectangleVerticles2[4];
-
-		float R;
-		float G;
-		float B;
-
-		static int const COLOR_MAX_HEALTH = 75;
-		static int const COLOR_MIN_HEALTH = 45;
-
-		static int const VERTICLES_COUNT = 4;
-
-		static int const BAR_WITH = 22;
-
-		static int const BAR_PADDING = 1;
-
 		// ===========================================================
 		// Private methods
 		// ===========================================================
-
-		void updateBar();
 
 	public:
 		// ===========================================================
 		// Constructors
 		// ===========================================================
 
-		HealthEntity();
-		HealthEntity(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
+		Cloud();
+		Cloud(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
 
 		// ===========================================================
 		// Getters
 		// ===========================================================
 
-		float getHealth();
-		float getMaxHealth();
-
 		// ===========================================================
 		// Setters
 		// ===========================================================
-
-		void setHealth(const float pHealth);
-		void setMaxHealth(const float pMaxHealth);
 
 		// ===========================================================
 		// Checkers
@@ -86,16 +68,19 @@ class HealthEntity : public Entity
 		// Methods
 		// ===========================================================
 
-		void addHealth(float pHealth);
-
-		void removeHealth(float pHealth);
+		void init(float pVectorX, float pVectorY, Entity* pBounds);
 
 		// ===========================================================
 		// Virtual methods
 		// ===========================================================
 
-		virtual void draw();
-		
+		virtual Entity* create();
+
+		virtual void setCurrentFrameIndex(int pIndex);
+
+		virtual void update(float pDeltaTime);
+
+		virtual Cloud* deepCopy();	
 };
 
 #endif

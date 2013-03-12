@@ -20,10 +20,18 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 
 		this->addObject(currentEntity);
 
-		this->mParent->addChild(currentEntity);
+		if(pScreen != NULL)
+		{
+			this->mParent->addChild(currentEntity);
+		}
 		
 		currentEntity->destroy(false);
 	}
+}
+
+EntityManager::EntityManager(int pCreateCount, Entity* pEntity)
+{
+	this->init(pCreateCount, -1, pEntity, NULL);
 }
 
 EntityManager::EntityManager(int pCreateCount, Entity* pEntity, CCNode* pScreen)
@@ -85,6 +93,16 @@ void EntityManager::clear()
 	for(int i = 0; i < this->getCount(); i++)
 	{
 		((Entity*) this->objectAtIndex(i))->destroy();
+	}
+}
+
+void EntityManager::setParent(CCNode* pScreen)
+{
+	this->mParent = pScreen;
+
+	for(int i = 0; i < this->getCapacity(); i++)
+	{
+		this->mParent->addChild((Entity*) this->objectAtIndex(i));
 	}
 }
 

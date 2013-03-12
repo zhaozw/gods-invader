@@ -19,11 +19,14 @@ class EntityManager : public CCArray
 		void init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen);
 
 	public:
+		EntityManager(int pCreateCount, Entity* pEntity);
 		EntityManager(int pCreateCount, Entity* pEntity, CCNode* pScreen);
 		EntityManager(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen);
 
 		Entity* create();
 		void destroy(int pIndex);
+
+		void setParent(CCNode* pScreen);
 
 		void changeTexture(Texture* pTexture);
 

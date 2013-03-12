@@ -3,11 +3,13 @@
 
 #include "cocos2d.h"
 
+#include "Platform.h"
 #include "Hero.h"
 #include "BaseEnemy.h"
 #include "BaseBullet.h"
 #include "BaseExplosion.h"
 #include "Castle.h"
+#include "Cloud.h"
 #include "EntityManager.h"
 #include "Screen.h"
 #include "Options.h"
@@ -19,7 +21,7 @@ class Level : public Screen
 {
 	private:
 		Entity* mBackgroundSky;
-		Entity* mBackground;
+		Platform* mBackground;
 
 		Hero* mHero;
 
@@ -36,6 +38,16 @@ class Level : public Screen
 		EntityManager* mBaseEnemies;
 		EntityManager* mBaseBullets;
 		EntityManager* mExplosions;
+		EntityManager* mClouds;
+
+		Cloud* cloud;
+
+
+		bool mShaking;
+
+		float mShakeDuration;
+		float mShakeDurationElapsed;
+		float mShakeIntensity;
 
 	public:
 		Level(void);
@@ -44,11 +56,18 @@ class Level : public Screen
 
 		void checkCollisions();
 
+		void generateCloud();
+
+		void shake(float d, float i);
+		void updateShake(float pDeltaTime);
+
 		bool ccTouchBegan(CCTouch* touch, CCEvent* event);
 		void ccTouchMoved(CCTouch* touch, CCEvent* event);
 		void ccTouchEnded(CCTouch* touch, CCEvent* event);
 
 		virtual void update(float pDeltaTime);
+
+		virtual void draw();
 };
 
 #endif

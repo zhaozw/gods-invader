@@ -11,14 +11,14 @@ BaseBullet::BaseBullet(const char* pszFileName, int pHorizontalFramesCount, int 
 	Entity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
 		this->mShadow = new Entity("main-character/bullets-shadow.png");
-		this->mShadow->setOpacity(150);
+		this->mShadow->setIsShadow();
 
 		this->addChild(this->mShadow);
 
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(20));
 		this->mShadow->setIsShadow();
 
-		this->setPower(10);
+		this->setPower(100);
 		this->setSpeed(20);
 
 		this->mLifeTime = 3;

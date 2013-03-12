@@ -15,6 +15,7 @@ class Utils
 		static int random(int min, int max);
 		static float coord(float pCoordinate);
 		static float distance(float dX0, float dY0, float dX1, float dY1);
+		static bool probably(int pProbably);
 
 		static float Pi;
 };

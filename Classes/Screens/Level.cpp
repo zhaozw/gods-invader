@@ -12,9 +12,10 @@ Level::Level(void)
 	this->mSortEntitiesTimeElapsed = 1000;
 
 	CCLayer* mUnitsLayer = new CCLayer();
+	CCLayer* mCloudsLayer = new CCLayer();
 
 	this->mBackgroundSky = new Entity("platform/sky.png");
-	this->mBackground = new Entity("platform/platform.png");
+	this->mBackground = new Platform("platform/platform.png");
 	this->mBaseBullets = new EntityManager(100, new BaseBullet(), mUnitsLayer);
 	this->mHero = new Hero("main-character/main-char-sprite.png", this->mBaseBullets, 1, 5);
 
@@ -33,6 +34,11 @@ Level::Level(void)
 	this->addChild(this->mBackground);
 
 	mUnitsLayer->addChild(this->mCastle);
+
+
+	this->addChild(this->mHero->mShadow);
+
+this->mHero->mGases->setParent(this);
 
 	mUnitsLayer->addChild(this->mHero);
 
@@ -56,11 +62,22 @@ Level::Level(void)
 
 	this->mCastle->setCurrentFrameIndex(7);
 
+	this->mClouds = new EntityManager(1, new Cloud(), mCloudsLayer);
+	this->addChild(mCloudsLayer);
+
 
 Options::BASE = new Entity("test/base-test.png");
 Options::BASE->setCenterPosition(Options::CENTER_X, Options::CENTER_Y);
+//Options::BASE->setColor(ccc3(26.0,129.0,253.0));
 Options::BASE->setVisible(false);
 	this->addChild(Options::BASE);
+
+
+	this->mShaking = false;
+		
+	this->mShakeDuration = 0;
+	this->mShakeDurationElapsed = 0;
+	this->mShakeIntensity = 0;
 }
 
 bool Level::ccTouchBegan(CCTouch* touch, CCEvent* event)
@@ -73,6 +90,14 @@ bool Level::ccTouchBegan(CCTouch* touch, CCEvent* event)
 		this->mPointerY = location.y;
 
 		this->mHero->mIsShouldFire = true;
+
+	if(this->mPointerX != 0 && this->mPointerY != 0)
+	{
+		float x = this->mHero->getX() - this->mPointerX;
+		float y = this->mHero->getY() - this->mPointerY;
+
+		this->mHero->setFollowCoordinates(x, y);
+	}
 
 		return true;
 	}
@@ -101,10 +126,6 @@ void Level::ccTouchMoved(CCTouch* touch, CCEvent* event)
 
 	this->mPointerX = location.x;
 	this->mPointerY = location.y;
-}
-
-void Level::update(float pDeltaTime)
-{
 	if(this->mPointerX != 0 && this->mPointerY != 0)
 	{
 		float x = this->mHero->getX() - this->mPointerX;
@@ -112,6 +133,10 @@ void Level::update(float pDeltaTime)
 
 		this->mHero->setFollowCoordinates(x, y);
 	}
+}
+
+void Level::update(float pDeltaTime)
+{
 
 	/**
 	 *
@@ -155,6 +180,14 @@ void Level::update(float pDeltaTime)
 	// Collisions
 
 	this->checkCollisions();
+
+	// Clouds
+
+	this->generateCloud();
+
+	 // Shake 
+
+	this->updateShake(pDeltaTime);
 }
 
 void Level::sortEntities()
@@ -164,12 +197,13 @@ void Level::sortEntities()
 
 void Level::checkCollisions()
 {
-	for(int i = 0; i < this->mBaseBullets->getCount(); i++)
+	for(int i = 0; i < this->mBaseEnemies->getCount(); i++)
 	{
-		for(int j = 0; j < this->mBaseEnemies->getCount(); j++)
+		BaseEnemy* enemy = ((BaseEnemy*) this->mBaseEnemies->objectAtIndex(i));
+
+		for(int j = 0; j < this->mBaseBullets->getCount(); j++)
 		{
-			BaseBullet* bullet = ((BaseBullet*) this->mBaseBullets->objectAtIndex(i));
-			BaseEnemy* enemy = ((BaseEnemy*) this->mBaseEnemies->objectAtIndex(j));
+			BaseBullet* bullet = ((BaseBullet*) this->mBaseBullets->objectAtIndex(j));
 
 			if (bullet->collideWith(enemy))
 			{
@@ -182,14 +216,70 @@ void Level::checkCollisions()
 
 					this->mExplosions->create()->setCenterPosition(enemy->getX(), enemy->getY());
 
+					this->shake(1, 6);
+
 					continue;
 				}
 			}
+		}
 
-			if(this->mHero->collideWith(enemy))
-			{
-				this->mHero->removeHealth(1);
-			}
+		if(this->mHero->collideWith(enemy))
+		{
+			this->mHero->removeHealth(1);
+		}
+	}
+}
+
+void Level::generateCloud()
+{
+	if(this->mClouds->getCount() < 1 && Utils::random(0, 10) > -5)
+	{
+		this->cloud = ((Cloud*) this->mClouds->create());
+		this->cloud->init(this->mHero->getX(), this->mHero->getY(), this->mBackgroundSky);
+	}
+
+		if(!this->cloud->collideWith(this->mBackgroundSky))
+		{
+			this->cloud->destroy();
+		}
+}
+
+void Level::draw()
+{
+	Screen::draw();
+}
+
+void Level::shake(float d, float i)
+{
+	this->mShaking = true;
+	this->mShakeDuration = d;
+	this->mShakeIntensity = i;
+
+	this->mShakeDurationElapsed = 0;
+}
+
+void Level::updateShake(float pDeltaTime)
+{
+	if(this->mShaking)
+	{
+		this->mShakeDurationElapsed += pDeltaTime;
+
+		if(this->mShakeDurationElapsed > this->mShakeDuration)
+		{
+			this->mShaking = false;
+			this->mShakeDuration = 0;
+
+			//this.setCenter( mX, mY); // ?
+		}
+		else
+		{
+			int sentitX = 1;
+			int sentitY = 1;
+			 	
+			if(Utils::randomf(0, 1) < 0.5) sentitX = -1;
+			if(Utils::randomf(0, 1) < 0.5) sentitY = -1;
+
+			this->setPosition(this->getPosition().x + Utils::randomf(0, 1) * this->mShakeIntensity * sentitX, this->getPosition().y + Utils::randomf(0, 1) * this->mShakeIntensity * sentitY);
 		}
 	}
 }

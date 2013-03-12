@@ -37,11 +37,14 @@ OBJECTS = ./main.o \
 			../Classes/AppDelegate.o \
 			../Classes/Utils/Utils.o \
 			../Classes/Entities/Entity.o \
-			../Classes/Entities/HealthEntity.o \
+			../Classes/Entities/Gas.o \
+			../Classes/Entities/Platform.o \
+			../Classes/Entities/BarEntity.o \
 			../Classes/Entities/Hero.o \
 			../Classes/Entities/Castle.o \
 			../Classes/Entities/BaseEnemy.o \
 			../Classes/Entities/BaseBullet.o \
+			../Classes/Entities/Cloud.o \
 			../Classes/Entities/BaseExplosion.o \
 			../Classes/Managers/EntityManager.o \
 			../Classes/Screens/Screen.o \

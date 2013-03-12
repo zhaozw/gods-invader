@@ -35,6 +35,9 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		bool mIsShadow;
 
+		float mPauseBeforeNewAnimationCircleTime;
+		float mPauseBeforeNewAnimationCircleTimeElapsed;
+
 		float mAnimationTime;
 		float mAnimationTimeElapsed;
 
@@ -112,7 +115,7 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		int getCurrentFrameIndex();
 
-		void setCurrentFrameIndex(int pIndex);
+		virtual void setCurrentFrameIndex(int pIndex);
 
 		void nextFrameIndex();
 
@@ -120,8 +123,11 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		void animate(float pAnimationTime);
 		void animate(float pAnimationTime, int pRepeatCount);
+		void animate(float pAnimationTime, float pPauseBeforeNewAnimationCircleTime);
+		void animate(float pAnimationTime, int pRepeatCount, float pPauseBeforeNewAnimationCircleTime);
 
 		virtual void onAnimationEnd();
+		virtual void onAnimationCircleEnd();
 
 		/**
 		 *
