@@ -38,6 +38,7 @@ OBJECTS = ./main.o \
 			../Classes/Utils/Utils.o \
 			../Classes/Entities/Entity.o \
 			../Classes/Entities/Gas.o \
+			../Classes/Entities/Pickup.o \
 			../Classes/Entities/Platform.o \
 			../Classes/Entities/BarEntity.o \
 			../Classes/Entities/Hero.o \
@@ -49,6 +50,7 @@ OBJECTS = ./main.o \
 			../Classes/Managers/EntityManager.o \
 			../Classes/Screens/Screen.o \
 			../Classes/Screens/Level.o \
+			../Classes/Screens/Preloader.o \
 			../Classes/Graphics/Texture.o \
 
 LBITS := $(shell getconf LONG_BIT)
@@ -59,7 +61,12 @@ STATICLIBS_DIR = $(COCOS2DX_PATH)/platform/third_party/linux/libraries
 endif
 STATICLIBS = 
 STATICLIBS = $(STATICLIBS_DIR)/libfreetype.a \
+				$(STATICLIBS_DIR)/libxml2.a \
 				$(STATICLIBS_DIR)/libpng.a \
+				$(STATICLIBS_DIR)/libjpeg.a \
+				$(STATICLIBS_DIR)/libtiff.a \
+				$(COCOS_PATH)//lib/linux/Debug/libbox2d.a \
+#				$(STATICLIBS_DIR)/libGLEW.a \
 
 SHAREDLIBS = 
 ifeq ($(LBITS),64)

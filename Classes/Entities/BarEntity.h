@@ -50,8 +50,8 @@ class BarEntity : public Entity
 		float G2;
 		float B2;
 
-		float mBarWidth = 35;
-		float mBarHeight = 6;
+		float mBarWidth;
+		float mBarHeight;
 
 		static int const HEALTH_BAR_INDEX = 0;
 		static int const FIRE_BAR_INDEX = 1;
@@ -98,6 +98,9 @@ class BarEntity : public Entity
 
 		void setFireTime(const float pFireTime);
 		void setMaxFireTime(const float pMaxFireTime);
+
+		void setBarsWidth(float pWidth);
+		void setBarsHeight(float pHeight);
 
 		// ===========================================================
 		// Checkers

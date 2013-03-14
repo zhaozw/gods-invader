@@ -39,6 +39,9 @@ class BaseEnemy : public BarEntity
 
 		void setSpeed(float pSpeed);
 
+		virtual Entity* create();
+		virtual bool destroy();
+
 		void onCollide(BaseBullet* pBullet);
 
 		void update(float pDeltaTime);

@@ -47,12 +47,20 @@ Entity* Gas::create()
 {
 	this->animate(0.08f);
 
+	this->mShadow = (((Hero*) this->mHero)->mGasesShadows->create());
+
+	this->mShadow->setCurrentFrameIndex(this->getCurrentFrameIndex());
+	this->mShadow->setCenterPosition(this->getX(), this->getY() - Utils::coord(10));
+	this->mShadow->animate(0.08f);
+	
+
 	return Entity::create();
 }
 
 void Gas::onAnimationCircleEnd()
 {
-	// this->destroy(); // Some trouble here
+	this->mShadow->destroy();
+	this->destroy(); // Some trouble here
 }
 
 Gas* Gas::deepCopy()
@@ -73,6 +81,8 @@ void Gas::update(float pDeltaTime)
 	{
 		this->setCenterPosition(this->mHero->getX(), this->mHero->getY() - Utils::coord(45));
 	}
+
+	 // WTF I'M DOING HERE????????????????? (this->mShadow)
 }
 
 #endif

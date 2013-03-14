@@ -5,10 +5,12 @@
 
 Level::Level(void)
 {
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Music/game-music.ogg", true);
+
 	Options::CENTER_X = Options::CAMERA_CENTER_X + Utils::coord(50);
 	Options::CENTER_Y = Options::CAMERA_CENTER_Y + Utils::coord(200);
 
-	this->mSortEntitiesTime = 1;
+	this->mSortEntitiesTime = 0.1f;
 	this->mSortEntitiesTimeElapsed = 1000;
 
 	CCLayer* mUnitsLayer = new CCLayer();
@@ -22,7 +24,7 @@ Level::Level(void)
 	this->mCastle = new Castle("base/base.png", 4, 2);
 	this->mCastle->setCenterPosition(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100));
 
-	this->mCastleShadow = new Castle("base/base-shadow.png", 3, 1);
+	this->mCastleShadow = new Entity("base/base-shadow.png", 3, 1);
 	this->mCastleShadow->setCenterPosition(Options::CENTER_X + Utils::coord(18), Options::CENTER_Y - Utils::coord(110));
 	this->mCastleShadow->setIsShadow();
 
@@ -35,13 +37,12 @@ Level::Level(void)
 
 	mUnitsLayer->addChild(this->mCastle);
 
-
-	this->addChild(this->mHero->mShadow);
-
-this->mHero->mGases->setParent(this);
+	this->mHero->mGasesShadows->setParent(this);
+	this->mHero->mGases->setParent(this);
 
 	mUnitsLayer->addChild(this->mHero);
 
+	this->mPickups = new EntityManager(100, new Pickup(), mUnitsLayer);
 	this->mBaseEnemies = new EntityManager(10, new BaseEnemy(mHero), mUnitsLayer);
 
 	this->mExplosions = new EntityManager(10, new BaseExplosion(), mUnitsLayer);
@@ -50,7 +51,7 @@ this->mHero->mGases->setParent(this);
 
 	/////////////////// TEST //////////////////////
 
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < 5; i++)
 	{
 		float x = Utils::random(-100, 100);
 		float y = Utils::random(-100, 100);
@@ -188,6 +189,27 @@ void Level::update(float pDeltaTime)
 	 // Shake 
 
 	this->updateShake(pDeltaTime);
+
+
+	//////
+
+	if(this->mBaseEnemies->getCount() < 5)
+	{
+		float x = Utils::random(-100, 100);
+		float y = Utils::random(-100, 100);
+
+		this->mBaseEnemies->create()->setCenterPosition(x, y);
+
+		x = Utils::random(-300, 300);
+		y = Utils::random(-300, 300);
+
+		this->mBaseEnemies->create()->setCenterPosition(x, y);
+
+		x = Utils::random(600, -600);
+		y = Utils::random(600, -600);
+
+		this->mBaseEnemies->create()->setCenterPosition(x, y);
+	}
 }
 
 void Level::sortEntities()
@@ -212,7 +234,10 @@ void Level::checkCollisions()
 
 				if(enemy->getHealth() <= 0)
 				{
-					enemy->destroy();
+					if(enemy->destroy())
+					{
+						this->mPickups->create()->setCenterPosition(enemy->getX(), enemy->getY());
+					}
 
 					this->mExplosions->create()->setCenterPosition(enemy->getX(), enemy->getY());
 
@@ -227,6 +252,43 @@ void Level::checkCollisions()
 		{
 			this->mHero->removeHealth(1);
 		}
+	}
+
+
+	for(int i = 0; i < this->mPickups->getCount(); i++)
+	{
+		Pickup* pickup = ((Pickup*) this->mPickups->objectAtIndex(i));
+
+		if(!pickup->isFollow())
+		{
+			if(this->mHero->collideWith(pickup, 3.0f))
+			{
+				pickup->setFollowEntity(this->mHero);
+			}
+		}
+
+		if(this->mHero->collideWith(pickup))
+		{
+			switch(pickup->getCurrentFrameIndex())
+			{
+				case 0:
+				break;
+				case 1:
+				break;
+				case 2:
+					this->mHero->addHealth(10);
+				break;
+			}
+
+			pickup->destroy();
+		}
+	}
+
+	if(this->mHero->getHealth() <= 0 && this->mHero->isVisible())
+	{
+		this->mHero->destroy();
+
+		this->mExplosions->create()->setCenterPosition(this->mHero->getX(), this->mHero->getY());
 	}
 }
 
@@ -268,8 +330,6 @@ void Level::updateShake(float pDeltaTime)
 		{
 			this->mShaking = false;
 			this->mShakeDuration = 0;
-
-			//this.setCenter( mX, mY); // ?
 		}
 		else
 		{

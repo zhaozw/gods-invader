@@ -6,8 +6,6 @@
 
 void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent)
 {
-	CCSize screenSize = CCEGLView::sharedOpenGLView()->getFrameSize();
-
 	this->initWithFile(pszFileName);
 
 	if(pParent)
@@ -83,6 +81,11 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mIsRegisterAsTouchable = false;
 
 	this->mAnimationRepeatCount = -1;
+
+	this->mAnimationStartFrame = -1;
+	this->mAnimationFinishFrame = -1;
+
+	this->mAnimationFramesElaped = 0;
 
 	this->scheduleUpdate();
 
@@ -206,6 +209,19 @@ bool Entity::collideCoordinatesWith(float x, float y, Entity* pEntity)
 	return false;
 }
 
+bool Entity::collideWith(Entity* pEntity, float pFactor)
+{
+	if (this->getX() - (this->getWidth() / 2) * pFactor < pEntity->getX() + (pEntity->getWidth() / 2) * pFactor &&
+		this->getX() + (this->getWidth() / 2) * pFactor > pEntity->getX() - (pEntity->getWidth() / 2) * pFactor &&
+		this->getY() - (this->getHeight() / 2) * pFactor < pEntity->getY() + (pEntity->getHeight() / 2) * pFactor &&
+		this->getY() + (this->getHeight() / 2) * pFactor > pEntity->getY() - (pEntity->getHeight() / 2) * pFactor)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 /**
  *
  * Take care about EntityManager
@@ -215,11 +231,12 @@ bool Entity::collideCoordinatesWith(float x, float y, Entity* pEntity)
 Entity* Entity::create()
 {
 	this->setVisible(true);
+	this->setCurrentFrameIndex(0);
 
 	return this;
 }
 
-void Entity::destroy(bool pManage)
+bool Entity::destroy(bool pManage)
 {
 	this->setVisible(false);
 
@@ -230,11 +247,13 @@ void Entity::destroy(bool pManage)
 			this->getEntityManager()->destroy(this->id);
 		}
 	}
+
+	return false;
 }
 
-void Entity::destroy()
+bool Entity::destroy()
 {
-	this->destroy(true);
+	return this->destroy(true);
 }
 
 void Entity::setEntityManager(EntityManager* pEntityManager)
@@ -328,9 +347,14 @@ void Entity::changeTexture(Texture* pTexture)
 
 void Entity::animate(float pAnimationTime)
 {
+	this->mAnimationFramesElaped = 0;
+
+	this->mAnimationTimeElapsed = 0;
 	this->mAnimationTime = pAnimationTime;
 
 	this->mAnimationRunning = true;
+
+	this->onAnimationStart();
 }
 
 void Entity::animate(float pAnimationTime, int pRepeatCount)
@@ -354,13 +378,45 @@ void Entity::animate(float pAnimationTime, int pRepeatCount, float pPauseBeforeN
 	this->animate(pAnimationTime, pRepeatCount);
 }
 
+void Entity::animate(float pAnimationTime, int pStartFrame, int pFinishFrame, int pRepeatCount)
+{
+	this->animate(pAnimationTime);
+
+	this->mAnimationStartFrame = pStartFrame;
+	this->mAnimationFinishFrame = pFinishFrame;
+
+	this->mAnimationRepeatCount = pRepeatCount - 1;
+
+	this->setCurrentFrameIndex(pStartFrame);
+}
+
+void Entity::animate(float pAnimationTime, int pStartFrame, int pFinishFrame)
+{
+	this->animate(pAnimationTime, pStartFrame, pFinishFrame, 0);
+}
+
+void Entity::onAnimationStart()
+{
+}
+
 void Entity::onAnimationEnd()
 {
 }
 
 void Entity::onAnimationCircleEnd()
 {
-	
+
+}
+
+void Entity::setStartFrame(int pStartFrame)
+{
+	this->mAnimationFinishFrame = (this->mAnimationFinishFrame - this->mAnimationStartFrame) + pStartFrame;
+	this->mAnimationStartFrame = pStartFrame;
+}
+
+bool Entity::isAnimationRunning()
+{
+	return this->mAnimationRunning;
 }
 
 /**
@@ -459,45 +515,69 @@ void Entity::update(float pDeltaTime)
 {
 	if(this->mAnimationRunning && (this->mAnimationRepeatCount > 0 || this->mAnimationRepeatCount < 0))
 	{
-
 		this->mAnimationTimeElapsed += pDeltaTime;
 
 		if(this->mAnimationTimeElapsed >= this->mAnimationTime)
 		{
-			if(this->mAnimationRepeatCount > 0 && this->getCurrentFrameIndex() == this->mFramesCount - 1)
+			this->mAnimationTimeElapsed = 0;
+
+			if(this->mAnimationStartFrame == -1 && this->mAnimationFinishFrame == -1)
 			{
-				this->mAnimationRepeatCount--;
-
-				if(this->mAnimationRepeatCount == 0)
+				if(this->mAnimationRepeatCount > 0 && this->getCurrentFrameIndex() == this->mFramesCount - 1)
 				{
-					this->mAnimationRunning = false;
+					this->mAnimationRepeatCount--;
 
-					this->onAnimationEnd();
-				}
-			}
-
-			if(this->getCurrentFrameIndex() == this->mFramesCount - 1)
-			{
-				this->onAnimationCircleEnd();
-
-				if(this->mPauseBeforeNewAnimationCircleTime > 0)
-				{
-					this->mPauseBeforeNewAnimationCircleTimeElapsed += pDeltaTime;
-
-					if(this->mPauseBeforeNewAnimationCircleTimeElapsed < this->mPauseBeforeNewAnimationCircleTime)
+					if(this->mAnimationRepeatCount == 0)
 					{
-						return;
+						this->mAnimationRunning = false;
+
+						this->onAnimationEnd();
+					}
+				}
+
+				if(this->getCurrentFrameIndex() == this->mFramesCount - 1)
+				{
+					this->onAnimationCircleEnd();
+
+					if(this->mPauseBeforeNewAnimationCircleTime > 0)
+					{
+						this->mPauseBeforeNewAnimationCircleTimeElapsed += pDeltaTime;
+
+						if(this->mPauseBeforeNewAnimationCircleTimeElapsed < this->mPauseBeforeNewAnimationCircleTime)
+						{
+							return;
+						}
+						else
+						{
+							this->mPauseBeforeNewAnimationCircleTimeElapsed = 0;
+						}
+					}
+				}
+
+				this->nextFrameIndex();
+			}
+			else
+			{
+				if(this->getCurrentFrameIndex() < this->mAnimationFinishFrame)
+				{
+					this->setCurrentFrameIndex(this->mAnimationStartFrame + this->mAnimationFramesElaped + 1);
+
+					this->mAnimationFramesElaped++;
+				}
+				else
+				{
+					if(this->mAnimationRepeatCount > 0)
+					{
+						this->mAnimationRepeatCount--;
+
+						this->mAnimationFramesElaped = 0;
 					}
 					else
 					{
-						this->mPauseBeforeNewAnimationCircleTimeElapsed = 0;
+						this->onAnimationEnd();
 					}
 				}
 			}
-
-			this->mAnimationTimeElapsed = 0;
-
-			this->nextFrameIndex();
 		}
 	}
 }

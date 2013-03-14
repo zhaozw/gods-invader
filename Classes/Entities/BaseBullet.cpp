@@ -18,7 +18,7 @@ BaseBullet::BaseBullet(const char* pszFileName, int pHorizontalFramesCount, int 
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(20));
 		this->mShadow->setIsShadow();
 
-		this->setPower(100);
+		this->setPower(50);
 		this->setSpeed(20);
 
 		this->mLifeTime = 3;
@@ -28,11 +28,13 @@ BaseBullet::BaseBullet(const char* pszFileName, int pHorizontalFramesCount, int 
 		this->resumeSchedulerAndActions();
 	}
 
-void BaseBullet::destroy()
+bool BaseBullet::destroy()
 {
 	this->mIsMoving = false;
 
 	Entity::destroy();
+
+	return false;
 }
 
 float BaseBullet::getSpeed()

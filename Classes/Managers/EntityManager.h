@@ -15,6 +15,8 @@ class EntityManager : public CCArray
 		int mLastElementNumber;
 		int mCapacity;
 
+		bool mIsSortY;
+
 	private:
 		void init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen);
 
@@ -30,6 +32,8 @@ class EntityManager : public CCArray
 
 		void changeTexture(Texture* pTexture);
 
+		void disableSort();
+		
 		int getCount();
 		int getCapacity();
 

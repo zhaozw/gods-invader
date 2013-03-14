@@ -33,7 +33,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	director->setDisplayStats(true);
 	director->setAnimationInterval(1.0 / 60);
 
-	Screen* pScene = new Level();
+	Screen* pScene = new Preloader();
 
 	director->runWithScene(pScene);
 	

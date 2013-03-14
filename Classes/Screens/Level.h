@@ -2,11 +2,13 @@
 #define CONST_LEVEL_H
 
 #include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 
 #include "Platform.h"
 #include "Hero.h"
 #include "BaseEnemy.h"
 #include "BaseBullet.h"
+#include "Pickup.h"
 #include "BaseExplosion.h"
 #include "Castle.h"
 #include "Cloud.h"
@@ -39,6 +41,7 @@ class Level : public Screen
 		EntityManager* mBaseBullets;
 		EntityManager* mExplosions;
 		EntityManager* mClouds;
+		EntityManager* mPickups;
 
 		Cloud* cloud;
 

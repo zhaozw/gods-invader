@@ -12,7 +12,7 @@ float Utils::randomf(float min, float max)
 
 int Utils::random(int min, int max)
 {
-	return min + rand() / (RAND_MAX / (max - min));
+	return min + rand() / (RAND_MAX / (max + 1 - min));
 }
 
 float Utils::coord(float pCoordinate)

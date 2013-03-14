@@ -11,27 +11,70 @@ using namespace cocos2d;
 class Screen : public CCScene, public CCTargetedTouchDelegate
 {
 	protected:
+		// ===========================================================
+		// Protected fields
+		// ===========================================================
+
 		bool mWasTouched;
 		bool mIsRegisterAsTouchable;
 
+	private:
+		// ===========================================================
+		// Constructor private function
+		// ===========================================================
+
+		// ===========================================================
+		// Private fields
+		// ===========================================================
+
+		// ===========================================================
+		// Private methods
+		// ===========================================================
+
 	public:
+		// ===========================================================
+		// Public fields
+		// ===========================================================
+
+		// ===========================================================
+		// Constructors
+		// ===========================================================
+
 		Screen();
 
-	/**
-	 *
-	 * Checing for touch detector
-	 *
-	 */
+		// ===========================================================
+		// Getters
+		// ===========================================================
 
-	bool ccTouchBegan(CCTouch* touch, CCEvent* event);
-	void ccTouchMoved(CCTouch* touch, CCEvent* event);
-	void ccTouchEnded(CCTouch* touch, CCEvent* event);
+		// ===========================================================
+		// Setters
+		// ===========================================================
+
+		// ===========================================================
+		// Checkers
+		// ===========================================================
+
+		// ===========================================================
+		// Events
+		// ===========================================================
+
+		virtual void onTouch(CCTouch* touch, CCEvent* event);
+
+		// ===========================================================
+		// Methods
+		// ===========================================================
+
+		// ===========================================================
+		// Virtual methods
+		// ===========================================================
+
+		virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);
+		virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
+		virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
 		
-	bool containsTouchLocation(CCTouch* touch);
+		virtual bool containsTouchLocation(CCTouch* touch);
 
-	void setRegisterAsTouchable(bool pTouchable);
-
-	virtual void onTouch(CCTouch* touch, CCEvent* event);
+		virtual void setRegisterAsTouchable(bool pTouchable);
 };
 
 #endif

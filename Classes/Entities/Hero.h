@@ -11,8 +11,51 @@
 
 using namespace cocos2d;
 
+class GasShadow : public Entity
+{
+	public:
+	GasShadow() :
+		Entity()
+		{
+		}
+
+	GasShadow(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount) :
+		Entity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
+		{
+			this->setIsShadow();
+		}
+
+	GasShadow* deepCopy()
+	{
+		return new GasShadow("main-character/main-char-shadow-sprite.png", 12, 1);
+	}
+};
+
 class Hero : public BarEntity
 {
+	class ShootAnimator : public Entity
+	{
+		public:
+		ShootAnimator() :
+			Entity("main-character/shoot-animation.png", 12, 4)
+			{
+			}
+
+		void onAnimationEnd()
+		{
+			this->destroy();
+		}
+
+		void onAnimationStart()
+		{
+		}
+
+		Entity* deepCopy()
+		{
+			return new ShootAnimator();
+		}
+	};
+
 	protected:
 		float mAltitude;
 		float mSpeed;
@@ -28,17 +71,21 @@ class Hero : public BarEntity
 		float mGasesAnimationTime;
 		float mGasesAnimationTimeElapsed;
 
+		float mHealthRegenerationTime;
+		float mHealthRegenerationTimeElapsed;
+
 		bool mIsMove;
 
-		EntityManager* mBulletsManager;
+		bool mShootFromLeftHand;
 
+		EntityManager* mBulletsManager;
+		EntityManager* mShootAnimators;
 
 	private:
 
 	public:
 		EntityManager* mGases;
-
-		Entity* mShadow;
+		EntityManager* mGasesShadows;
 
 		bool mIsShouldFire;
 
@@ -47,11 +94,15 @@ class Hero : public BarEntity
 		float getSpeed();
 		float getPatrons();
 
+		virtual bool destroy();
+
 		void setSpeed(float pSpeed);
 		void setPatrons(float pPatrons);
 
 		void setFollowCoordinates(float pX, float pY);
 		void follow();
+
+		virtual void setCurrentFrameIndex(int pIndex);
 
 		void fire(float pVectorX, float pVectorY);
 

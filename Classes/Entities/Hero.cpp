@@ -8,18 +8,18 @@ Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizon
 	{
 		this->mAltitude = 0;
 
-		this->mGasesAnimationTime = 0.12f;
+		this->mGasesAnimationTime = 0.2f;
 		this->mGasesAnimationTimeElapsed = 0;
 
+		this->mGasesShadows = new EntityManager(10, new GasShadow());
 		this->mGases = new EntityManager(10, new Gas(this));
 
 		this->mBulletsManager = pBulletsManager;
 
 		this->setBarsManagement(true, true);
-		this->setFireTime(0.3);
+		this->setFireTime(0.1);
 
-		this->mShadow = new Entity("stolen/shadow.png");
-		this->mShadow->setIsShadow();
+		this->mShootAnimators = new EntityManager(10, new ShootAnimator(), this);
 
 		this->setPatrons(100);
 
@@ -39,6 +39,11 @@ Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizon
 		this->mShootPadding = this->mShootPaddingStandart;
 
 		this->mIsMove = false;
+
+		this->mHealthRegenerationTime = 3.0f;
+		this->mHealthRegenerationTimeElapsed = 0;
+
+		this->mShootFromLeftHand = true;
 	}
 
 float Hero::getSpeed()
@@ -93,18 +98,79 @@ void Hero::fire(float pVectorX, float pVectorY)
 {
 	if(BarEntity::fire(pVectorX, pVectorY))
 	{
-		((BaseBullet*) this->mBulletsManager->create())->fire(this->getX(), this->getY(), pVectorX, pVectorY);
+		BaseBullet* bullet = ((BaseBullet*) this->mBulletsManager->create());
+		bullet->fire(this->getX(), this->getY(), pVectorX, pVectorY);
 	
 		this->mShootPadding = 100;
 
 		this->setSpeed(this->mSpeedStandart * 10);
 
 		this->mPatrons--;
+
+		if(this->getCurrentFrameIndex() > 0)
+		{
+			Entity* shootAnimator = this->mShootAnimators->create();
+			shootAnimator->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2);
+			shootAnimator->animate(0.08f, (this->getCurrentFrameIndex() - 1) * 12 + (this->mShootFromLeftHand ? 5 : 0), (this->getCurrentFrameIndex() - 1) * 12 +  + (this->mShootFromLeftHand ? 10 : 5));
+
+			this->mShootFromLeftHand = !this->mShootFromLeftHand;
+
+			switch(bullet->getCurrentFrameIndex())
+			{
+				case 0:
+					shootAnimator->setColor(ccc3(26.0,141.0,254.0));
+				break;
+				case 1:
+					shootAnimator->setColor(ccc3(27.0,230.0,27.0));
+				break;
+				case 2:
+					shootAnimator->setColor(ccc3(254.0,51.0,22.0));
+				break;
+				case 3:
+					shootAnimator->setColor(ccc3(254.0,105.0,215.0));
+				break;
+				case 4:
+					shootAnimator->setColor(ccc3(25.0,242.0,254.0));
+				break;
+				case 5:
+					shootAnimator->setColor(ccc3(254.0,224.0,26.0));
+				break;
+				case 6:
+					shootAnimator->setColor(ccc3(154.0,44.0,254.0));
+				break;
+				case 7:
+					shootAnimator->setColor(ccc3(254.0,141.0,27.0));
+				break;
+				case 8:
+					shootAnimator->setColor(ccc3(38.0,237.0,162.0));
+				break;
+				case 9:
+					shootAnimator->setColor(ccc3(163.0,253.0,23.0));
+				break;
+			}
+		}
 	}
+}
+
+bool Hero::destroy()
+{
+	BarEntity::destroy();
+
+	return false;
+}
+
+void Hero::setCurrentFrameIndex(int pIndex)
+{
+	BarEntity::setCurrentFrameIndex(pIndex);
 }
 
 void Hero::update(float pDeltaTime)
 {
+	if(!this->isVisible())
+	{
+		return;
+	}
+
 	BarEntity::update(pDeltaTime);
 
 	this->follow();
@@ -171,8 +237,6 @@ void Hero::update(float pDeltaTime)
 
 	//this->mAltitude = this->mGas->getCurrentFrameIndex();
 
-	this->mShadow->setCenterPosition(this->getX(), this->getY() - Utils::coord(50));
-
 	
 		this->mGasesAnimationTimeElapsed += pDeltaTime;
 
@@ -182,7 +246,15 @@ void Hero::update(float pDeltaTime)
 
 			this->mGases->create();
 		}
-	
+
+	this->mHealthRegenerationTimeElapsed += pDeltaTime;
+
+	if(this->mHealthRegenerationTimeElapsed >= this->mHealthRegenerationTime)
+	{
+		this->mHealthRegenerationTimeElapsed = 0;
+
+		this->addHealth(1);
+	}
 }
 
 void Hero::draw()

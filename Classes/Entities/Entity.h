@@ -47,6 +47,10 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		float mAnimationScaleDownFactor;
 		float mAnimationScaleUpFactor;
 
+		int mAnimationStartFrame;
+		int mAnimationFinishFrame;
+		int mAnimationFramesElaped;
+
 		int mAnimationRepeatCount;
 
 		int id; // For the entities which is childs of EntityManagers
@@ -69,6 +73,7 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		bool isSetAsShadow();
 		bool collideWith(Entity* pEntity);
+		bool collideWith(Entity* pEntity, float pFactor);
 		bool collideCoordinatesWith(float x, float y, Entity* pEntity);
 		
 		/**
@@ -94,8 +99,8 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		virtual Entity* create();
 
-		virtual void destroy();
-		virtual void destroy(bool pManage);
+		virtual bool destroy();
+		virtual bool destroy(bool pManage);
 
 		void setEntityManager(EntityManager* pEntityManager);
 
@@ -121,11 +126,18 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		void changeTexture(Texture* pTexture);
 
+		bool isAnimationRunning();
+
 		void animate(float pAnimationTime);
 		void animate(float pAnimationTime, int pRepeatCount);
 		void animate(float pAnimationTime, float pPauseBeforeNewAnimationCircleTime);
 		void animate(float pAnimationTime, int pRepeatCount, float pPauseBeforeNewAnimationCircleTime);
+		void animate(float pAnimationTime, int pStartFrame, int pFinishFrame, int pRepeatCount);
+		void animate(float pAnimationTime, int pStartFrame, int pFinishFrame);
 
+		void setStartFrame(int pStartFrame);
+
+		virtual void onAnimationStart();
 		virtual void onAnimationEnd();
 		virtual void onAnimationCircleEnd();
 

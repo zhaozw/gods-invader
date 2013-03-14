@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 
 #include "Entity.h"
+#include "Hero.h"
 #include "Options.h"
 
 using namespace cocos2d;
@@ -27,6 +28,8 @@ class Gas : public Entity
 		// ===========================================================
 
 		Entity* mHero;
+
+		Entity* mShadow;
 
 		// ===========================================================
 		// Private methods
@@ -65,7 +68,7 @@ class Gas : public Entity
 		// ===========================================================
 
 		virtual Entity* create();
-		
+
 		virtual void onAnimationCircleEnd();
 
 		virtual void setCurrentFrameIndex(int pIndex);

@@ -7,7 +7,7 @@
 
 #include "Options.h"
 #include "Screen.h"
-#include "Level.h"
+#include "Preloader.h"
 
 using namespace std;
 using namespace cocos2d;
@@ -17,7 +17,7 @@ typedef struct tagResource {
 	char directory[100];
 } Resource;
 
-static Resource Resources1280x720 	= { CCSizeMake(1280, 720),  "1280x720"   };
+static Resource Resources1280x720 	= { CCSizeMake(1280, 720),  "Graphics/1280x720"   };
 static CCSize   designResolutionSize  = CCSizeMake(1280, 720);
 
 class AppDelegate : private CCApplication

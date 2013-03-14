@@ -18,6 +18,6 @@ int Options::CAMERA_HEIGHT = 0;
 int Options::CAMERA_CENTER_X = 0;
 int Options::CAMERA_CENTER_Y = 0;
 
-Entity* Options::BASE = new Entity("test/base-test.png");
+Entity* Options::BASE = new Entity(/*"test/base-test.png"*/);
 
 #endif

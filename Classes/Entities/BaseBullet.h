@@ -42,7 +42,7 @@ class BaseBullet : public Entity
 
 		void update(float pDeltaTime);
 
-		virtual void destroy();
+		virtual bool destroy();
 
 		/**
 		 *

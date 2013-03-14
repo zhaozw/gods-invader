@@ -27,6 +27,8 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 		
 		currentEntity->destroy(false);
 	}
+
+	this->mIsSortY = true;
 }
 
 EntityManager::EntityManager(int pCreateCount, Entity* pEntity)
@@ -108,6 +110,11 @@ void EntityManager::setParent(CCNode* pScreen)
 
 void EntityManager::sortChildrenByYPosition()
 {
+	if(!this->mIsSortY)
+	{
+		return;
+	}
+
 	int length = this->mParent->getChildren()->count();
 	int i;
 
@@ -122,6 +129,11 @@ void EntityManager::sortChildrenByYPosition()
 		
 		this->mParent->getChildren()->replaceObjectAtIndex(i + 1, testValue);
 	}
+}
+
+void EntityManager::disableSort()
+{
+	this->mIsSortY = false;
 }
 
 #endif

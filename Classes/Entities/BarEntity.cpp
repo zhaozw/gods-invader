@@ -9,6 +9,9 @@
 
 void BarEntity::constructor()
 {
+	this->mBarWidth = 35;
+	this->mBarHeight = 6;
+	
 	this->mHealth = 0;
 	this->mMaxHealth = 0;
 
@@ -73,6 +76,11 @@ void BarEntity::setHealth(float pHealth)
 	}
 
 	this->mHealth = pHealth;
+
+	if(this->mIsHealthBarManagement)
+	{
+		this->updateBars(HEALTH_BAR_INDEX);
+	}
 }
 
 void BarEntity::setMaxHealth(float pMaxHealth)
@@ -104,6 +112,16 @@ void BarEntity::setBarsManagement(float pHealth, float pFireTime)
 	this->mIsFireBarShow = pFireTime; // TODO: Maybe it would be greate if I transfer this somewhere...
 }
 
+void BarEntity::setBarsWidth(float pWidth)
+{
+	this->mBarWidth = pWidth;
+}
+
+void BarEntity::setBarsHeight(float pHeight)
+{
+	this->mBarHeight = pHeight;
+}
+
 // ===========================================================
 // Methods
 // ===========================================================
@@ -111,6 +129,12 @@ void BarEntity::setBarsManagement(float pHealth, float pFireTime)
 void BarEntity::addHealth(float pHealth)
 {
 	this->mHealth += pHealth;
+
+	if(this->mHealth >= this->mMaxHealth)
+	{
+		// Health bar level correction
+		this->mHealth = this->mMaxHealth;
+	}
 
 	this->updateBars(HEALTH_BAR_INDEX);
 }
@@ -124,7 +148,7 @@ void BarEntity::removeHealth(float pHealth)
 	{
 		// TODO: Call "die" method
 
-		// Health bar level corrction
+		// Health bar level correction
 		this->mHealth = 0;
 	}
 
@@ -133,7 +157,6 @@ void BarEntity::removeHealth(float pHealth)
 
 void BarEntity::updateBars(int pBarIndex)
 {
-
 	// For calculation of new coordinates
 	float x1;
 	float x2;

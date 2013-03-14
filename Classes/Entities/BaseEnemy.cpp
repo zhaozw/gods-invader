@@ -22,14 +22,8 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(40)); // I should remove this to the own class
 
-		this->mFollowPaddingX = 0;//Utils::randomf(-200.0, 200.0); // for shooting enemies
-		this->mFollowPaddingY = 0;//Utils::randomf(-200.0, 200.0);
-
-		this->setHealth(100);
-
-		this->mSpeedStandart = Utils::randomf(20.0, 100.0);
-
-		this->setSpeed(this->mSpeedStandart); // I should remove this
+		this->mFollowPaddingX = 0;//Utils::randomf(-500.0, 500.0); // for shooting enemies
+		this->mFollowPaddingY = 0;//Utils::randomf(-500.0, 500.0);
 
 		this->animate(0.3);
 
@@ -37,6 +31,29 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 
 		this->resumeSchedulerAndActions();
 	}
+
+Entity* BaseEnemy::create()
+{
+	this->setHealth(100);
+
+	this->mSpeedStandart = Utils::randomf(20.0, 100.0);
+
+	this->setSpeed(this->mSpeedStandart); // I should remove this
+
+	return BarEntity::create();
+}
+
+bool BaseEnemy::destroy()
+{
+	BarEntity::destroy();
+
+	if(Utils::probably(100))
+	{
+		return true;
+	}
+
+	return false;
+}
 
 float BaseEnemy::getSpeed(float pDeltaTime)
 {
