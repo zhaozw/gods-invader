@@ -75,6 +75,7 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		bool collideWith(Entity* pEntity);
 		bool collideWith(Entity* pEntity, float pFactor);
 		bool collideCoordinatesWith(float x, float y, Entity* pEntity);
+		bool collideWithCoordinates(float pX1, float pX2, float pY1, float pY2);
 		
 		/**
 		 *

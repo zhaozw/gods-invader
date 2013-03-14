@@ -19,7 +19,8 @@ Level::Level(void)
 	CCLayer* mUnitsLayer = new CCLayer();
 	CCLayer* mCloudsLayer = new CCLayer();
 
-	this->mBackgroundSky = new Entity("main-menu/main-menu-bg.png");
+	this->mBackgroundPart1 = new Entity("main-menu/main-menu-background-part-1.png");
+	this->mBackgroundPart2 = new Entity("main-menu/main-menu-background-part-2.png");
 
 	this->mPlatformPart1 = new Platform("platform/platform-part-1.png");
 	this->mPlatformPart2 = new Platform("platform/platform-part-2.png");
@@ -34,11 +35,14 @@ Level::Level(void)
 	this->mCastleShadow->setCenterPosition(Options::CENTER_X + Utils::coord(18), Options::CENTER_Y - Utils::coord(110));
 	this->mCastleShadow->setIsShadow();
 
-	this->mBackgroundSky->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
+	this->mBackgroundPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
+	this->mBackgroundPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
 	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
 	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
 
-	this->addChild(this->mBackgroundSky);
+	this->addChild(this->mBackgroundPart1);
+	this->addChild(this->mBackgroundPart2);
+
 	this->addChild(this->mPlatformPart1);
 	this->addChild(this->mPlatformPart2);
 
@@ -60,7 +64,7 @@ Level::Level(void)
 
 	this->mCastle->setCurrentFrameIndex(7);
 
-	this->mClouds = new EntityManager(1, new Cloud(), mCloudsLayer);
+	this->mClouds = new EntityManager(2, new Cloud(), mCloudsLayer);
 	this->addChild(mCloudsLayer);
 
 
@@ -353,16 +357,10 @@ void Level::checkCollisions()
 
 void Level::generateCloud()
 {
-	if(this->mClouds->getCount() < 1 && Utils::random(0, 10) > -5)
+	if(this->mClouds->getCount() < 2 && Utils::probably(1))
 	{
-		this->cloud = ((Cloud*) this->mClouds->create());
-		this->cloud->init(this->mHero->getX(), this->mHero->getY(), this->mBackgroundSky);
+		((Cloud*) this->mClouds->create())->init(this->mHero->getX(), this->mHero->getY(), this->mBackgroundPart1->getX() - this->mBackgroundPart1->getWidth() / 2, this->mBackgroundPart2->getX() + this->mBackgroundPart2->getWidth() / 2, this->mBackgroundPart1->getY() + this->mBackgroundPart1->getHeight() / 2, this->mBackgroundPart2->getY() - this->mBackgroundPart2->getHeight() / 2);
 	}
-
-		if(!this->cloud->collideWith(this->mBackgroundSky))
-		{
-			this->cloud->destroy();
-		}
 }
 
 void Level::draw()

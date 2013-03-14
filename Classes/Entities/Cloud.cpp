@@ -9,7 +9,10 @@
 
 void Cloud::constructor()
 {
-	this->mAltitude = 0.5;
+	this->mBoundsX1 = 0;
+	this->mBoundsX2 = 0;
+	this->mBoundsY1 = 0;
+	this->mBoundsY2 = 0;
 
 	this->mVectorX = 0;
 	this->mVectorY = 0;
@@ -46,12 +49,17 @@ Cloud::Cloud(const char* pszFileName, int pHorizontalFramesCount, int pVerticalF
 // Methods
 // ===========================================================
 
-void Cloud::init(float pVectorX, float pVectorY, Entity* pBounds)
+void Cloud::init(float pVectorX, float pVectorY, float pBoundsX1, float pBoundsX2, float pBoundsY1, float pBoundsY2)
 {
+	this->mBoundsX1 = pBoundsX1;
+	this->mBoundsX2 = pBoundsX2;
+	this->mBoundsY1 = pBoundsY1;
+	this->mBoundsY2 = pBoundsY2;
+
 	this->mIsMove = true;
 
-	float x = Utils::random(pBounds->getX() - pBounds->getWidth() / 2, pBounds->getX() + pBounds->getWidth() / 2);
-	float y = pBounds->getY() - (Utils::random(0, 2) == 1 ? pBounds->getHeight() / 2 : -pBounds->getHeight() / 2);
+	float x = 0;//Utils::random(pBoundsX1, pBoundsX2);
+	float y = Utils::random(0, 2) == 1 ? pBoundsY1 : pBoundsY2;
 
 	this->setCenterPosition(x, y);
 
@@ -93,15 +101,7 @@ void Cloud::update(float pDeltaTime)
 {
 	Entity::update(pDeltaTime);
 
-	this->setScale(2 - this->mAltitude);
-
-	this->mShadow->setScale(this->mAltitude);
 	this->mShadow->setCenterPosition(this->getX(), this->getY() - Utils::coord(550));
-
-	if(this->mAltitude < 1)
-	{
-		this->mAltitude += 0.001;
-	}
 
 	if(this->mIsMove)
 	{
@@ -109,6 +109,11 @@ void Cloud::update(float pDeltaTime)
 		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * 5;
 
 		this->setCenterPosition(this->getX() + speedX, this->getY() + speedY);
+	}
+
+	if(!this->collideWithCoordinates(this->mBoundsX1, this->mBoundsX2, this->mBoundsY1, this->mBoundsY2))
+	{
+		this->destroy();
 	}
 }
 

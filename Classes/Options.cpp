@@ -18,7 +18,7 @@ int Options::CAMERA_HEIGHT = 0;
 int Options::CAMERA_CENTER_X = 0;
 int Options::CAMERA_CENTER_Y = 0;
 
-bool Options::MUSIC_ENABLE = false;
+bool Options::MUSIC_ENABLE = true;
 
 Entity* Options::BASE = new Entity();
 

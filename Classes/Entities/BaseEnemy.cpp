@@ -25,7 +25,7 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 		this->mFollowPaddingX = 0;//Utils::randomf(-500.0, 500.0); // for shooting enemies
 		this->mFollowPaddingY = 0;//Utils::randomf(-500.0, 500.0);
 
-		this->animate(0.3);
+		this->animate(0.4);
 
 		this->mShootPadding = 0;
 
@@ -77,7 +77,7 @@ void BaseEnemy::onCollide(BaseBullet* pBullet)
 
 BaseEnemy* BaseEnemy::deepCopy()
 {
-	return new BaseEnemy("stolen/alien2.png", 8, 1, this->mHero);
+	return new BaseEnemy("enemies/s.png", 1, 1, this->mHero);
 }
 
 void BaseEnemy::update(float pDeltaTime)

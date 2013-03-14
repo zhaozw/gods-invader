@@ -23,7 +23,8 @@ using namespace cocos2d;
 class Level : public Screen
 {
 	private:
-		Entity* mBackgroundSky;
+		Entity* mBackgroundPart1;
+		Entity* mBackgroundPart2;
 
 		Entity* mPlatformPart1;
 		Entity* mPlatformPart2;
@@ -45,8 +46,6 @@ class Level : public Screen
 		EntityManager* mExplosions;
 		EntityManager* mClouds;
 		EntityManager* mPickups;
-
-		Cloud* cloud;
 
 
 		bool mShaking;

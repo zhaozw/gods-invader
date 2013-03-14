@@ -16,10 +16,13 @@ class Cloud : public Entity
 		// Protected fields
 		// ===========================================================
 
+		float mBoundsX1;
+		float mBoundsX2;
+		float mBoundsY1;
+		float mBoundsY2;
+
 		float mVectorX;
 		float mVectorY;
-
-		float mAltitude;
 
 		bool mIsMove;
 
@@ -72,7 +75,7 @@ class Cloud : public Entity
 		// Methods
 		// ===========================================================
 
-		void init(float pVectorX, float pVectorY, Entity* pBounds);
+		void init(float pVectorX, float pVectorY, float pBoundsX1, float pBoundsX2, float pBoundsY1, float pBoundsY2);
 
 		// ===========================================================
 		// Virtual methods

@@ -209,6 +209,19 @@ bool Entity::collideCoordinatesWith(float x, float y, Entity* pEntity)
 	return false;
 }
 
+bool Entity::collideWithCoordinates(float pX1, float pX2, float pY1, float pY2) // TODO: This method don't work well. Need to correct and override it in the Cloud class.
+{
+	if (this->getX() - this->getWidth() / 2 > pX1 - this->getWidth()*3 &&
+		this->getX() + this->getWidth() / 2 < pX2 + this->getWidth()*3 &&
+		this->getY() + this->getHeight() / 2 < pY1 + this->getHeight()*3 &&
+		this->getY() - this->getHeight() / 2 > pY2 - this->getHeight()*3)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 bool Entity::collideWith(Entity* pEntity, float pFactor)
 {
 	if (this->getX() - (this->getWidth() / 2) * pFactor < pEntity->getX() + (pEntity->getWidth() / 2) * pFactor &&

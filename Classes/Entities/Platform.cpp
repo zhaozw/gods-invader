@@ -53,7 +53,7 @@ void Platform::draw()
 		ccp(x1, y2)
 	};
 
-	ccDrawPoly(rectangleVerticles, 4, false);
+	//ccDrawPoly(rectangleVerticles, 4, false); // Some debug
 }
 
 #endif
