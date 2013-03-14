@@ -35,13 +35,15 @@ Level::Level(void)
 	this->mCastleShadow->setCenterPosition(Options::CENTER_X + Utils::coord(18), Options::CENTER_Y - Utils::coord(110));
 	this->mCastleShadow->setIsShadow();
 
-	this->mBackgroundPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
-	this->mBackgroundPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
+	this->mBackgroundPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y + Utils::coord(200));
+	this->mBackgroundPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y + Utils::coord(200));
 	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
 	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
 
 	this->addChild(this->mBackgroundPart1);
 	this->addChild(this->mBackgroundPart2);
+
+	this->mSmallClouds = new EntityManager(10, new SmallCloud(), this);
 
 	this->addChild(this->mPlatformPart1);
 	this->addChild(this->mPlatformPart2);
@@ -167,7 +169,7 @@ void Level::ccTouchMoved(CCTouch* touch, CCEvent* event)
 }
 
 void Level::update(float pDeltaTime)
-{CCLog("Update method was called.");
+{
 
 	/**
 	 *

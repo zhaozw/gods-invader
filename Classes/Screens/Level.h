@@ -13,6 +13,7 @@
 #include "BaseExplosion.h"
 #include "Castle.h"
 #include "Cloud.h"
+#include "SmallCloud.h"
 #include "EntityManager.h"
 #include "Screen.h"
 #include "Options.h"
@@ -46,6 +47,7 @@ class Level : public Screen
 		EntityManager* mExplosions;
 		EntityManager* mClouds;
 		EntityManager* mPickups;
+		EntityManager* mSmallClouds;
 
 
 		bool mShaking;

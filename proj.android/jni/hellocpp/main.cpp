@@ -19,6 +19,7 @@
 #include "BarEntity.cpp"
 #include "BaseEnemy.cpp"
 #include "Cloud.cpp"
+#include "Small.cpp"
 #include "Options.cpp"
 #include "BaseExplosion.cpp"
 #include "platform/android/jni/JniHelper.h"
