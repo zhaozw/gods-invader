@@ -29,16 +29,17 @@ Level::Level(void)
 	this->mHero = new Hero("main-character/main-char-sprite.png", this->mBaseBullets, 1, 5);
 
 	this->mCastle = new Castle("base/base.png", 4, 2);
-	this->mCastle->setCenterPosition(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100));
+	this->mCastle->setCenterPosition(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100) - Utils::coord(700));
 
 	this->mCastleShadow = new Entity("base/base-shadow.png", 3, 1);
-	this->mCastleShadow->setCenterPosition(Options::CENTER_X + Utils::coord(18), Options::CENTER_Y - Utils::coord(110));
+	this->mCastleShadow->setCenterPosition(Options::CENTER_X + Utils::coord(18), Options::CENTER_Y - Utils::coord(110) - Utils::coord(700));
 	this->mCastleShadow->setIsShadow();
 
 	this->mBackgroundPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y + Utils::coord(200));
 	this->mBackgroundPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y + Utils::coord(200));
-	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
-	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
+
+	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y - Utils::coord(700));
+	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y - Utils::coord(700));
 
 	this->addChild(this->mBackgroundPart1);
 	this->addChild(this->mBackgroundPart2);
@@ -81,6 +82,9 @@ Options::BASE->setVisible(false);
 
 void Level::restart()
 {
+	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
+	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
+
 	this->mBaseEnemies->clear();
 	this->mPickups->clear();
 
@@ -177,10 +181,20 @@ void Level::update(float pDeltaTime)
 	 *
 	 */
 
+	if(this->mIsGameRunning)
+	{
 	float potencialX = -this->mHero->getX() + Options::CAMERA_CENTER_X;
 	float potencialY = -this->mHero->getY() + Options::CAMERA_CENTER_Y;
 	
 	this->setPosition(potencialX, potencialY);
+	}
+	else
+	{
+	float potencialX = -this->mCastle->getX() + Options::CENTER_X;
+	float potencialY = -(Options::CENTER_Y + Utils::coord(100)) + Options::CENTER_Y - Utils::coord(400);
+	
+	this->setPosition(potencialX, potencialY);
+	}
 
 	/**
 	 *
@@ -220,27 +234,6 @@ if(this->mIsGameRunning)
 	// Clouds
 
 	this->generateCloud();
-
-
-	//////
-
-	if(this->mBaseEnemies->getCount() < 5)
-	{
-		float x = Utils::random(-100, 100);
-		float y = Utils::random(-100, 100);
-
-		this->mBaseEnemies->create()->setCenterPosition(x, y);
-
-		x = Utils::random(-300, 300);
-		y = Utils::random(-300, 300);
-
-		this->mBaseEnemies->create()->setCenterPosition(x, y);
-
-		x = Utils::random(600, -600);
-		y = Utils::random(600, -600);
-
-		this->mBaseEnemies->create()->setCenterPosition(x, y);
-	}
 }
 
 	 // Shake 
@@ -363,6 +356,16 @@ void Level::generateCloud()
 	{
 		((Cloud*) this->mClouds->create())->init(this->mHero->getX(), this->mHero->getY(), this->mBackgroundPart1->getX() - this->mBackgroundPart1->getWidth() / 2, this->mBackgroundPart2->getX() + this->mBackgroundPart2->getWidth() / 2, this->mBackgroundPart1->getY() + this->mBackgroundPart1->getHeight() / 2, this->mBackgroundPart2->getY() - this->mBackgroundPart2->getHeight() / 2);
 	}
+
+	if(this->mSmallClouds->getCount() < 6)
+	{
+
+	}
+}
+
+void Level::generateStartSmalClouds()
+{
+
 }
 
 void Level::draw()
@@ -406,8 +409,6 @@ void Level::updateShake(float pDeltaTime)
 void Level::onEnter()
 {
 	Screen::onEnter();
-
-	this->restart();
 }
 
 void Level::onExit()

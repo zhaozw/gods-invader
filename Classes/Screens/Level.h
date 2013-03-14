@@ -68,6 +68,7 @@ class Level : public Screen
 		void checkCollisions();
 
 		void generateCloud();
+		void generateStartSmalClouds();
 
 		void shake(float d, float i);
 		void updateShake(float pDeltaTime);

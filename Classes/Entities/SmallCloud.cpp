@@ -18,7 +18,6 @@ SmallCloud::SmallCloud()
 SmallCloud::SmallCloud(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount) :
 	Entity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
-		this->constructor();
 	}
 
 // ===========================================================
@@ -39,12 +38,7 @@ SmallCloud::SmallCloud(const char* pszFileName, int pHorizontalFramesCount, int 
 
 Entity* SmallCloud::create()
 {
-	Cloud* entity = ((Cloud*) Entity::create());
-
-	if(!entity->mShadow->getParent())
-	{
-		entity->getParent()->addChild(entity->mShadow);
-	}
+	SmallCloud* entity = ((SmallCloud*) Entity::create());
 
 	entity->setCurrentFrameIndex(Utils::random(0, 2));
 

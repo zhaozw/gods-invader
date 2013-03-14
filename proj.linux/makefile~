@@ -5,8 +5,8 @@ CCFLAGS = -Wall
 CXXFLAGS = -Wall
 VISIBILITY = 
 
-COCOS2DX_PATH = /home/igor/git/cocos2d-x/cocos2dx
-COCOS_PATH = /home/igor/git/cocos2d-x
+COCOS2DX_PATH = /home/igor/Development/cocos2d-x/cocos2dx
+COCOS_PATH = /home/igor/Development/cocos2d-x
 
 INCLUDES =  -I../ \
 			-I../Classes \

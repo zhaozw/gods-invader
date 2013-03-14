@@ -7,7 +7,7 @@
 
 using namespace cocos2d;
 
-class Cloud : public Entity
+class SmallCloud : public Entity
 {
 	protected:
 		// ===========================================================
@@ -63,6 +63,8 @@ class Cloud : public Entity
 		// Virtual methods
 		// ===========================================================
 
+		virtual Entity* create();
+		
 		virtual SmallCloud* deepCopy();	
 };
 
