@@ -18,6 +18,8 @@ int Options::CAMERA_HEIGHT = 0;
 int Options::CAMERA_CENTER_X = 0;
 int Options::CAMERA_CENTER_Y = 0;
 
-Entity* Options::BASE = new Entity(/*"test/base-test.png"*/);
+bool Options::MUSIC_ENABLE = false;
+
+Entity* Options::BASE = new Entity();
 
 #endif

@@ -8,9 +8,12 @@
 #include "Options.h"
 #include "Screen.h"
 #include "Preloader.h"
+#include "ScreenManager.h"
 
 using namespace std;
 using namespace cocos2d;
+
+class ScreenManager;
 
 typedef struct tagResource {
 	CCSize size;
@@ -27,6 +30,8 @@ class AppDelegate : private CCApplication
 
 		void applicationDidEnterBackground();
 		void applicationWillEnterForeground();
+
+		static ScreenManager* screens;
 };
 
 #endif

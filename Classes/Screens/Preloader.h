@@ -3,8 +3,11 @@
 
 #include "cocos2d.h"
 
+#include "AppDelegate.h"
+
 #include "Screen.h"
 #include "Level.h"
+#include "ScreenManager.h"
 
 using namespace cocos2d;
 

@@ -51,7 +51,10 @@ OBJECTS = ./main.o \
 			../Classes/Screens/Screen.o \
 			../Classes/Screens/Level.o \
 			../Classes/Screens/Preloader.o \
+			../Classes/Managers/ScreenManager.o \
 			../Classes/Graphics/Texture.o \
+			../Classes/Screens/GameOver.o \
+			../Classes/Screens/GameWon.o \
 
 LBITS := $(shell getconf LONG_BIT)
 ifeq ($(LBITS),64)

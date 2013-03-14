@@ -2,6 +2,7 @@
 #define CONST_LEVEL_H
 
 #include "cocos2d.h"
+#include "AppDelegate.h"
 #include "SimpleAudioEngine.h"
 
 #include "Platform.h"
@@ -23,7 +24,9 @@ class Level : public Screen
 {
 	private:
 		Entity* mBackgroundSky;
-		Platform* mBackground;
+
+		Entity* mPlatformPart1;
+		Entity* mPlatformPart2;
 
 		Hero* mHero;
 
@@ -52,8 +55,12 @@ class Level : public Screen
 		float mShakeDurationElapsed;
 		float mShakeIntensity;
 
+		bool mIsGameRunning;
+
 	public:
 		Level(void);
+
+		void restart();
 
 		void sortEntities();
 
@@ -71,6 +78,9 @@ class Level : public Screen
 		virtual void update(float pDeltaTime);
 
 		virtual void draw();
+
+		virtual void onEnter();
+		virtual void onExit();
 };
 
 #endif

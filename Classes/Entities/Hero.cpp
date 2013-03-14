@@ -6,45 +6,51 @@
 Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount) :
 	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
-		this->mAltitude = 0;
 
 		this->mGasesAnimationTime = 0.2f;
-		this->mGasesAnimationTimeElapsed = 0;
 
 		this->mGasesShadows = new EntityManager(10, new GasShadow());
 		this->mGases = new EntityManager(10, new Gas(this));
 
 		this->mBulletsManager = pBulletsManager;
 
-		this->setBarsManagement(true, true);
-		this->setFireTime(0.1);
-
 		this->mShootAnimators = new EntityManager(10, new ShootAnimator(), this);
 
-		this->setPatrons(100);
-
-		this->setHealth(100);
-		this->removeHealth(50);
-
-		this->mSpeedStandart = 200;
-
-		this->setSpeed(this->mSpeedStandart); // I should remove this
-
-		this->setCurrentFrameIndex(2);
-
-		this->mFollowCoordinateX = 0;
-		this->mFollowCoordinateY = 0;
-
-		this->mShootPaddingStandart = 200;
-		this->mShootPadding = this->mShootPaddingStandart;
-
-		this->mIsMove = false;
-
-		this->mHealthRegenerationTime = 3.0f;
-		this->mHealthRegenerationTimeElapsed = 0;
-
-		this->mShootFromLeftHand = true;
+		this->reset();
 	}
+
+void Hero::reset()
+{
+	this->setVisible(true);
+
+	this->mAltitude = 0;
+	this->mGasesAnimationTimeElapsed = 0;
+
+	this->setBarsManagement(true, true);
+	this->setFireTime(0.1);
+	this->setPatrons(100);
+
+	this->setHealth(100);
+	this->removeHealth(50);
+
+	this->mSpeedStandart = 200;
+
+	this->setSpeed(this->mSpeedStandart); // I should remove this
+
+	this->setCurrentFrameIndex(2);
+	this->mFollowCoordinateX = 0;
+	this->mFollowCoordinateY = 0;
+
+	this->mShootPaddingStandart = 200;
+	this->mShootPadding = this->mShootPaddingStandart;
+
+	this->mIsMove = false;
+
+	this->mHealthRegenerationTime = 3.0f;
+	this->mHealthRegenerationTimeElapsed = 0;
+
+	this->mShootFromLeftHand = true;
+}
 
 float Hero::getSpeed()
 {
@@ -101,9 +107,9 @@ void Hero::fire(float pVectorX, float pVectorY)
 		BaseBullet* bullet = ((BaseBullet*) this->mBulletsManager->create());
 		bullet->fire(this->getX(), this->getY(), pVectorX, pVectorY);
 	
-		this->mShootPadding = 100;
+		// this->mShootPadding = 100; // TODO: Too big value?
 
-		this->setSpeed(this->mSpeedStandart * 10);
+		// this->setSpeed(this->mSpeedStandart * 10);
 
 		this->mPatrons--;
 

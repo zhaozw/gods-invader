@@ -21,6 +21,8 @@ class Options
 		static int CAMERA_CENTER_X;
 		static int CAMERA_CENTER_Y;
 
+		static bool MUSIC_ENABLE;
+
 		static Entity* BASE;
 };
 

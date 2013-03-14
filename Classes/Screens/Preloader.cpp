@@ -14,7 +14,7 @@
 Preloader::Preloader(void)
 {
 	this->mNumberOfLoadedSprites = 0;
-	this->mNumberOfSprites = 14;
+	this->mNumberOfSprites = 20;
 
 	this->mBackground = new Entity("start-preloader/preloader-bg.png");
 	this->mBarBackground = new Entity("start-preloader/preloader-bar.png");
@@ -38,10 +38,16 @@ Preloader::Preloader(void)
 	CCTextureCache::sharedTextureCache()->addImageAsync("main-character/main-char-shadow-sprite.png", this, callfuncO_selector(Preloader::loadingCallBack));
 	CCTextureCache::sharedTextureCache()->addImageAsync("main-character/main-char-sprite.png", this, callfuncO_selector(Preloader::loadingCallBack));
 	CCTextureCache::sharedTextureCache()->addImageAsync("main-character/shoot-animation.png", this, callfuncO_selector(Preloader::loadingCallBack));
-	CCTextureCache::sharedTextureCache()->addImageAsync("platform/sky.png", this, callfuncO_selector(Preloader::loadingCallBack));
-	CCTextureCache::sharedTextureCache()->addImageAsync("platform/platform.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("platform/platform-part-1.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("platform/platform-part-2.png", this, callfuncO_selector(Preloader::loadingCallBack));
 	CCTextureCache::sharedTextureCache()->addImageAsync("platform/clouds-sprite.png", this, callfuncO_selector(Preloader::loadingCallBack));
 	CCTextureCache::sharedTextureCache()->addImageAsync("platform/clouds-shadow-sprite.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("game-over/background.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("game-passed/background.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("main-menu/main-menu-bg.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("main-menu/main-menu-cloud-sprite.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("main-menu/main-menu-star-sprite.png", this, callfuncO_selector(Preloader::loadingCallBack));
+	CCTextureCache::sharedTextureCache()->addImageAsync("game-over/play.png", this, callfuncO_selector(Preloader::loadingCallBack));
 }
 
 // ===========================================================
@@ -64,10 +70,9 @@ void Preloader::loadingCallBack(CCObject *obj)
 
 	if(mNumberOfLoadedSprites == mNumberOfSprites)
 	{
-		CCTransitionScene *transition = CCTransitionFade::create(1.0f, new Level());
+		AppDelegate::screens = new ScreenManager();
 
-		CCDirector::sharedDirector()->setDepthTest(true);
-		CCDirector::sharedDirector()->replaceScene(transition);
+		AppDelegate::screens->set(1.0f, 0);
 	}
 	else
 	{

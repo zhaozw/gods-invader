@@ -229,7 +229,11 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Graphics/Texture.h jni/../../Classes/Utils/Utils.h \
  /home/igor/.android/ndk/sources/cxx-stl/gnu-libstdc++/include/4.6.3/cmath \
  jni/../../Classes/Screens/Screen.h jni/../../Classes/Options.h \
- jni/../../Classes/Screens/Level.h jni/../../Classes/Entities/Platform.h \
+ jni/../../Classes/Screens/Preloader.h jni/../../Classes/AppDelegate.h \
+ jni/../../Classes/Screens/Screen.h jni/../../Classes/Screens/Level.h \
+ /home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/SimpleAudioEngine.h \
+ /home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/Export.h \
+ jni/../../Classes/Entities/Platform.h \
  jni/../../Classes/Entities/Entity.h jni/../../Classes/Entities/Hero.h \
  jni/../../Classes/Entities/BarEntity.h \
  jni/../../Classes/Entities/BaseBullet.h \
@@ -240,14 +244,23 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Entities/Pickup.h \
  jni/../../Classes/Entities/BaseExplosion.h \
  jni/../../Classes/Entities/Castle.h jni/../../Classes/Entities/Cloud.h \
- jni/../../Classes/Screens/Screen.h jni/../../Classes/Options.cpp \
+ jni/../../Classes/Managers/ScreenManager.h \
+ jni/../../Classes/Screens/Level.h jni/../../Classes/Screens/GameOver.h \
+ jni/../../Classes/Screens/GameWon.h jni/../../Classes/Options.cpp \
  jni/../../Classes/Graphics/Texture.cpp \
  jni/../../Classes/Graphics/Texture.h \
  jni/../../Classes/Managers/EntityManager.cpp \
  jni/../../Classes/Managers/EntityManager.h \
  jni/../../Classes/Entities/Entity.cpp \
  jni/../../Classes/Screens/Screen.cpp jni/../../Classes/Screens/Level.cpp \
- jni/../../Classes/Screens/Level.h jni/../../Classes/Entities/Hero.cpp \
+ jni/../../Classes/Screens/Preloader.cpp \
+ jni/../../Classes/Screens/Preloader.h \
+ jni/../../Classes/Managers/ScreenManager.cpp \
+ jni/../../Classes/Managers/ScreenManager.h \
+ jni/../../Classes/Screens/GameOver.cpp \
+ jni/../../Classes/Screens/GameOver.h \
+ jni/../../Classes/Screens/GameWon.cpp \
+ jni/../../Classes/Screens/GameWon.h jni/../../Classes/Entities/Hero.cpp \
  jni/../../Classes/Utils/Utils.cpp jni/../../Classes/Utils/Utils.h \
  jni/../../Classes/Entities/Gas.cpp \
  jni/../../Classes/Entities/Platform.cpp \
@@ -734,7 +747,17 @@ jni/../../Classes/Screens/Screen.h:
 
 jni/../../Classes/Options.h:
 
+jni/../../Classes/Screens/Preloader.h:
+
+jni/../../Classes/AppDelegate.h:
+
+jni/../../Classes/Screens/Screen.h:
+
 jni/../../Classes/Screens/Level.h:
+
+/home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/SimpleAudioEngine.h:
+
+/home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/Export.h:
 
 jni/../../Classes/Entities/Platform.h:
 
@@ -764,7 +787,13 @@ jni/../../Classes/Entities/Castle.h:
 
 jni/../../Classes/Entities/Cloud.h:
 
-jni/../../Classes/Screens/Screen.h:
+jni/../../Classes/Managers/ScreenManager.h:
+
+jni/../../Classes/Screens/Level.h:
+
+jni/../../Classes/Screens/GameOver.h:
+
+jni/../../Classes/Screens/GameWon.h:
 
 jni/../../Classes/Options.cpp:
 
@@ -782,7 +811,21 @@ jni/../../Classes/Screens/Screen.cpp:
 
 jni/../../Classes/Screens/Level.cpp:
 
-jni/../../Classes/Screens/Level.h:
+jni/../../Classes/Screens/Preloader.cpp:
+
+jni/../../Classes/Screens/Preloader.h:
+
+jni/../../Classes/Managers/ScreenManager.cpp:
+
+jni/../../Classes/Managers/ScreenManager.h:
+
+jni/../../Classes/Screens/GameOver.cpp:
+
+jni/../../Classes/Screens/GameOver.h:
+
+jni/../../Classes/Screens/GameWon.cpp:
+
+jni/../../Classes/Screens/GameWon.h:
 
 jni/../../Classes/Entities/Hero.cpp:
 

@@ -5,7 +5,10 @@
 
 Level::Level(void)
 {
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Music/game-music.ogg", true);
+	if(Options::MUSIC_ENABLE)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Music/game-music.ogg", true);
+	}
 
 	Options::CENTER_X = Options::CAMERA_CENTER_X + Utils::coord(50);
 	Options::CENTER_Y = Options::CAMERA_CENTER_Y + Utils::coord(200);
@@ -16,8 +19,11 @@ Level::Level(void)
 	CCLayer* mUnitsLayer = new CCLayer();
 	CCLayer* mCloudsLayer = new CCLayer();
 
-	this->mBackgroundSky = new Entity("platform/sky.png");
-	this->mBackground = new Platform("platform/platform.png");
+	this->mBackgroundSky = new Entity("main-menu/main-menu-bg.png");
+
+	this->mPlatformPart1 = new Platform("platform/platform-part-1.png");
+	this->mPlatformPart2 = new Platform("platform/platform-part-2.png");
+
 	this->mBaseBullets = new EntityManager(100, new BaseBullet(), mUnitsLayer);
 	this->mHero = new Hero("main-character/main-char-sprite.png", this->mBaseBullets, 1, 5);
 
@@ -29,11 +35,12 @@ Level::Level(void)
 	this->mCastleShadow->setIsShadow();
 
 	this->mBackgroundSky->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
-	this->mBackground->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
-	this->mHero->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
+	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
+	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
 
 	this->addChild(this->mBackgroundSky);
-	this->addChild(this->mBackground);
+	this->addChild(this->mPlatformPart1);
+	this->addChild(this->mPlatformPart2);
 
 	mUnitsLayer->addChild(this->mCastle);
 
@@ -49,17 +56,7 @@ Level::Level(void)
 	this->setRegisterAsTouchable(true);
 	mUnitsLayer->addChild(this->mCastleShadow);
 
-	/////////////////// TEST //////////////////////
-
-	for(int i = 0; i < 5; i++)
-	{
-		float x = Utils::random(-100, 100);
-		float y = Utils::random(-100, 100);
-
-		this->mBaseEnemies->create()->setCenterPosition(x, y);
-	}
 	this->addChild(mUnitsLayer);
-	/////////////////// TEST //////////////////////
 
 	this->mCastle->setCurrentFrameIndex(7);
 
@@ -73,12 +70,36 @@ Options::BASE->setCenterPosition(Options::CENTER_X, Options::CENTER_Y);
 Options::BASE->setVisible(false);
 	this->addChild(Options::BASE);
 
+	this->mIsGameRunning = false;
+}
+
+void Level::restart()
+{
+	this->mBaseEnemies->clear();
+	this->mPickups->clear();
+
+	this->mHero->reset();
+	this->mHero->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
+
+	/////////////////// TEST //////////////////////
+
+	for(int i = 0; i < 5; i++)
+	{
+		float x = Utils::random(-100, 100);
+		float y = Utils::random(-100, 100);
+
+		this->mBaseEnemies->create()->setCenterPosition(x, y);
+	}
+	/////////////////// TEST //////////////////////
+
 
 	this->mShaking = false;
 		
 	this->mShakeDuration = 0;
 	this->mShakeDurationElapsed = 0;
 	this->mShakeIntensity = 0;
+
+	this->mIsGameRunning = true;
 }
 
 bool Level::ccTouchBegan(CCTouch* touch, CCEvent* event)
@@ -113,6 +134,11 @@ void Level::ccTouchEnded(CCTouch* touch, CCEvent* event)
 		CCPoint location  = convertTouchToNodeSpaceAR(touch);
 
 		this->mHero->fire(location.x, location.y);
+	
+		if(Options::MUSIC_ENABLE)
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/shot.wav");
+		}
 	}
 }
 
@@ -137,7 +163,7 @@ void Level::ccTouchMoved(CCTouch* touch, CCEvent* event)
 }
 
 void Level::update(float pDeltaTime)
-{
+{CCLog("Update method was called.");
 
 	/**
 	 *
@@ -178,17 +204,16 @@ void Level::update(float pDeltaTime)
 		this->mCastleShadow->setVisible(false);
 	}
 
+if(this->mIsGameRunning)
+{
 	// Collisions
 
 	this->checkCollisions();
 
+
 	// Clouds
 
 	this->generateCloud();
-
-	 // Shake 
-
-	this->updateShake(pDeltaTime);
 
 
 	//////
@@ -210,6 +235,11 @@ void Level::update(float pDeltaTime)
 
 		this->mBaseEnemies->create()->setCenterPosition(x, y);
 	}
+}
+
+	 // Shake 
+
+	this->updateShake(pDeltaTime);
 }
 
 void Level::sortEntities()
@@ -234,6 +264,11 @@ void Level::checkCollisions()
 
 				if(enemy->getHealth() <= 0)
 				{
+					if(Options::MUSIC_ENABLE)
+					{
+						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/ai_death.wav");
+					}
+
 					if(enemy->destroy())
 					{
 						this->mPickups->create()->setCenterPosition(enemy->getX(), enemy->getY());
@@ -272,10 +307,23 @@ void Level::checkCollisions()
 			switch(pickup->getCurrentFrameIndex())
 			{
 				case 0:
+					if(Options::MUSIC_ENABLE)
+					{
+						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/health.wav");
+					}
 				break;
 				case 1:
+					if(Options::MUSIC_ENABLE)
+					{
+						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/coin.wav");
+					} 
 				break;
 				case 2:
+					if(Options::MUSIC_ENABLE)
+					{
+						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/health.wav");
+					}
+
 					this->mHero->addHealth(10);
 				break;
 			}
@@ -286,9 +334,20 @@ void Level::checkCollisions()
 
 	if(this->mHero->getHealth() <= 0 && this->mHero->isVisible())
 	{
-		this->mHero->destroy();
-
 		this->mExplosions->create()->setCenterPosition(this->mHero->getX(), this->mHero->getY());
+	
+		if(Options::MUSIC_ENABLE)
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/player_death.wav");
+		}
+
+		this->mIsGameRunning = false;
+
+		this->mHero->setVisible(false);
+
+		this->shake(3, 12);
+
+		AppDelegate::screens->set(3.0f, 1);
 	}
 }
 
@@ -342,6 +401,18 @@ void Level::updateShake(float pDeltaTime)
 			this->setPosition(this->getPosition().x + Utils::randomf(0, 1) * this->mShakeIntensity * sentitX, this->getPosition().y + Utils::randomf(0, 1) * this->mShakeIntensity * sentitY);
 		}
 	}
+}
+
+void Level::onEnter()
+{
+	Screen::onEnter();
+
+	this->restart();
+}
+
+void Level::onExit()
+{
+	Screen::onExit();
 }
 
 #endif

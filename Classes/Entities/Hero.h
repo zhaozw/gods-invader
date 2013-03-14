@@ -91,6 +91,8 @@ class Hero : public BarEntity
 
 		Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount);
 
+		void reset();
+		
 		float getSpeed();
 		float getPatrons();
 

@@ -65,14 +65,16 @@ void Cloud::init(float pVectorX, float pVectorY, Entity* pBounds)
 
 Entity* Cloud::create()
 {
-	if(!this->mShadow->getParent())
+	Cloud* entity = ((Cloud*) Entity::create());
+
+	if(!entity->mShadow->getParent())
 	{
-		this->getParent()->addChild(this->mShadow);
+		entity->getParent()->addChild(entity->mShadow);
 	}
 
-	this->setCurrentFrameIndex(Utils::random(0, 2));
+	entity->setCurrentFrameIndex(Utils::random(0, 2));
 
-	return Entity::create();
+	return entity;
 }
 
 void Cloud::setCurrentFrameIndex(int pIndex)

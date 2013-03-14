@@ -13,9 +13,6 @@
 
 Screen::Screen()
 {
-	CCDirector* pDirector = CCDirector::sharedDirector();
-	pDirector->getTouchDispatcher()->addTargetedDelegate(this, 0, true);
-
 	this->scheduleUpdate();
 }
 
@@ -82,6 +79,25 @@ void Screen::setRegisterAsTouchable(bool pTouchable)
 
 void Screen::onTouch(CCTouch* touch, CCEvent* event)
 {
+}
+
+void Screen::onEnter()
+{
+	CCDirector* pDirector = CCDirector::sharedDirector();
+	pDirector->getTouchDispatcher()->addTargetedDelegate(this, 0, true);
+	CCScene::onEnter();
+}
+
+void Screen::onExit()
+{
+	CCDirector* pDirector = CCDirector::sharedDirector();
+	pDirector->getTouchDispatcher()->removeDelegate(this);
+	CCScene::onExit();
+}
+
+void Screen::onEnterTransitionDidFinish()
+{
+	CCScene::onEnterTransitionDidFinish();
 }
 
 #endif

@@ -75,6 +75,11 @@ class Screen : public CCScene, public CCTargetedTouchDelegate
 		virtual bool containsTouchLocation(CCTouch* touch);
 
 		virtual void setRegisterAsTouchable(bool pTouchable);
+
+		virtual void onEnter();
+		virtual void onExit();
+
+		virtual void onEnterTransitionDidFinish();
 };
 
 #endif

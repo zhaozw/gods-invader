@@ -3,6 +3,8 @@
 
 #include "AppDelegate.h"
 
+ScreenManager* AppDelegate::screens = NULL;
+
 bool AppDelegate::applicationDidFinishLaunching()
 {
 	CCDirector* director 	= CCDirector::sharedDirector();
