@@ -37,19 +37,9 @@ bool BaseBullet::destroy()
 	return false;
 }
 
-float BaseBullet::getSpeed()
-{
-	return this->mSpeed;
-}
-
 float BaseBullet::getPower()
 {
 	return this->mPower;
-}
-
-void BaseBullet::setSpeed(float pSpeed)
-{
-	this->mSpeed = pSpeed;
 }
 
 void BaseBullet::setPower(float pPower)
@@ -89,10 +79,10 @@ void BaseBullet::update(float pDeltaTime)
 			this->destroy();
 		}
 
-		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed();
-		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed();
+		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
+		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
 
-		this->setCenterPosition(this->getX() + speedX, this->getY() + speedY);
+		this->setCenterPosition(this->getCenterX() + speedX, this->getCenterY() + speedY);
 
 		float angle = atan2(this->mVectorX, this->mVectorY) * 180 / Utils::Pi + 90;
 

@@ -50,7 +50,7 @@ Entity* Gas::create()
 	this->mShadow = (((Hero*) this->mHero)->mGasesShadows->create());
 
 	this->mShadow->setCurrentFrameIndex(this->getCurrentFrameIndex());
-	this->mShadow->setCenterPosition(this->getX(), this->getY() - Utils::coord(10));
+	this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(10));
 	this->mShadow->animate(0.08f);
 	
 
@@ -79,7 +79,7 @@ void Gas::update(float pDeltaTime)
 
 	if(this->getCurrentFrameIndex() < 1)
 	{
-		this->setCenterPosition(this->mHero->getX(), this->mHero->getY() - Utils::coord(45));
+		this->setCenterPosition(this->mHero->getCenterX(), this->mHero->getCenterY() - Utils::coord(45));
 	}
 
 	 // WTF I'M DOING HERE????????????????? (this->mShadow)

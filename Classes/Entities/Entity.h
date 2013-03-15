@@ -35,6 +35,10 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		bool mIsShadow;
 
+		float mSpeed;
+
+		float mZ;
+
 		float mPauseBeforeNewAnimationCircleTime;
 		float mPauseBeforeNewAnimationCircleTimeElapsed;
 
@@ -55,6 +59,8 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		int id; // For the entities which is childs of EntityManagers
 		EntityManager* mEntityManager;
+
+		Entity* mShadow; // For shadowed entities
 
 	private:
 		void constructor(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent);
@@ -89,8 +95,18 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		float getCenterPosition();
 		float getX();
 		float getY();
+		float getZ();
 		float getCenterX();
 		float getCenterY();
+		
+		/**
+		 *
+		 * Take care about speed
+		 *
+		 */
+
+		float getSpeed(float pDeltaTime);
+		void setSpeed(float pSpeed);
 
 		/**
 		 *

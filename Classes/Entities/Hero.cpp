@@ -52,19 +52,9 @@ void Hero::reset()
 	this->mShootFromLeftHand = true;
 }
 
-float Hero::getSpeed()
-{
-	return this->mSpeed;
-}
-
 float Hero::getPatrons()
 {
 	return this->mPatrons;
-}
-
-void Hero::setSpeed(float pSpeed)
-{
-	this->mSpeed = pSpeed;
 }
 
 void Hero::setPatrons(float pPatrons)
@@ -80,12 +70,12 @@ void Hero::setFollowCoordinates(float pX, float pY)
 	this->mFollowCoordinateY = pY;
 }
 
-void Hero::follow()
+void Hero::follow(float pDeltaTime)
 {
 	if(this->mIsMove)
 	{
-		float x = this->getX() - this->mFollowCoordinateX / this->getSpeed();
-		float y = this->getY() - this->mFollowCoordinateY / this->getSpeed();
+		float x = this->getCenterX() - this->mFollowCoordinateX / this->getSpeed(pDeltaTime);
+		float y = this->getCenterY() - this->mFollowCoordinateY / this->getSpeed(pDeltaTime);
 
 		if(!this->collideCoordinatesWith(x, y, Options::BASE))
 		{
@@ -105,7 +95,7 @@ void Hero::fire(float pVectorX, float pVectorY)
 	if(BarEntity::fire(pVectorX, pVectorY))
 	{
 		BaseBullet* bullet = ((BaseBullet*) this->mBulletsManager->create());
-		bullet->fire(this->getX(), this->getY(), pVectorX, pVectorY);
+		bullet->fire(this->getCenterX(), this->getCenterY(), pVectorX, pVectorY);
 	
 		// this->mShootPadding = 100; // TODO: Too big value?
 
@@ -179,7 +169,7 @@ void Hero::update(float pDeltaTime)
 
 	BarEntity::update(pDeltaTime);
 
-	this->follow();
+	this->follow(pDeltaTime);
 
 	int pontencialFrame = 2;
 
@@ -224,8 +214,8 @@ void Hero::update(float pDeltaTime)
 
 	if(this->mShootPadding < this->mShootPaddingStandart)
 	{
-		float x = this->getX() + this->mFollowCoordinateX / this->mShootPadding;
-		float y = this->getY() + this->mFollowCoordinateY / this->mShootPadding;
+		float x = this->getCenterX() + this->mFollowCoordinateX / this->mShootPadding;
+		float y = this->getCenterY() + this->mFollowCoordinateY / this->mShootPadding;
 
 		if(!this->collideCoordinatesWith(x, y, Options::BASE))
 		{
@@ -234,9 +224,9 @@ void Hero::update(float pDeltaTime)
 
 		this->mShootPadding += 3;
 	}
-	else if(this->getSpeed() > this->mSpeedStandart)
+	else if(this->getSpeed(pDeltaTime) > this->mSpeedStandart)
 	{
-		this->setSpeed(this->getSpeed() - 50);
+		this->setSpeed(this->getSpeed(pDeltaTime) - 50);
 
 		this->mIsMove = false;
 	}

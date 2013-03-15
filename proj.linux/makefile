@@ -45,6 +45,7 @@ OBJECTS = ./main.o \
 			../Classes/Entities/Castle.o \
 			../Classes/Entities/BaseEnemy.o \
 			../Classes/Entities/BaseBullet.o \
+			../Classes/Entities/Star.o \
 			../Classes/Entities/Cloud.o \
 			../Classes/Entities/SmallCloud.o \
 			../Classes/Entities/BaseExplosion.o \

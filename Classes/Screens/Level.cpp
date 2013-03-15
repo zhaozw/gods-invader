@@ -3,6 +3,14 @@
 
 #include "Level.h"
 
+// ===========================================================
+// Help classes
+// ===========================================================
+
+// ===========================================================
+// Constructors
+// ===========================================================
+
 Level::Level(void)
 {
 	if(Options::MUSIC_ENABLE)
@@ -18,6 +26,7 @@ Level::Level(void)
 
 	CCLayer* mUnitsLayer = new CCLayer();
 	CCLayer* mCloudsLayer = new CCLayer();
+	this->mControlLayer = new CCLayer();
 
 	this->mBackgroundPart1 = new Entity("main-menu/main-menu-background-part-1.png");
 	this->mBackgroundPart2 = new Entity("main-menu/main-menu-background-part-2.png");
@@ -44,7 +53,8 @@ Level::Level(void)
 	this->addChild(this->mBackgroundPart1);
 	this->addChild(this->mBackgroundPart2);
 
-	this->mSmallClouds = new EntityManager(10, new SmallCloud(), this);
+	this->mSmallClouds = new EntityManager(20, new SmallCloud(), this);
+	this->mStars = new EntityManager(20, new Star(), this);
 
 	this->addChild(this->mPlatformPart1);
 	this->addChild(this->mPlatformPart2);
@@ -77,13 +87,35 @@ Options::BASE->setCenterPosition(Options::CENTER_X, Options::CENTER_Y);
 Options::BASE->setVisible(false);
 	this->addChild(Options::BASE);
 
+	this->generateStartSmalClouds();
+
+mControlLayer->setScale(1);
+this->addChild(mControlLayer);
+
+	this->mPlayButton = new PlayButton(this);
+	this->mPlayButton->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(300));
+	mControlLayer->addChild(this->mPlayButton);
+
+	this->mHero->setVisible(false);
+
 	this->mIsGameRunning = false;
+	this->mIsMainMenu = true;
+	this->mIsMainMenuAnimationRunning = false;
+
+
+	this->mHero->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
 }
 
 void Level::restart()
 {
+	this->mIsMainMenu = false;
+
+	this->removeChild(this->mControlLayer);
+
 	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
 	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
+
+	this->mCastle->setCenterPosition(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100));
 
 	this->mBaseEnemies->clear();
 	this->mPickups->clear();
@@ -112,6 +144,19 @@ void Level::restart()
 	this->mIsGameRunning = true;
 }
 
+void Level::runMainMenuanimation()
+{
+	this->mIsMainMenu = false;
+	this->mIsMainMenuAnimationRunning = true;
+
+	this->mPlatformPart1->runAction(CCMoveTo::create(1.0f, ccp(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y)));
+	this->mPlatformPart2->runAction(CCMoveTo::create(1.0f, ccp(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y)));
+
+	this->mCastle->runAction(CCMoveTo::create(1.0f, ccp(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100))));
+
+	this->runAction(CCScaleTo::create(1.0f, 1.0f));
+}
+
 bool Level::ccTouchBegan(CCTouch* touch, CCEvent* event)
 {
 	if(Screen::ccTouchBegan(touch, event))
@@ -125,8 +170,8 @@ bool Level::ccTouchBegan(CCTouch* touch, CCEvent* event)
 
 	if(this->mPointerX != 0 && this->mPointerY != 0)
 	{
-		float x = this->mHero->getX() - this->mPointerX;
-		float y = this->mHero->getY() - this->mPointerY;
+		float x = this->mHero->getCenterX() - this->mPointerX;
+		float y = this->mHero->getCenterY() - this->mPointerY;
 
 		this->mHero->setFollowCoordinates(x, y);
 	}
@@ -165,8 +210,8 @@ void Level::ccTouchMoved(CCTouch* touch, CCEvent* event)
 	this->mPointerY = location.y;
 	if(this->mPointerX != 0 && this->mPointerY != 0)
 	{
-		float x = this->mHero->getX() - this->mPointerX;
-		float y = this->mHero->getY() - this->mPointerY;
+		float x = this->mHero->getCenterX() - this->mPointerX;
+		float y = this->mHero->getCenterY() - this->mPointerY;
 
 		this->mHero->setFollowCoordinates(x, y);
 	}
@@ -174,6 +219,15 @@ void Level::ccTouchMoved(CCTouch* touch, CCEvent* event)
 
 void Level::update(float pDeltaTime)
 {
+	if(this->mIsMainMenuAnimationRunning)
+	{
+		if(this->getScale() == 1)
+		{
+			this->mIsMainMenuAnimationRunning = false;
+
+			this->restart();
+		}
+	}
 
 	/**
 	 *
@@ -181,19 +235,31 @@ void Level::update(float pDeltaTime)
 	 *
 	 */
 
-	if(this->mIsGameRunning)
+	if(!this->mIsMainMenu)
 	{
-	float potencialX = -this->mHero->getX() + Options::CAMERA_CENTER_X;
-	float potencialY = -this->mHero->getY() + Options::CAMERA_CENTER_Y;
+		float potencialX = -this->mHero->getCenterX()*this->getScale() + Options::CAMERA_CENTER_X;
+		float potencialY = -this->mHero->getCenterY() + Options::CAMERA_CENTER_Y;
 	
-	this->setPosition(potencialX, potencialY);
+		float padding;
+
+		if(this->mIsMainMenuAnimationRunning)
+		{
+			padding = 1.0f;
+		}
+		else
+		{
+			padding = 0;
+		}
+
+		this->setPosition(potencialX, potencialY - padding);
 	}
 	else
 	{
-	float potencialX = -this->mCastle->getX() + Options::CENTER_X;
-	float potencialY = -(Options::CENTER_Y + Utils::coord(100)) + Options::CENTER_Y - Utils::coord(400);
+		float potencialX = Options::CAMERA_CENTER_X - this->mPlayButton->getCenterX()*this->getScale();
+		float potencialY = Options::CAMERA_CENTER_Y - this->mPlayButton->getCenterY() + Utils::coord(300);
 	
-	this->setPosition(potencialX, potencialY);
+		this->setPosition(potencialX, potencialY);
+		this->setScale(0.5);
 	}
 
 	/**
@@ -224,16 +290,19 @@ void Level::update(float pDeltaTime)
 		this->mCastleShadow->setVisible(false);
 	}
 
+
+	// Clouds
+	this->generateSmallCloudsAndStars();
+
 if(this->mIsGameRunning)
 {
+	// Clouds 
+
+	this->generateCloud();
+
 	// Collisions
 
 	this->checkCollisions();
-
-
-	// Clouds
-
-	this->generateCloud();
 }
 
 	 // Shake 
@@ -354,18 +423,29 @@ void Level::generateCloud()
 {
 	if(this->mClouds->getCount() < 2 && Utils::probably(1))
 	{
-		((Cloud*) this->mClouds->create())->init(this->mHero->getX(), this->mHero->getY(), this->mBackgroundPart1->getX() - this->mBackgroundPart1->getWidth() / 2, this->mBackgroundPart2->getX() + this->mBackgroundPart2->getWidth() / 2, this->mBackgroundPart1->getY() + this->mBackgroundPart1->getHeight() / 2, this->mBackgroundPart2->getY() - this->mBackgroundPart2->getHeight() / 2);
-	}
-
-	if(this->mSmallClouds->getCount() < 6)
-	{
-
+		((Cloud*) this->mClouds->create())->init(this->mHero->getX(), this->mHero->getY(), this->mBackgroundPart1->getX(), this->mBackgroundPart2->getX() + this->mBackgroundPart2->getWidth(), this->mBackgroundPart1->getY(), this->mBackgroundPart2->getY() - this->mBackgroundPart2->getHeight());
 	}
 }
 
 void Level::generateStartSmalClouds()
 {
+	for(int i = 0; i < 20; i++)
+	{
+		((SmallCloud*) this->mSmallClouds->create())->init(this->mBackgroundPart1->getX(), this->mBackgroundPart2->getX() + this->mBackgroundPart2->getWidth(), this->mBackgroundPart1->getY(), this->mBackgroundPart2->getY() - this->mBackgroundPart2->getHeight(), true);
+	}
+}
 
+void Level::generateSmallCloudsAndStars()
+{
+	if(this->mSmallClouds->getCount() < 20)
+	{
+		((SmallCloud*) this->mSmallClouds->create())->init(this->mBackgroundPart1->getX(), this->mBackgroundPart2->getX() + this->mBackgroundPart2->getWidth(), this->mBackgroundPart1->getY(), this->mBackgroundPart2->getY() - this->mBackgroundPart2->getHeight(), false);
+	}
+
+	if(this->mStars->getCount() < 20)
+	{
+		((Star*) this->mStars->create())->init(this->mBackgroundPart1->getX(), this->mBackgroundPart2->getX() + this->mBackgroundPart2->getWidth(), this->mBackgroundPart1->getY(), this->mBackgroundPart2->getY() - this->mBackgroundPart2->getHeight());
+	}
 }
 
 void Level::draw()
@@ -409,6 +489,11 @@ void Level::updateShake(float pDeltaTime)
 void Level::onEnter()
 {
 	Screen::onEnter();
+
+	if(!this->mIsMainMenu)
+	{
+		this->restart();
+	}
 }
 
 void Level::onExit()

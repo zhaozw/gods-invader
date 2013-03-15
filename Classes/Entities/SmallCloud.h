@@ -1,9 +1,11 @@
-#ifndef CONST_SMALLCLOUD_H
-#define CONST_SMALLCLOUD_H
+#ifndef CONST_STAR_H
+#define CONST_STAR_H
 
 #include "cocos2d.h"
 
 #include "Entity.h"
+#include "Utils.h"
+#include "Options.h"
 
 using namespace cocos2d;
 
@@ -13,6 +15,14 @@ class SmallCloud : public Entity
 		// ===========================================================
 		// Protected fields
 		// ===========================================================
+
+		float mBoundsX1;
+		float mBoundsX2;
+		float mBoundsY1;
+		float mBoundsY2;
+
+		float mCenterX;
+		float mCenterY;
 
 	private:
 		// ===========================================================
@@ -59,12 +69,16 @@ class SmallCloud : public Entity
 		// Methods
 		// ===========================================================
 
+		void init(float pBoundsX1, float pBoundsX2, float pBoundsY1, float pBoundsY2, bool pRandomX);
+
 		// ===========================================================
 		// Virtual methods
 		// ===========================================================
 
 		virtual Entity* create();
-		
+
+		virtual void update(float pDeltaTime);
+
 		virtual SmallCloud* deepCopy();	
 };
 

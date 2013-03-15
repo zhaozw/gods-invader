@@ -13,7 +13,6 @@ using namespace cocos2d;
 class BaseBullet : public Entity
 {
 	protected:
-		float mSpeed;
 		float mPower;
 
 		float mLifeTime;
@@ -32,10 +31,8 @@ class BaseBullet : public Entity
 		BaseBullet();
 		BaseBullet(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
 
-		float getSpeed();
 		float getPower();
 
-		void setSpeed(float pSpeed);
 		void setPower(float pPower);
 
 		void fire(float pX, float pY, float pVectorX, float pVectorY);

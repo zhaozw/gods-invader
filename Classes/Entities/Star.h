@@ -1,15 +1,15 @@
-#ifndef CONST_CLOUD_H
-#define CONST_CLOUD_H
+#ifndef CONST_Star_H
+#define CONST_Star_H
 
 #include "cocos2d.h"
 
 #include "Entity.h"
-#include "Options.h"
 #include "Utils.h"
+#include "Options.h"
 
 using namespace cocos2d;
 
-class Cloud : public Entity
+class Star : public Entity
 {
 	protected:
 		// ===========================================================
@@ -21,17 +21,13 @@ class Cloud : public Entity
 		float mBoundsY1;
 		float mBoundsY2;
 
-		float mVectorX;
-		float mVectorY;
-
-		bool mIsMove;
+		float mCenterX;
+		float mCenterY;
 
 	private:
 		// ===========================================================
 		// Constructor private function
 		// ===========================================================
-
-		void constructor();
 
 		// ===========================================================
 		// Private fields
@@ -50,8 +46,8 @@ class Cloud : public Entity
 		// Constructors
 		// ===========================================================
 
-		Cloud();
-		Cloud(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
+		Star();
+		Star(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
 
 		// ===========================================================
 		// Getters
@@ -73,7 +69,7 @@ class Cloud : public Entity
 		// Methods
 		// ===========================================================
 
-		void init(float pVectorX, float pVectorY, float pBoundsX1, float pBoundsX2, float pBoundsY1, float pBoundsY2);
+		void init(float pBoundsX1, float pBoundsX2, float pBoundsY1, float pBoundsY2);
 
 		// ===========================================================
 		// Virtual methods
@@ -81,11 +77,9 @@ class Cloud : public Entity
 
 		virtual Entity* create();
 
-		virtual void setCurrentFrameIndex(int pIndex);
-
 		virtual void update(float pDeltaTime);
 
-		virtual Cloud* deepCopy();	
+		virtual Star* deepCopy();	
 };
 
 #endif

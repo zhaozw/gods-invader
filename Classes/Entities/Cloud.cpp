@@ -58,7 +58,7 @@ void Cloud::init(float pVectorX, float pVectorY, float pBoundsX1, float pBoundsX
 
 	this->mIsMove = true;
 
-	float x = 0;//Utils::random(pBoundsX1, pBoundsX2);
+	float x = Utils::random(pBoundsX1, pBoundsX2);
 	float y = Utils::random(0, 2) == 1 ? pBoundsY1 : pBoundsY2;
 
 	this->setCenterPosition(x, y);
@@ -81,6 +81,7 @@ Entity* Cloud::create()
 	}
 
 	entity->setCurrentFrameIndex(Utils::random(0, 2));
+	entity->setSpeed(Utils::randomf(2.0, 5.0));
 
 	return entity;
 }
@@ -101,14 +102,14 @@ void Cloud::update(float pDeltaTime)
 {
 	Entity::update(pDeltaTime);
 
-	this->mShadow->setCenterPosition(this->getX(), this->getY() - Utils::coord(550));
+	this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(550));
 
 	if(this->mIsMove)
 	{
-		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * 5;
-		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * 5;
+		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
+		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
 
-		this->setCenterPosition(this->getX() + speedX, this->getY() + speedY);
+		this->setCenterPosition(this->getCenterX() + speedX, this->getCenterY() + speedY);
 	}
 
 	if(!this->collideWithCoordinates(this->mBoundsX1, this->mBoundsX2, this->mBoundsY1, this->mBoundsY2))

@@ -32,6 +32,43 @@ SmallCloud::SmallCloud(const char* pszFileName, int pHorizontalFramesCount, int 
 // Methods
 // ===========================================================
 
+void SmallCloud::init(float pBoundsX1, float pBoundsX2, float pBoundsY1, float pBoundsY2, bool pRandomX)
+{
+	this->mBoundsX1 = pBoundsX1;
+	this->mBoundsX2 = pBoundsX2;
+	this->mBoundsY1 = pBoundsY1;
+	this->mBoundsY2 = pBoundsY2;
+
+	float x = pRandomX ? Utils::random(pBoundsX1, pBoundsX2) : (Utils::random(0, 1) == 1 ? pBoundsX1 : pBoundsX2);
+	float y = Utils::random(pBoundsY1, pBoundsY2);
+
+	this->setCenterPosition(x, y);
+
+	this->mCenterX = x;
+	this->mCenterY = y;
+
+	float potencialSpeed = Utils::randomf(-3.0, 3.0);
+
+	if(potencialSpeed < 0)
+	{
+		if(potencialSpeed > -1)
+		{
+			potencialSpeed = -1;
+		}
+	}
+	else
+	{
+		if(potencialSpeed < 1)
+		{
+			potencialSpeed = 1;
+		}
+	}
+
+	potencialSpeed = pRandomX ? potencialSpeed : (x > Options::CENTER_X ? -abs(potencialSpeed) : abs(potencialSpeed));
+
+	this->setSpeed(potencialSpeed);
+}
+
 // ===========================================================
 // Virtual methods
 // ===========================================================
@@ -47,7 +84,22 @@ Entity* SmallCloud::create()
 
 SmallCloud* SmallCloud::deepCopy()
 {
-	return new SmallCloud("platform/clouds-sprite.png", 1, 3);
+	return new SmallCloud("main-menu/main-menu-cloud-sprite.png", 1, 3);
+}
+
+void SmallCloud::update(float pDeltaTime)
+{
+	Entity::update(pDeltaTime);
+
+	this->mCenterX = this->getCenterX() + this->getSpeed(pDeltaTime);
+
+	this->setRotation(-(Options::CENTER_X - this->getCenterX()) / 30);
+	this->setCenterPosition(this->mCenterX, this->mCenterY - ((this->getCenterX() > Options::CENTER_X ? this->getRotation() : -this->getRotation()) * 5));
+
+	if(!this->collideWithCoordinates(this->mBoundsX1, this->mBoundsX2, this->mBoundsY1, this->mBoundsY2))
+	{
+		this->destroy();
+	}
 }
 
 #endif

@@ -58,7 +58,6 @@ class Hero : public BarEntity
 
 	protected:
 		float mAltitude;
-		float mSpeed;
 		float mSpeedStandart;
 		float mPatrons;
 
@@ -93,16 +92,14 @@ class Hero : public BarEntity
 
 		void reset();
 		
-		float getSpeed();
 		float getPatrons();
 
 		virtual bool destroy();
 
-		void setSpeed(float pSpeed);
 		void setPatrons(float pPatrons);
 
 		void setFollowCoordinates(float pX, float pY);
-		void follow();
+		void follow(float pDeltaTime);
 
 		virtual void setCurrentFrameIndex(int pIndex);
 

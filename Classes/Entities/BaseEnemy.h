@@ -14,7 +14,6 @@ using namespace cocos2d;
 class BaseEnemy : public BarEntity
 {
 	protected:
-		float mSpeed;
 		float mSpeedStandart;
 
 		Hero* mHero;
@@ -34,10 +33,6 @@ class BaseEnemy : public BarEntity
 	public:
 		BaseEnemy(Hero* pHero);
 		BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero);
-
-		float getSpeed(float pDeltaTime);
-
-		void setSpeed(float pSpeed);
 
 		virtual Entity* create();
 		virtual bool destroy();

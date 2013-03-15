@@ -144,14 +144,13 @@ void Entity::setIsShadow()
 
 void Entity::setPosition(float pX, float pY)
 {
-    CCSprite::setPosition(ccp(pX + this->mWidth / 2, pY - this->mHeight / 2));
+    CCSprite::setPosition(ccp(pX - this->mWidth / 2, pY + this->mHeight / 2));
 }
 
 void Entity::setCenterPosition(float pX, float pY)
 {
     CCSprite::setPosition(ccp(pX, pY));
 }
-
 
 float Entity::getCenterPosition()
 {
@@ -160,22 +159,27 @@ float Entity::getCenterPosition()
 
 float Entity::getX()
 {
-	return this->getPosition().x;
+	return this->getPosition().x - this->mWidth / 2;
 }
 
 float Entity::getY()
 {
-	return this->getPosition().y;
+	return this->getPosition().y + this->mHeight / 2;
+}
+
+float Entity::getZ()
+{
+	return this->mZ;
 }
 
 float Entity::getCenterX()
 {
-	return this->getPosition().x + this->getContentSize().width / 2;
+	return this->getPosition().x;
 }
 
 float Entity::getCenterY()
 {
-	return this->getPosition().y + this->getContentSize().height / 2;
+	return this->getPosition().y;
 }
 
 bool Entity::isSetAsShadow()
@@ -185,10 +189,10 @@ bool Entity::isSetAsShadow()
 
 bool Entity::collideWith(Entity* pEntity)
 {
-	if (this->getX() - this->getWidth() / 2 < pEntity->getX() + pEntity->getWidth() / 2 &&
-		this->getX() + this->getWidth() / 2 > pEntity->getX() - pEntity->getWidth() / 2 &&
-		this->getY() - this->getHeight() / 2 < pEntity->getY() + pEntity->getHeight() / 2 &&
-		this->getY() + this->getHeight() / 2 > pEntity->getY() - pEntity->getHeight() / 2)
+	if (this->getCenterX() - this->getWidth() / 2 < pEntity->getCenterX() + pEntity->getWidth() / 2 &&
+		this->getCenterX() + this->getWidth() / 2 > pEntity->getCenterX() - pEntity->getWidth() / 2 &&
+		this->getCenterY() - this->getHeight() / 2 < pEntity->getCenterY() + pEntity->getHeight() / 2 &&
+		this->getCenterY() + this->getHeight() / 2 > pEntity->getCenterY() - pEntity->getHeight() / 2)
 	{
 		return true;
 	}
@@ -198,10 +202,10 @@ bool Entity::collideWith(Entity* pEntity)
 
 bool Entity::collideCoordinatesWith(float x, float y, Entity* pEntity)
 {
-	if (x - this->getWidth() / 2 < pEntity->getX() + pEntity->getWidth() / 2 &&
-		x + this->getWidth() / 2 > pEntity->getX() - pEntity->getWidth() / 2 &&
-		y - this->getHeight() / 2 < pEntity->getY() + pEntity->getHeight() / 2 &&
-		y + this->getHeight() / 2 > pEntity->getY() - pEntity->getHeight() / 2)
+	if (x - this->getWidth() / 2 < pEntity->getCenterX() + pEntity->getWidth() / 2 &&
+		x + this->getWidth() / 2 > pEntity->getCenterX() - pEntity->getWidth() / 2 &&
+		y - this->getHeight() / 2 < pEntity->getCenterY() + pEntity->getHeight() / 2 &&
+		y + this->getHeight() / 2 > pEntity->getCenterY() - pEntity->getHeight() / 2)
 	{
 		return true;
 	}
@@ -224,15 +228,25 @@ bool Entity::collideWithCoordinates(float pX1, float pX2, float pY1, float pY2) 
 
 bool Entity::collideWith(Entity* pEntity, float pFactor)
 {
-	if (this->getX() - (this->getWidth() / 2) * pFactor < pEntity->getX() + (pEntity->getWidth() / 2) * pFactor &&
-		this->getX() + (this->getWidth() / 2) * pFactor > pEntity->getX() - (pEntity->getWidth() / 2) * pFactor &&
-		this->getY() - (this->getHeight() / 2) * pFactor < pEntity->getY() + (pEntity->getHeight() / 2) * pFactor &&
-		this->getY() + (this->getHeight() / 2) * pFactor > pEntity->getY() - (pEntity->getHeight() / 2) * pFactor)
+	if (this->getCenterX() - (this->getWidth() / 2) * pFactor < pEntity->getCenterX() + (pEntity->getWidth() / 2) * pFactor &&
+		this->getCenterX() + (this->getWidth() / 2) * pFactor > pEntity->getCenterX() - (pEntity->getWidth() / 2) * pFactor &&
+		this->getCenterY() - (this->getHeight() / 2) * pFactor < pEntity->getCenterY() + (pEntity->getHeight() / 2) * pFactor &&
+		this->getCenterY() + (this->getHeight() / 2) * pFactor > pEntity->getCenterY() - (pEntity->getHeight() / 2) * pFactor)
 	{
 		return true;
 	}
 
 	return false;
+}
+
+void Entity::setSpeed(float pSpeed)
+{
+	this->mSpeed = pSpeed;
+}
+
+float Entity::getSpeed(float pDeltaTime)
+{
+	return this->mSpeed;
 }
 
 /**

@@ -12,6 +12,7 @@
 #include "Pickup.h"
 #include "BaseExplosion.h"
 #include "Castle.h"
+#include "Star.h"
 #include "Cloud.h"
 #include "SmallCloud.h"
 #include "EntityManager.h"
@@ -23,6 +24,26 @@ using namespace cocos2d;
 
 class Level : public Screen
 {
+	class PlayButton : public Entity
+	{
+		private:
+			Level* mParentScreen;
+
+		public:
+			PlayButton(Level* pParentScreen) :
+				Entity("main-menu/play.png")
+				{
+					this->mParentScreen = pParentScreen;
+
+					this->setRegisterAsTouchable(true);
+				}
+
+			void onTouch(CCTouch* touch, CCEvent* event)
+			{
+				this->mParentScreen->runMainMenuanimation();
+			}
+	};
+
 	private:
 		Entity* mBackgroundPart1;
 		Entity* mBackgroundPart2;
@@ -45,10 +66,12 @@ class Level : public Screen
 		EntityManager* mBaseEnemies;
 		EntityManager* mBaseBullets;
 		EntityManager* mExplosions;
-		EntityManager* mClouds;
 		EntityManager* mPickups;
 		EntityManager* mSmallClouds;
+		EntityManager* mClouds;
+		EntityManager* mStars;
 
+		Entity* mPlayButton;
 
 		bool mShaking;
 
@@ -57,6 +80,10 @@ class Level : public Screen
 		float mShakeIntensity;
 
 		bool mIsGameRunning;
+		bool mIsMainMenu;
+		bool mIsMainMenuAnimationRunning;
+
+		CCLayer* mControlLayer;
 
 	public:
 		Level(void);
@@ -69,6 +96,9 @@ class Level : public Screen
 
 		void generateCloud();
 		void generateStartSmalClouds();
+		void generateSmallCloudsAndStars();
+
+		void runMainMenuanimation();
 
 		void shake(float d, float i);
 		void updateShake(float pDeltaTime);

@@ -36,7 +36,7 @@ Entity* BaseEnemy::create()
 {
 	this->setHealth(100);
 
-	this->mSpeedStandart = Utils::randomf(20.0, 100.0);
+	this->mSpeedStandart = Utils::randomf(0.2, 2.0);
 
 	this->setSpeed(this->mSpeedStandart); // I should remove this
 
@@ -53,16 +53,6 @@ bool BaseEnemy::destroy()
 	}
 
 	return false;
-}
-
-float BaseEnemy::getSpeed(float pDeltaTime)
-{
-	return this->mSpeed * pDeltaTime;
-}
-
-void BaseEnemy::setSpeed(float pSpeed)
-{
-	this->mSpeed = pSpeed;
 }
 
 void BaseEnemy::onCollide(BaseBullet* pBullet)
@@ -94,8 +84,8 @@ void BaseEnemy::update(float pDeltaTime)
 		float speedX = x / sqrt(x * x + y * y) * this->mShootPadding;
 		float speedY = y / sqrt(x * x + y * y) * this->mShootPadding;
 
-		x = this->getX() + speedX;
-		y = this->getY() + speedY;
+		x = this->getCenterX() + speedX;
+		y = this->getCenterY() + speedY;
 
 		if(!this->collideCoordinatesWith(x, y, Options::BASE))
 		{
@@ -106,14 +96,14 @@ void BaseEnemy::update(float pDeltaTime)
 	}
 	else
 	{
-		float x = this->getX() - this->mHero->getX() - this->mFollowPaddingX;
-		float y = this->getY() - this->mHero->getY() - this->mFollowPaddingY;
+		float x = this->getCenterX() - this->mHero->getCenterX() - this->mFollowPaddingX;
+		float y = this->getCenterY() - this->mHero->getCenterY() - this->mFollowPaddingY;
 
 		float speedX = x / sqrt(x * x + y * y) * this->getSpeed(pDeltaTime);
 		float speedY = y / sqrt(x * x + y * y) * this->getSpeed(pDeltaTime);
 
-		x = this->getX() - speedX;
-		y = this->getY() - speedY;
+		x = this->getCenterX() - speedX;
+		y = this->getCenterY() - speedY;
 
 		if(!this->collideCoordinatesWith(x, y, Options::BASE))
 		{
@@ -123,11 +113,11 @@ void BaseEnemy::update(float pDeltaTime)
 		{
 			if(x < Options::BASE->getX() - Options::BASE->getWidth() / 2 - 25 || x > Options::BASE->getX() + Options::BASE->getWidth() / 2 + 25)
 			{
-				this->setCenterPosition(this->getX(), this->getY() - (this->getY() > this->mHero->getY() ? 1 : -1));
+				this->setCenterPosition(this->getCenterX(), this->getCenterY() - (this->getCenterY() > this->mHero->getCenterY() ? 1 : -1));
 			}
 			if(y< Options::BASE->getY() - Options::BASE->getHeight() / 2 - 25 || y > Options::BASE->getY() + Options::BASE->getHeight() / 2 + 25)
 			{
-				this->setCenterPosition(this->getX() - (this->getX() > this->mHero->getX() ? 1 : -1), this->getY());
+				this->setCenterPosition(this->getCenterX() - (this->getCenterX() > this->mHero->getCenterX() ? 1 : -1), this->getCenterY());
 			}
 		}
 	}

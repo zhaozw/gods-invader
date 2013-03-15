@@ -102,8 +102,8 @@ void Pickup::update(float pDeltaTime)
 
 	if(this->mCenterX == 0 && this->mCenterY == 0)
 	{
-		this->mCenterX = this->getX();
-		this->mCenterY = this->getY();
+		this->mCenterX = this->getCenterX();
+		this->mCenterY = this->getCenterY();
 	}
 	else
 	{
@@ -126,8 +126,8 @@ void Pickup::update(float pDeltaTime)
 
 	if(this->mIsFollow)
 	{
-		this->mVectorX = this->mFollowEntity->getX()- this->getX();
-		this->mVectorY = this->mFollowEntity->getY() - this->getY();
+		this->mVectorX = this->mFollowEntity->getCenterX()- this->getCenterX();
+		this->mVectorY = this->mFollowEntity->getCenterY() - this->getCenterY();
 
 		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * 1;
 		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * 1;
