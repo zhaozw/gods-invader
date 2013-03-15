@@ -108,6 +108,10 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		float getSpeed(float pDeltaTime);
 		void setSpeed(float pSpeed);
 
+		bool hasShadow();
+
+		Entity* getShadow();
+
 		/**
 		 *
 		 * Take care about EntityManager

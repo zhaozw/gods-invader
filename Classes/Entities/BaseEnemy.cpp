@@ -38,6 +38,8 @@ Entity* BaseEnemy::create()
 
 	this->mSpeedStandart = Utils::randomf(0.2, 2.0);
 
+	this->mShootPadding = 0;
+
 	this->setSpeed(this->mSpeedStandart); // I should remove this
 
 	return BarEntity::create();
@@ -47,7 +49,7 @@ bool BaseEnemy::destroy()
 {
 	BarEntity::destroy();
 
-	if(Utils::probably(100))
+	if(Utils::probably(30))
 	{
 		return true;
 	}
@@ -67,7 +69,7 @@ void BaseEnemy::onCollide(BaseBullet* pBullet)
 
 BaseEnemy* BaseEnemy::deepCopy()
 {
-	return new BaseEnemy("enemies/s.png", 1, 1, this->mHero);
+	return new BaseEnemy("stolen/alien2.png", 8, 1, this->mHero);
 }
 
 void BaseEnemy::update(float pDeltaTime)

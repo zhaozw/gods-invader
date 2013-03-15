@@ -67,9 +67,9 @@ Level::Level(void)
 	mUnitsLayer->addChild(this->mHero);
 
 	this->mPickups = new EntityManager(100, new Pickup(), mUnitsLayer);
-	this->mBaseEnemies = new EntityManager(10, new BaseEnemy(mHero), mUnitsLayer);
+	this->mBaseEnemies = new EntityManager(100, new BaseEnemy(mHero), mUnitsLayer);
 
-	this->mExplosions = new EntityManager(10, new BaseExplosion(), mUnitsLayer);
+	this->mExplosions = new EntityManager(100, new BaseExplosion(), mUnitsLayer);
 	this->setRegisterAsTouchable(true);
 	mUnitsLayer->addChild(this->mCastleShadow);
 
@@ -303,6 +303,20 @@ if(this->mIsGameRunning)
 	// Collisions
 
 	this->checkCollisions();
+
+	/////////////////// TEST //////////////////////
+
+	if(this->mBaseEnemies->getCount() < 10)
+	{
+		float x = Utils::random(-100, 100);
+		float y = Utils::random(-100, 100);
+
+		this->mBaseEnemies->create()->setCenterPosition(x, y);
+	}
+	this->mBaseEnemies->update(pDeltaTime);
+	/////////////////// TEST //////////////////////
+
+	this->mPickups->update(pDeltaTime);
 }
 
 	 // Shake 
@@ -329,31 +343,47 @@ void Level::checkCollisions()
 			{
 				enemy->onCollide(bullet);
 				bullet->destroy();
-
-				if(enemy->getHealth() <= 0)
-				{
-					if(Options::MUSIC_ENABLE)
-					{
-						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/ai_death.wav");
-					}
-
-					if(enemy->destroy())
-					{
-						this->mPickups->create()->setCenterPosition(enemy->getX(), enemy->getY());
-					}
-
-					this->mExplosions->create()->setCenterPosition(enemy->getX(), enemy->getY());
-
-					this->shake(1, 6);
-
-					continue;
-				}
 			}
 		}
+
+		// EXPLOSIONS
+		for(int j = 0; j < this->mExplosions->getCount(); j++)
+		{
+			Entity* explosion = ((Entity*) this->mExplosions->objectAtIndex(j));
+
+			if(explosion->collideWith(enemy))
+			{
+				float padding = 3.5f;
+
+				enemy->setCenterPosition(enemy->getCenterX() + (enemy->getCenterX() > explosion->getCenterX() ? padding : -padding), enemy->getCenterY() + (enemy->getCenterY() > explosion->getCenterY() ? padding : -padding));
+				enemy->removeHealth(3.0f);
+			}
+		}
+
+		// HERO
 
 		if(this->mHero->collideWith(enemy))
 		{
 			this->mHero->removeHealth(1);
+		}
+
+		if(enemy->getHealth() <= 0)
+		{
+			if(Options::MUSIC_ENABLE)
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/ai_death.wav");
+			}
+
+			if(enemy->destroy())
+			{
+				this->mPickups->create()->setCenterPosition(enemy->getCenterX(), enemy->getCenterY());
+			}
+
+			this->mExplosions->create()->setCenterPosition(enemy->getCenterX(), enemy->getCenterY());
+
+			this->shake(0.5f, 4.0f);
+
+			continue;
 		}
 	}
 
@@ -362,12 +392,9 @@ void Level::checkCollisions()
 	{
 		Pickup* pickup = ((Pickup*) this->mPickups->objectAtIndex(i));
 
-		if(!pickup->isFollow())
+		if(this->mHero->collideWith(pickup, 4.0f))
 		{
-			if(this->mHero->collideWith(pickup, 3.0f))
-			{
-				pickup->setFollowEntity(this->mHero);
-			}
+			pickup->follow(this->mHero->getCenterX(), this->mHero->getCenterY());
 		}
 
 		if(this->mHero->collideWith(pickup))
@@ -402,7 +429,7 @@ void Level::checkCollisions()
 
 	if(this->mHero->getHealth() <= 0 && this->mHero->isVisible())
 	{
-		this->mExplosions->create()->setCenterPosition(this->mHero->getX(), this->mHero->getY());
+		this->mExplosions->create()->setCenterPosition(this->mHero->getCenterX(), this->mHero->getCenterY());
 	
 		if(Options::MUSIC_ENABLE)
 		{

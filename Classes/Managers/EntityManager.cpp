@@ -29,6 +29,8 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 	}
 
 	this->mIsSortY = true;
+
+	this->mIsUnpacking = true; // TODO: change to false and write setter
 }
 
 EntityManager::EntityManager(int pCreateCount, Entity* pEntity)
@@ -90,9 +92,14 @@ int EntityManager::getCapacity()
 	return this->mCapacity;
 }
 
-void EntityManager::clear()
+void EntityManager::clear() // Some problem in this method with elements which will change and thir ID
 {
-	for(int i = 0; i < this->getCount(); i++)
+	for(int i = 0; i < this->getCapacity(); i++)
+	{
+		((Entity*) this->objectAtIndex(i))->destroy(true);
+	}
+
+	for(int i = 0; i < this->getCapacity(); i++)
 	{
 		((Entity*) this->objectAtIndex(i))->destroy();
 	}
@@ -134,6 +141,43 @@ void EntityManager::sortChildrenByYPosition()
 void EntityManager::disableSort()
 {
 	this->mIsSortY = false;
+}
+
+void EntityManager::unpacking() // TODO: Maybe some perfomance refactoring?
+{
+	for(int i = 0; i < this->getCount(); i++)
+	{
+		Entity* entity1 = ((Entity*) this->objectAtIndex(i));
+
+		for(int j = 0; j < this->getCount(); j++)
+		{
+			Entity* entity2 = ((Entity*) this->objectAtIndex(j));
+
+			if(i == j || !entity1->hasShadow() || !entity2->hasShadow()) continue;
+
+			if(entity1->getShadow()->collideWith(entity2->getShadow()))
+			{
+				float x1 = entity1->getCenterX();
+				float x2 = entity2->getCenterX();
+
+				float y1 = entity1->getCenterY();
+				float y2 = entity2->getCenterY();
+
+				float padding = 0.5f;
+
+				entity1->setCenterPosition(x1 + (x1 > x2 ? padding : -padding), y1 + (y1 > y2 ? padding : -padding));
+				entity2->setCenterPosition(x2 + (x2 > x1 ? padding : -padding), y2 + (y2 > y1 ? padding : -padding));
+			}
+		}
+	}
+}
+
+void EntityManager::update(float pDeltaTime)
+{
+	if(this->mIsUnpacking)
+	{
+		this->unpacking();
+	}
 }
 
 #endif

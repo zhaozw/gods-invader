@@ -25,9 +25,6 @@ class Pickup : public Entity
 		// ===========================================================
 		// Private fields
 		// ===========================================================
-
-		float mVectorX;
-		float mVectorY;
 		
 		float mCenterX;
 		float mCenterY;
@@ -38,10 +35,6 @@ class Pickup : public Entity
 		float mAnimationTimeElapsed;
 
 		bool mIsAnimationReverse;
-
-		bool mIsFollow;
-
-		Entity* mFollowEntity;
 
 		// ===========================================================
 		// Private methods
@@ -67,13 +60,9 @@ class Pickup : public Entity
 		// Setters
 		// ===========================================================
 
-		void setFollowEntity(Entity* pEntity);
-
 		// ===========================================================
 		// Checkers
 		// ===========================================================
-
-		bool isFollow();
 
 		// ===========================================================
 		// Events
@@ -82,6 +71,8 @@ class Pickup : public Entity
 		// ===========================================================
 		// Methods
 		// ===========================================================
+
+		void follow(float pVectorX, float pVectorY);
 
 		void reset();
 

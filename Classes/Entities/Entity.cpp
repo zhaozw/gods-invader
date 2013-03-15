@@ -174,11 +174,21 @@ float Entity::getZ()
 
 float Entity::getCenterX()
 {
+	if(this->mIsShadow)
+	{
+		return ((Entity*) this->getParent())->getX() + this->getPosition().x;
+	}
+
 	return this->getPosition().x;
 }
 
 float Entity::getCenterY()
 {
+	if(this->mIsShadow)
+	{
+		return ((Entity*) this->getParent())->getY() - this->getPosition().y;
+	}
+
 	return this->getPosition().y;
 }
 
@@ -247,6 +257,21 @@ void Entity::setSpeed(float pSpeed)
 float Entity::getSpeed(float pDeltaTime)
 {
 	return this->mSpeed;
+}
+
+bool Entity::hasShadow()
+{
+	if(!this->mShadow)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+Entity* Entity::getShadow()
+{
+	return this->mShadow;
 }
 
 /**

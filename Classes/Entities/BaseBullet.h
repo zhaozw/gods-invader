@@ -19,8 +19,6 @@ class BaseBullet : public Entity
 		float mLifeTimeElapsed;
 
 		bool mIsMoving;
-		
-		Entity* mShadow;
 
 	private:
 

@@ -43,13 +43,6 @@ Pickup::Pickup(const char* pszFileName, int pHorizontalFramesCount, int pVertica
 // Setters
 // ===========================================================
 
-void Pickup::setFollowEntity(Entity* pEntity)
-{
-	this->mFollowEntity = pEntity;
-
-	this->mIsFollow = true;
-}
-
 // ===========================================================
 // Methods
 // ===========================================================
@@ -58,22 +51,12 @@ void Pickup::reset()
 {
 	this->mAnimationTimeElapsed = 0;
 
-	this->mVectorX = 0;
-	this->mVectorY = 0;
-
 	this->mCenterX = 0;
 	this->mCenterY = 0;
 
 	this->mPaddingY = 0;
 
 	this->mIsAnimationReverse = false;
-
-	this->mIsFollow = false;
-}
-
-bool Pickup::isFollow()
-{
-	return this->mIsFollow;
 }
 
 // ===========================================================
@@ -94,6 +77,22 @@ Entity* Pickup::create()
 Pickup* Pickup::deepCopy()
 {
 	return new Pickup("stolen/pickup.png", 1, 3);
+}
+
+void Pickup::follow(float pVectorX, float pVectorY)
+{
+	if(this->mCenterX == 0 && this->mCenterY == 0) return;
+
+	float vectorX = pVectorX- this->getCenterX();
+	float vectorY = pVectorY - this->getCenterY();
+
+	float speedX = vectorX / sqrt(vectorX * vectorX + vectorY * vectorY) * 1;
+	float speedY = vectorY / sqrt(vectorX * vectorX + vectorY * vectorY) * 1;
+
+	this->setCenterPosition(this->mCenterX + speedX, this->mCenterY + speedY + Utils::coord(this->mPaddingY));
+
+	this->mCenterX += speedX;
+	this->mCenterY += speedY;
 }
 
 void Pickup::update(float pDeltaTime)
@@ -122,19 +121,6 @@ void Pickup::update(float pDeltaTime)
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(20) - Utils::coord(this->mPaddingY));
 
 		this->mShadow->setScale(this->getScale() - Utils::coord(this->mPaddingY) / 35);
-	}
-
-	if(this->mIsFollow)
-	{
-		this->mVectorX = this->mFollowEntity->getCenterX()- this->getCenterX();
-		this->mVectorY = this->mFollowEntity->getCenterY() - this->getCenterY();
-
-		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * 1;
-		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * 1;
-
-		this->setCenterPosition(this->mCenterX + speedX, this->mCenterY + speedY + Utils::coord(this->mPaddingY));
-		this->mCenterX += speedX;
-		this->mCenterY += speedY;
 	}
 }
 

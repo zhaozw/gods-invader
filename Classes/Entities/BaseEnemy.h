@@ -26,8 +26,6 @@ class BaseEnemy : public BarEntity
 		float mShootVectorX;
 		float mShootVectorY;
 
-		Entity* mShadow;
-
 	private:
 
 	public:
