@@ -64,6 +64,8 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		Entity* mShadow; // For shadowed entities
 
+		bool mIgnoreSorting;
+
 	private:
 		void constructor(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent);
 
@@ -113,6 +115,9 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		bool hasShadow();
 
 		Entity* getShadow();
+
+		void setIgnoreSorting(bool pIgnoreSorting);
+		bool isIgnoreSorting();
 
 		/**
 		 *

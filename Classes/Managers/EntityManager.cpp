@@ -129,7 +129,12 @@ void EntityManager::sortChildrenByYPosition()
 	{
 		Entity* testValue = (Entity*) this->mParent->getChildren()->objectAtIndex(j);
 
-		for(i = j - 1; i >= 0 && ((Entity*) this->mParent->getChildren()->objectAtIndex(i))->getY() < testValue->getY() && !testValue->isSetAsShadow(); i--)
+		if(testValue->isIgnoreSorting())
+		{
+			continue;
+		}
+
+		for(i = j - 1; i >= 0 && ((Entity*) this->mParent->getChildren()->objectAtIndex(i))->getCenterY() < testValue->getCenterY() && !testValue->isSetAsShadow() && !((Entity*) this->mParent->getChildren()->objectAtIndex(i))->isIgnoreSorting(); i--)
 		{
 			this->mParent->getChildren()->replaceObjectAtIndex(i + 1, this->mParent->getChildren()->objectAtIndex(i));
 		}

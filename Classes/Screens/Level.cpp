@@ -37,6 +37,22 @@ Level::Level(void)
 
 	this->mPlatformPart1 = new Platform("platform/platform-part-1.png");
 	this->mPlatformPart2 = new Platform("platform/platform-part-2.png");
+	
+	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadows.png", 1, 1), mUnitsLayer);
+	this->mCandyDecorator = new EntityManager(10, new Entity("platform/candy-sprite.png", 1, 1), mUnitsLayer);
+
+	for(int i = 0; i < 10; i++)
+	{
+		Entity* decoration = this->mCandyDecorator->create();
+		decoration->setCenterPosition(Utils::random(this->mPlatformPart1->getX(), this->mPlatformPart2->getX() + this->mPlatformPart2->getWidth()), Utils::random(this->mPlatformPart1->getY() + Utils::coord(700), this->mPlatformPart1->getY() - this->mPlatformPart1->getHeight() + Utils::coord(700)));
+		
+		Entity* shadow = this->mCandyShadowsDecorator->create();
+		shadow->setIsShadow();
+		shadow->setIgnoreSorting(true);
+		shadow->setCenterPosition(decoration->getCenterX(), decoration->getCenterY() - decoration->getHeight());
+	}
+
+	this->mSmallCubics = new EntityManager(100, new SmallCubic(), mUnitsLayer);
 
 	this->mBaseBullets = new EntityManager(100, new BaseBullet(), mUnitsLayer);
 	this->mHero = new Hero("main-character/main-char-sprite.png", this->mBaseBullets, 1, 5);
@@ -112,6 +128,9 @@ this->addChild(mControlLayer);
 	this->mStaticLayer = new CCLayer();
 	this->addChild(mStaticLayer);
 	this->mStaticPickups = new EntityManager(100, new Entity("stolen/pickup-icon.png", 1, 3), mStaticLayer);
+
+	this->mSmallCubicGenerationTimeElapsed = 0;
+	this->mSmallCubicGenerationTime = 1;
 }
 
 void Level::restart()
@@ -318,12 +337,12 @@ if(this->mIsGameRunning)
 
 	/////////////////// TEST //////////////////////
 
-	if(this->mBaseEnemies->getCount() < 10)
+	if(this->mBaseEnemies->getCount() < 1)
 	{
-		float x = Utils::random(-100, 100);
-		float y = Utils::random(-100, 100);
-
-		this->mBaseEnemies->create()->setCenterPosition(x, y);
+		for(int i = 0; i < 25; i++)
+		{
+			this->mBaseEnemies->create()->setCenterPosition(100, 100);
+		}
 	}
 	this->mBaseEnemies->update(pDeltaTime);
 	/////////////////// TEST //////////////////////
@@ -334,6 +353,18 @@ if(this->mIsGameRunning)
 	 // Shake 
 
 	this->updateShake(pDeltaTime);
+
+	this->mSmallCubicGenerationTimeElapsed += pDeltaTime;
+
+	if(this->mSmallCubicGenerationTimeElapsed >= this->mSmallCubicGenerationTime)
+	{
+		this->mSmallCubicGenerationTimeElapsed = 0;
+
+		if(Utils::probably(100))
+		{
+			this->mSmallCubics->create()->setCenterPosition(Utils::random(this->mPlatformPart1->getX(), this->mPlatformPart2->getX() + this->mPlatformPart2->getWidth()), Utils::random(this->mPlatformPart1->getY() + Utils::coord(700), this->mPlatformPart1->getY() - this->mPlatformPart1->getHeight() + Utils::coord(700)));
+		}
+	}
 }
 
 void Level::sortEntities()

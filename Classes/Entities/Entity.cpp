@@ -29,6 +29,7 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mWasTouched = false;
 
 	this->mIsShadow = false;
+	this->mIgnoreSorting = false;
 
 	/**
 	 *
@@ -274,6 +275,16 @@ bool Entity::hasShadow()
 Entity* Entity::getShadow()
 {
 	return this->mShadow;
+}
+
+void Entity::setIgnoreSorting(bool pIgnoreSorting)
+{
+	this->mIgnoreSorting = pIgnoreSorting;
+}
+
+bool Entity::isIgnoreSorting()
+{
+	return this->mIgnoreSorting;
 }
 
 /**

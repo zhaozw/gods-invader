@@ -15,6 +15,7 @@
 #include "Star.h"
 #include "Cloud.h"
 #include "SmallCloud.h"
+#include "SmallCubic.h"
 #include "EntityManager.h"
 #include "Screen.h"
 #include "Options.h"
@@ -71,6 +72,9 @@ class Level : public Screen
 		EntityManager* mClouds;
 		EntityManager* mStars;
 		EntityManager* mStaticPickups;
+		EntityManager* mCandyDecorator;
+		EntityManager* mCandyShadowsDecorator;
+		EntityManager* mSmallCubics;
 		
 		Entity* mPlayButton;
 
@@ -86,6 +90,9 @@ class Level : public Screen
 
 		CCLayer* mControlLayer;
 		CCLayer* mStaticLayer;
+
+		float mSmallCubicGenerationTime;
+		float mSmallCubicGenerationTimeElapsed;
 
 	public:
 		Level(void);

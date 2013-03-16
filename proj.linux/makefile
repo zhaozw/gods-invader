@@ -5,8 +5,8 @@ CCFLAGS = -Wall
 CXXFLAGS = -Wall
 VISIBILITY = 
 
-COCOS2DX_PATH = /home/igor/git/cocos2d-x/cocos2dx
-COCOS_PATH = /home/igor/git/cocos2d-x
+COCOS2DX_PATH = /home/igor/Development/cocos2d-x/cocos2dx
+COCOS_PATH = /home/igor/Development/cocos2d-x
 
 INCLUDES =  -I../ \
 			-I../Classes \
@@ -37,6 +37,8 @@ OBJECTS = ./main.o \
 			../Classes/AppDelegate.o \
 			../Classes/Utils/Utils.o \
 			../Classes/Entities/Entity.o \
+			../Classes/Entities/BaseCubic.o \
+			../Classes/Entities/SmallCubic.o \
 			../Classes/Entities/Gas.o \
 			../Classes/Entities/Pickup.o \
 			../Classes/Entities/Platform.o \
