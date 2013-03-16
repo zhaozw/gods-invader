@@ -6,7 +6,6 @@
 Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount) :
 	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
-
 		this->mGasesAnimationTime = 0.2f;
 
 		this->mGasesShadows = new EntityManager(10, new GasShadow());
@@ -27,11 +26,10 @@ void Hero::reset()
 	this->mGasesAnimationTimeElapsed = 0;
 
 	this->setBarsManagement(true, true);
-	this->setFireTime(0.1);
+	this->setFireTime(0.5);
 	this->setPatrons(100);
 
 	this->setHealth(100);
-	this->removeHealth(50);
 
 	this->mSpeedStandart = 200;
 
@@ -74,8 +72,19 @@ void Hero::follow(float pDeltaTime)
 {
 	if(this->mIsMove)
 	{
-		float x = this->getCenterX() - this->mFollowCoordinateX / this->getSpeed(pDeltaTime);
-		float y = this->getCenterY() - this->mFollowCoordinateY / this->getSpeed(pDeltaTime);
+		float x = this->mFollowCoordinateX / this->getSpeed(pDeltaTime);
+		float y = this->mFollowCoordinateY / this->getSpeed(pDeltaTime);
+
+		float maxSpeed = Utils::coord(3);
+		
+		if(x < 0) x = x < -maxSpeed ? -maxSpeed : x;
+		if(x > 0) x = x > maxSpeed ? maxSpeed : x;
+
+		if(y < 0) y = y < -maxSpeed ? -maxSpeed : y;
+		if(y > 0) y = y > maxSpeed ? maxSpeed : y;
+
+		x = this->getCenterX() - x;
+		y = this->getCenterY() - y;
 
 		if(!this->collideCoordinatesWith(x, y, Options::BASE))
 		{
@@ -144,6 +153,11 @@ void Hero::fire(float pVectorX, float pVectorY)
 					shootAnimator->setColor(ccc3(163.0,253.0,23.0));
 				break;
 			}
+		}
+	
+		if(Options::MUSIC_ENABLE)
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/shot.wav");
 		}
 	}
 }

@@ -163,7 +163,7 @@ void EntityManager::unpacking() // TODO: Maybe some perfomance refactoring?
 				float y1 = entity1->getCenterY();
 				float y2 = entity2->getCenterY();
 
-				float padding = 0.5f;
+				float padding = Utils::coord(0.5f);
 
 				entity1->setCenterPosition(x1 + (x1 > x2 ? padding : -padding), y1 + (y1 > y2 ? padding : -padding));
 				entity2->setCenterPosition(x2 + (x2 > x1 ? padding : -padding), y2 + (y2 > y1 ? padding : -padding));

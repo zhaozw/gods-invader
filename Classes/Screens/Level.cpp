@@ -3,6 +3,10 @@
 
 #include "Level.h"
 
+int Level::PICKUP_1_COUNT = 0;
+int Level::PICKUP_3_COUNT = 0;
+int Level::PICKUP_2_COUNT = 0;
+
 // ===========================================================
 // Help classes
 // ===========================================================
@@ -104,10 +108,18 @@ this->addChild(mControlLayer);
 
 
 	this->mHero->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
+
+	this->mStaticLayer = new CCLayer();
+	this->addChild(mStaticLayer);
+	this->mStaticPickups = new EntityManager(100, new Entity("stolen/pickup-icon.png", 1, 3), mStaticLayer);
 }
 
 void Level::restart()
 {
+	PICKUP_1_COUNT = 0;
+	PICKUP_3_COUNT = 0;
+	PICKUP_2_COUNT = 0;
+
 	this->mIsMainMenu = false;
 
 	this->removeChild(this->mControlLayer);
@@ -119,6 +131,7 @@ void Level::restart()
 
 	this->mBaseEnemies->clear();
 	this->mPickups->clear();
+	this->mStaticPickups->clear();
 
 	this->mHero->reset();
 	this->mHero->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
@@ -189,11 +202,6 @@ void Level::ccTouchEnded(CCTouch* touch, CCEvent* event)
 		CCPoint location  = convertTouchToNodeSpaceAR(touch);
 
 		this->mHero->fire(location.x, location.y);
-	
-		if(Options::MUSIC_ENABLE)
-		{
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/shot.wav");
-		}
 	}
 }
 
@@ -252,6 +260,10 @@ void Level::update(float pDeltaTime)
 		}
 
 		this->setPosition(potencialX, potencialY - padding);
+
+		potencialX = this->mHero->getCenterX() - Options::CAMERA_CENTER_X;
+		potencialY = this->mHero->getCenterY() - Options::CAMERA_CENTER_Y;
+		this->mStaticLayer->setPosition(potencialX, potencialY - padding);
 	}
 	else
 	{
@@ -353,7 +365,7 @@ void Level::checkCollisions()
 
 			if(explosion->collideWith(enemy))
 			{
-				float padding = 3.5f;
+				float padding = Utils::coord(3.5f);
 
 				enemy->setCenterPosition(enemy->getCenterX() + (enemy->getCenterX() > explosion->getCenterX() ? padding : -padding), enemy->getCenterY() + (enemy->getCenterY() > explosion->getCenterY() ? padding : -padding));
 				enemy->removeHealth(3.0f);
@@ -392,7 +404,7 @@ void Level::checkCollisions()
 	{
 		Pickup* pickup = ((Pickup*) this->mPickups->objectAtIndex(i));
 
-		if(this->mHero->collideWith(pickup, 4.0f))
+		if(this->mHero->collideWith(pickup, Utils::coord(4.0f)))
 		{
 			pickup->follow(this->mHero->getCenterX(), this->mHero->getCenterY());
 		}
@@ -406,12 +418,16 @@ void Level::checkCollisions()
 					{
 						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/health.wav");
 					}
+
+					PICKUP_1_COUNT++;
 				break;
 				case 1:
 					if(Options::MUSIC_ENABLE)
 					{
 						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/coin.wav");
-					} 
+					}
+
+					PICKUP_2_COUNT++;
 				break;
 				case 2:
 					if(Options::MUSIC_ENABLE)
@@ -420,8 +436,14 @@ void Level::checkCollisions()
 					}
 
 					this->mHero->addHealth(10);
+
+					PICKUP_3_COUNT++;
 				break;
 			}
+	
+			Entity* pic = this->mStaticPickups->create();
+			pic->setCurrentFrameIndex(pickup->getCurrentFrameIndex());
+			pic->setCenterPosition(50 + pic->getWidth()/2 * (this->mStaticPickups->getCount() + 1), pic->getHeight() - Utils::coord(25));
 
 			pickup->destroy();
 		}

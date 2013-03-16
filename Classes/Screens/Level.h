@@ -70,7 +70,8 @@ class Level : public Screen
 		EntityManager* mSmallClouds;
 		EntityManager* mClouds;
 		EntityManager* mStars;
-
+		EntityManager* mStaticPickups;
+		
 		Entity* mPlayButton;
 
 		bool mShaking;
@@ -84,6 +85,7 @@ class Level : public Screen
 		bool mIsMainMenuAnimationRunning;
 
 		CCLayer* mControlLayer;
+		CCLayer* mStaticLayer;
 
 	public:
 		Level(void);
@@ -113,6 +115,10 @@ class Level : public Screen
 
 		virtual void onEnter();
 		virtual void onExit();
+
+		static int PICKUP_1_COUNT;
+		static int PICKUP_2_COUNT;
+		static int PICKUP_3_COUNT;
 };
 
 #endif

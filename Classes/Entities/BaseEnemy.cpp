@@ -64,7 +64,7 @@ void BaseEnemy::onCollide(BaseBullet* pBullet)
 	this->mShootVectorX = pBullet->mVectorX;
 	this->mShootVectorY = pBullet->mVectorY;
 
-	this->mShootPadding = 10;
+	this->mShootPadding = Utils::coord(5); // UPGRADE
 }
 
 BaseEnemy* BaseEnemy::deepCopy()
@@ -94,7 +94,7 @@ void BaseEnemy::update(float pDeltaTime)
 			this->setCenterPosition(x, y);
 		}
 
-		this->mShootPadding -= 0.5;
+		this->mShootPadding -= Utils::coord(0.5);
 	}
 	else
 	{

@@ -2,6 +2,7 @@
 #define CONST_HERO_H
 
 #include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 
 #include "BarEntity.h"
 #include "BaseBullet.h"

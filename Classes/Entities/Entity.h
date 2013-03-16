@@ -13,6 +13,8 @@ class EntityManager;
 class Entity : public CCSprite, public CCTargetedTouchDelegate
 {
 	protected:
+		const char* mTextureFileName;
+
 		int mWidth;
 		int mHeight;
 

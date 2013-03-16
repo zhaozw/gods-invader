@@ -13,6 +13,8 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 		pParent->addChild(this);
 	}
 
+	this->mTextureFileName = pszFileName;
+
 	this->mWidth  = this->getTextureRect().size.width;
 	this->mHeight = this->getTextureRect().size.height;
 
@@ -251,12 +253,12 @@ bool Entity::collideWith(Entity* pEntity, float pFactor)
 
 void Entity::setSpeed(float pSpeed)
 {
-	this->mSpeed = pSpeed;
+	this->mSpeed = Utils::coord(pSpeed);
 }
 
 float Entity::getSpeed(float pDeltaTime)
 {
-	return this->mSpeed;
+	return this->mSpeed /** * pDeltaTime - some problem by multiple at delta time, hero is crazy */;
 }
 
 bool Entity::hasShadow()
@@ -560,7 +562,7 @@ void Entity::onTouch(CCTouch* touch, CCEvent* event)
 
 Entity* Entity::deepCopy()
 {
-	return this;
+	return new Entity(this->mTextureFileName, this->mHorizontalFramesCount, this->mVerticalFramesCount);
 }
 
 void Entity::update(float pDeltaTime)
