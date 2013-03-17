@@ -1,7 +1,7 @@
-#ifndef CONST_SCREEN
-#define CONST_SCREEN
+#ifndef CONST_TOUCHABLE
+#define CONST_TOUCHABLE
 
-#include "Screen.h"
+#include "Touchable.h"
 
 // ===========================================================
 // Inner Classes
@@ -19,6 +19,11 @@
 // Constructors
 // ===========================================================
 
+Touchable::Touchable()
+{
+	this->mIsRegisterAsTouchable = false;
+}
+
 // ===========================================================
 // Methods
 // ===========================================================
@@ -30,11 +35,6 @@
 // ===========================================================
 // Constructors
 // ===========================================================
-
-Screen::Screen()
-{
-	this->scheduleUpdate();
-}
 
 // ===========================================================
 // Getters
@@ -48,25 +48,57 @@ Screen::Screen()
 // Methods
 // ===========================================================
 
+void Touchable::setRegisterAsTouchable(bool pTouchable)
+{
+	this->mIsRegisterAsTouchable = pTouchable;
+}
+
+void Touchable::onTouch(CCTouch* touch, CCEvent* event)
+{
+}
+
 // ===========================================================
 // Virtual methods
 // ===========================================================
 
-bool Screen::containsTouchLocation(CCTouch* touch)
+bool Touchable::ccTouchBegan(CCTouch* touch, CCEvent* event)
 {
-	return CCRectMake(-Options::CAMERA_WIDTH / 2, -Options::CAMERA_HEIGHT / 2, Options::CAMERA_WIDTH, Options::CAMERA_HEIGHT).containsPoint(convertTouchToNodeSpaceAR(touch)); // TODO: I should check this instructions;
+	if(!this->mIsRegisterAsTouchable)
+	{
+		return false;
+	}
+
+	if(this->containsTouchLocation(touch))
+	{
+		this->mWasTouched = true;
+
+		return true;
+	}
+
+	return true;
 }
 
-void Screen::onEnter()
+void Touchable::ccTouchMoved(CCTouch* touch, CCEvent* event)
 {
-	CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, true);
-	CCScene::onEnter();
+	if(!this->containsTouchLocation(touch))
+	{
+		this->mWasTouched = false;
+	}
 }
 
-void Screen::onExit()
+void Touchable::ccTouchEnded(CCTouch* touch, CCEvent* event)
 {
-	CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
-	CCScene::onExit();
+	if(this->mWasTouched)
+	{
+		this->onTouch(touch, event);
+	}
+
+	this->mWasTouched = false;
+}
+
+bool Touchable::containsTouchLocation(CCTouch* touch)
+{
+	return true;
 }
 
 #endif

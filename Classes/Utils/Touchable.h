@@ -1,15 +1,13 @@
-#ifndef CONST_SCREEN_H
-#define CONST_SCREEN_H
+#ifndef CONST_TOUCHABLE_H
+#define CONST_TOUCHABLE_H
 
 #include "cocos2d.h"
 
-#include "Touchable.h"
-#include "Entity.h"
 #include "Options.h"
 
 using namespace cocos2d;
 
-class Screen : public CCScene, public Touchable
+class Touchable : public CCTargetedTouchDelegate
 {
 	protected:
 		// ===========================================================
@@ -24,9 +22,14 @@ class Screen : public CCScene, public Touchable
 		// Fields
 		// ===========================================================
 
+		bool mWasTouched;
+		bool mIsRegisterAsTouchable;
+
 		// ===========================================================
 		// Constructors
 		// ===========================================================
+
+		Touchable();
 
 		// ===========================================================
 		// Methods
@@ -35,8 +38,12 @@ class Screen : public CCScene, public Touchable
 		// ===========================================================
 		// Virtual Methods
 		// ===========================================================
+
+		virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);
+		virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
+		virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
 		
-		bool containsTouchLocation(CCTouch* touch);
+		virtual bool containsTouchLocation(CCTouch* touch);
 
 	private:
 		// ===========================================================
@@ -80,18 +87,17 @@ class Screen : public CCScene, public Touchable
 		// Constructors
 		// ===========================================================
 
-		Screen();
-
 		// ===========================================================
 		// Methods
 		// ===========================================================
+
+		void setRegisterAsTouchable(bool pTouchable);
+
+		virtual void onTouch(CCTouch* touch, CCEvent* event);
 		
 		// ===========================================================
 		// Virtual Methods
 		// ===========================================================
-
-		void onEnter();
-		void onExit();
 };
 
 #endif

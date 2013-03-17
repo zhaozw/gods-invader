@@ -36,6 +36,7 @@ OBJECTS = ./main.o \
 			../Classes/Options.o \
 			../Classes/AppDelegate.o \
 			../Classes/Utils/Utils.o \
+			../Classes/Utils/Touchable.o \
 			../Classes/Entities/Entity.o \
 			../Classes/Entities/BaseCubic.o \
 			../Classes/Entities/SmallCubic.o \
