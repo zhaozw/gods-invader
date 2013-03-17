@@ -3,8 +3,6 @@
 
 #include "cocos2d.h"
 
-#include "Options.h"
-
 using namespace cocos2d;
 
 class Touchable : public CCTargetedTouchDelegate

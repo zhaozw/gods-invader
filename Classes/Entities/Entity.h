@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 
+#include "Touchable.h"
 #include "Texture.h"
 #include "Utils.h"
 
@@ -10,7 +11,7 @@ using namespace cocos2d;
 
 class EntityManager;
 
-class Entity : public CCSprite, public CCTargetedTouchDelegate
+class Entity : public CCSprite, public Touchable
 {
 	protected:
 		const char* mTextureFileName;
@@ -31,8 +32,6 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 		float* mFramesCoordinatesX;
 		float* mFramesCoordinatesY;
 
-		bool mWasTouched;
-		bool mIsRegisterAsTouchable;
 		bool mAnimationRunning;
 
 		bool mIsShadow;
@@ -187,13 +186,9 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		bool containsTouchLocation(CCTouch* touch);
 
-		void setRegisterAsTouchable(bool pTouchable);
-
 		virtual void update(float pDeltaTime);
 
 		virtual void draw();
-		
-		virtual void onTouch(CCTouch* touch, CCEvent* event);
 
 		/**
 		 *
