@@ -68,13 +68,7 @@ else
 STATICLIBS_DIR = $(COCOS2DX_PATH)/platform/third_party/linux/libraries
 endif
 STATICLIBS = 
-STATICLIBS = $(STATICLIBS_DIR)/libfreetype.a \
-				$(STATICLIBS_DIR)/libxml2.a \
-				$(STATICLIBS_DIR)/libpng.a \
-				$(STATICLIBS_DIR)/libjpeg.a \
-				$(STATICLIBS_DIR)/libtiff.a \
-				$(COCOS_PATH)//lib/linux/Debug/libbox2d.a \
-#				$(STATICLIBS_DIR)/libGLEW.a \
+STATICLIBS = $(STATICLIBS_DIR)/libpng.a \
 
 SHAREDLIBS = 
 ifeq ($(LBITS),64)
