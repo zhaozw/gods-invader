@@ -4,13 +4,16 @@
 #include "ScreenManager.h"
 
 // ===========================================================
-// Init
+// Inner Classes
 // ===========================================================
 
-ScreenManager::constructor()
-{
-	this->generate();
-}
+// ===========================================================
+// Constants
+// ===========================================================
+
+// ===========================================================
+// Fields
+// ===========================================================
 
 // ===========================================================
 // Constructors
@@ -18,8 +21,20 @@ ScreenManager::constructor()
 
 ScreenManager::ScreenManager()
 {
-	this->constructor();
+	this->generate();
 }
+
+// ===========================================================
+// Methods
+// ===========================================================
+
+// ===========================================================
+// Virtual Methods
+// ===========================================================
+
+// ===========================================================
+// Constructors
+// ===========================================================
 
 // ===========================================================
 // Getters
@@ -33,19 +48,19 @@ ScreenManager::ScreenManager()
 // Methods
 // ===========================================================
 
-ScreenManager::set(float pAnimationTime, int pIndex)
+void ScreenManager::generate()
+{
+	this->mScreens[0] = new Level();
+	this->mScreens[1] = new GameOver();
+	this->mScreens[2] = new GameWon();
+}
+
+void ScreenManager::set(float pAnimationTime, int pIndex)
 {
 	CCTransitionScene* transition = CCTransitionFade::create(pAnimationTime, this->mScreens[pIndex]);
 
 	CCDirector::sharedDirector()->setDepthTest(true);
 	CCDirector::sharedDirector()->pushScene(transition);
-}
-
-ScreenManager::generate()
-{
-	this->mScreens[0] = new Level();
-	this->mScreens[1] = new GameOver();
-	this->mScreens[2] = new GameWon();
 }
 
 // ===========================================================
