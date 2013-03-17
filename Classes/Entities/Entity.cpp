@@ -388,13 +388,13 @@ void Entity::changeTexture(Texture* pTexture)
 	this->mWidth  = this->getTextureRect().size.width;
 	this->mHeight = this->getTextureRect().size.height;
 
-	this->mFrameWidth = this->mWidth / pTexture->mHorizontalFramesCount;
-	this->mFrameHeight = this->mHeight / pTexture->mVerticalFramesCount; 
+	this->mFrameWidth = this->mWidth / pTexture->getHorizontalFramesCount();
+	this->mFrameHeight = this->mHeight / pTexture->getVerticalFramesCount(); 
 
-	this->mFramesCount = pTexture->mHorizontalFramesCount * pTexture->mVerticalFramesCount;
+	this->mFramesCount = pTexture->getHorizontalFramesCount() * pTexture->getVerticalFramesCount();
 
-	this->mHorizontalFramesCount = pTexture->mHorizontalFramesCount;
-	this->mVerticalFramesCount   = pTexture->mVerticalFramesCount;
+	this->mHorizontalFramesCount = pTexture->getHorizontalFramesCount();
+	this->mVerticalFramesCount   = pTexture->getVerticalFramesCount();
 
 	int counter = 0;
 
