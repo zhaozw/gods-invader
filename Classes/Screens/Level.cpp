@@ -38,7 +38,7 @@ Level::Level(void)
 	this->mPlatformPart1 = new Platform("platform/platform-part-1.png");
 	this->mPlatformPart2 = new Platform("platform/platform-part-2.png");
 	
-	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadows.png", 1, 1), mUnitsLayer);
+	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadow.png", 1, 1), mUnitsLayer);
 	this->mCandyDecorator = new EntityManager(10, new Entity("platform/candy-sprite.png", 1, 1), mUnitsLayer);
 
 	for(int i = 0; i < 10; i++)
