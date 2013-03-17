@@ -19,6 +19,8 @@ class Texture
 		// Constructor private function
 		// ===========================================================
 
+		constructor(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
+
 		// ===========================================================
 		// Private fields
 		// ===========================================================

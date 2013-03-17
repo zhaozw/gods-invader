@@ -7,13 +7,18 @@
 // Init
 // ===========================================================
 
+ScreenManager::constructor()
+{
+	this->generate();
+}
+
 // ===========================================================
 // Constructors
 // ===========================================================
 
 ScreenManager::ScreenManager()
 {
-	this->generate();
+	this->constructor();
 }
 
 // ===========================================================
@@ -28,7 +33,7 @@ ScreenManager::ScreenManager()
 // Methods
 // ===========================================================
 
-void ScreenManager::set(float pAnimationTime, int pIndex)
+ScreenManager::set(float pAnimationTime, int pIndex)
 {
 	CCTransitionScene* transition = CCTransitionFade::create(pAnimationTime, this->mScreens[pIndex]);
 
@@ -36,7 +41,7 @@ void ScreenManager::set(float pAnimationTime, int pIndex)
 	CCDirector::sharedDirector()->pushScene(transition);
 }
 
-void ScreenManager::generate()
+ScreenManager::generate()
 {
 	this->mScreens[0] = new Level();
 	this->mScreens[1] = new GameOver();
