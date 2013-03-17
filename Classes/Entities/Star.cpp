@@ -40,7 +40,7 @@ void Star::init(float pBoundsX1, float pBoundsX2, float pBoundsY1, float pBounds
 	this->mBoundsY2 = pBoundsY2;
 
 	this->setCenterPosition(Utils::random(this->mBoundsX1, this->mBoundsX2), this->mBoundsY1);
-	this->setSpeed(Utils::randomf(2, 7));
+	this->setSpeed(Utils::randomf(100, 350));
 }
 
 // ===========================================================

@@ -36,11 +36,15 @@ Entity* BaseEnemy::create()
 {
 	this->setHealth(100);
 
-	this->mSpeedStandart = Utils::randomf(0.2, 2.0);
+	this->mSpeedStandart = Utils::randomf(10.0f, 100.0f);
 
 	this->mShootPadding = 0;
 
 	this->setSpeed(this->mSpeedStandart); // I should remove this
+
+	this->setScale(0.0f);
+
+	this->runAction(CCScaleTo::create(0.5f, 1.0f));
 
 	return BarEntity::create();
 }

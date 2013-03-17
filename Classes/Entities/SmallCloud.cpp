@@ -47,20 +47,20 @@ void SmallCloud::init(float pBoundsX1, float pBoundsX2, float pBoundsY1, float p
 	this->mCenterX = x;
 	this->mCenterY = y;
 
-	float potencialSpeed = Utils::randomf(-3.0, 3.0);
+	float potencialSpeed = Utils::randomf(-150.0, 150.0);
 
 	if(potencialSpeed < 0)
 	{
-		if(potencialSpeed > -1)
+		if(potencialSpeed > -50)
 		{
-			potencialSpeed = -1;
+			potencialSpeed = -50;
 		}
 	}
 	else
 	{
-		if(potencialSpeed < 1)
+		if(potencialSpeed < 50)
 		{
-			potencialSpeed = 1;
+			potencialSpeed = 50;
 		}
 	}
 

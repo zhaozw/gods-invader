@@ -5,6 +5,7 @@
 
 #include "Texture.h"
 #include "Utils.h"
+#include "Options.h"
 
 using namespace cocos2d;
 
@@ -30,6 +31,9 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		float* mFramesCoordinatesX;
 		float* mFramesCoordinatesY;
+
+		float mCurrentCenterX;
+		float mCurrentCenterY;
 
 		bool mWasTouched;
 		bool mIsRegisterAsTouchable;
@@ -95,6 +99,9 @@ class Entity : public CCSprite, public CCTargetedTouchDelegate
 
 		void setPosition(float pX, float pY);
 		void setCenterPosition(float pX, float pY);
+		void setX(float pX);
+		void setY(float pY);
+		void setZ(float pZ);
 
 		float getCenterPosition();
 		float getX();

@@ -17,6 +17,7 @@ void Pickup::constructor()
 	this->addChild(this->mShadow);
 
 	this->mAnimationTime = 2.0f;
+	this->mDeathAnimationTime = 1.0f;
 
 	this->reset();
 }
@@ -49,7 +50,8 @@ Pickup::Pickup(const char* pszFileName, int pHorizontalFramesCount, int pVertica
 
 void Pickup::reset()
 {
-	this->mAnimationTimeElapsed = 0;
+	this->mAnimationTimeElapsed = 0.0f;
+	this->mDeathAnimationTimeElapsed = 0.0f;
 
 	this->mCenterX = 0;
 	this->mCenterY = 0;
@@ -57,6 +59,12 @@ void Pickup::reset()
 	this->mPaddingY = 0;
 
 	this->mIsAnimationReverse = false;
+	this->mIsMustDestroy = false;
+
+	this->setScale(0.0f);
+	this->setOpacity(255.0f);
+
+	this->runAction(CCScaleTo::create(0.5f, 1.0f));
 }
 
 // ===========================================================
@@ -86,13 +94,19 @@ void Pickup::follow(float pVectorX, float pVectorY)
 	float vectorX = pVectorX- this->getCenterX();
 	float vectorY = pVectorY - this->getCenterY();
 
-	float speedX = vectorX / sqrt(vectorX * vectorX + vectorY * vectorY) * 1;
-	float speedY = vectorY / sqrt(vectorX * vectorX + vectorY * vectorY) * 1;
+	CCPoint vector = Utils::vectorNormalize(vectorX, vectorY, 1.0f);
 
-	this->setCenterPosition(this->mCenterX + speedX, this->mCenterY + speedY + Utils::coord(this->mPaddingY));
+	this->setCenterPosition(this->mCenterX + vector.x, this->mCenterY + vector.y + Utils::coord(this->mPaddingY));
 
-	this->mCenterX += speedX;
-	this->mCenterY += speedY;
+	this->mCenterX += vector.x;
+	this->mCenterY += vector.y;
+}
+
+void Pickup::startDestroy()
+{
+	this->mIsMustDestroy = true;
+
+	this->runAction(CCFadeTo::create(1.0f, 0.0f));
 }
 
 void Pickup::update(float pDeltaTime)
@@ -121,6 +135,19 @@ void Pickup::update(float pDeltaTime)
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(20) - Utils::coord(this->mPaddingY));
 
 		this->mShadow->setScale(this->getScale() - Utils::coord(this->mPaddingY) / 35);
+	}
+
+	if(this->mIsMustDestroy)
+	{
+		this->mDeathAnimationTimeElapsed += pDeltaTime;
+
+		if(this->mDeathAnimationTimeElapsed >= mDeathAnimationTime)
+		{
+			this->mDeathAnimationTimeElapsed = 0.0f;
+			this->mIsMustDestroy = false;
+
+			this->destroy();
+		}
 	}
 }
 

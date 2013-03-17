@@ -9,6 +9,7 @@
 #include "Gas.h"
 #include "EntityManager.h"
 #include "Utils.h"
+#include "Options.h"
 
 using namespace cocos2d;
 

@@ -31,6 +31,12 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mIsShadow = false;
 	this->mIgnoreSorting = false;
 
+	this->mZ = Options::MIN_Z;
+
+	this->setAnchorPoint(ccp(0.5f, 0.5f));
+
+	this->mShadow = NULL;
+
 	/**
 	 *
 	 * We must remember all coordinates of each frame
@@ -147,27 +153,50 @@ void Entity::setIsShadow()
 
 void Entity::setPosition(float pX, float pY)
 {
-    CCSprite::setPosition(ccp(pX - this->mWidth / 2, pY + this->mHeight / 2));
+    CCSprite::setPosition(ccp(pX - this->getWidth() / 2, pY + this->getHeight() / 2 + this->mZ));
 }
 
 void Entity::setCenterPosition(float pX, float pY)
 {
-    CCSprite::setPosition(ccp(pX, pY));
+    CCSprite::setPosition(ccp(pX, pY + this->mZ));
+}
+
+void Entity::setX(float pX)
+{
+
+}
+
+void Entity::setY(float pY)
+{
+	
+}
+
+void Entity::setZ(float pZ)
+{
+	CCAssert(pZ < Options::MIN_Z, "Z coordinate cannot be < MIN_Z"); // TODO: Don't work?
+
+	this->mZ = pZ;
+
+	if(this->mShadow != NULL)
+	{
+		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(60) - this->mZ);
+		this->mShadow->setScale(1.0f - this->mZ / 100);
+	}
 }
 
 float Entity::getCenterPosition()
 {
-	return 0;
+	return 0; // TODO: Write this method
 }
 
 float Entity::getX()
 {
-	return this->getPosition().x - this->mWidth / 2;
+	return this->getPosition().x - this->getWidth() / 2;
 }
 
 float Entity::getY()
 {
-	return this->getPosition().y + this->mHeight / 2;
+	return this->getPosition().y + this->getHeight() / 2;
 }
 
 float Entity::getZ()
@@ -189,10 +218,10 @@ float Entity::getCenterY()
 {
 	if(this->mIsShadow)
 	{
-		return ((Entity*) this->getParent())->getY() - this->getPosition().y;
+		return ((Entity*) this->getParent())->getY() - this->getPosition().y - this->mZ;
 	}
 
-	return this->getPosition().y;
+	return this->getPosition().y - this->mZ;
 }
 
 bool Entity::isSetAsShadow()
@@ -205,7 +234,8 @@ bool Entity::collideWith(Entity* pEntity)
 	if (this->getCenterX() - this->getWidth() / 2 < pEntity->getCenterX() + pEntity->getWidth() / 2 &&
 		this->getCenterX() + this->getWidth() / 2 > pEntity->getCenterX() - pEntity->getWidth() / 2 &&
 		this->getCenterY() - this->getHeight() / 2 < pEntity->getCenterY() + pEntity->getHeight() / 2 &&
-		this->getCenterY() + this->getHeight() / 2 > pEntity->getCenterY() - pEntity->getHeight() / 2)
+		this->getCenterY() + this->getHeight() / 2 > pEntity->getCenterY() - pEntity->getHeight() / 2 &&
+		this->getZ() <= pEntity->getZ() + pEntity->getHeight())
 	{
 		return true;
 	}
@@ -244,7 +274,8 @@ bool Entity::collideWith(Entity* pEntity, float pFactor)
 	if (this->getCenterX() - (this->getWidth() / 2) * pFactor < pEntity->getCenterX() + (pEntity->getWidth() / 2) * pFactor &&
 		this->getCenterX() + (this->getWidth() / 2) * pFactor > pEntity->getCenterX() - (pEntity->getWidth() / 2) * pFactor &&
 		this->getCenterY() - (this->getHeight() / 2) * pFactor < pEntity->getCenterY() + (pEntity->getHeight() / 2) * pFactor &&
-		this->getCenterY() + (this->getHeight() / 2) * pFactor > pEntity->getCenterY() - (pEntity->getHeight() / 2) * pFactor)
+		this->getCenterY() + (this->getHeight() / 2) * pFactor > pEntity->getCenterY() - (pEntity->getHeight() / 2) * pFactor &&
+		this->getZ() <= (pEntity->getZ() + pEntity->getHeight()) * pFactor)
 	{
 		return true;
 	}
@@ -259,7 +290,7 @@ void Entity::setSpeed(float pSpeed)
 
 float Entity::getSpeed(float pDeltaTime)
 {
-	return this->mSpeed /** * pDeltaTime - some problem by multiple at delta time, hero is crazy */;
+	return this->mSpeed * pDeltaTime;
 }
 
 bool Entity::hasShadow()
@@ -649,7 +680,7 @@ void Entity::update(float pDeltaTime)
 
 void Entity::draw()
 {
-  CCSprite::draw();
+	CCSprite::draw();
 }
 
 #endif

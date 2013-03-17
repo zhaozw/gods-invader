@@ -15,10 +15,6 @@ class EntityManager : public CCArray
 		int mLastElementNumber;
 		int mCapacity;
 
-		bool mIsSortY;
-
-		bool mIsUnpacking;
-
 	private:
 		void init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen);
 
@@ -33,15 +29,11 @@ class EntityManager : public CCArray
 		void setParent(CCNode* pScreen);
 
 		void changeTexture(Texture* pTexture);
-
-		void disableSort();
 		
 		int getCount();
 		int getCapacity();
 
 		void clear();
-		void unpacking();
-		void sortChildrenByYPosition();
 
 		void update(float pDeltaTime);
 };
