@@ -2,6 +2,7 @@
 #define CONST_APPDELEGATE_H
 
 #include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 
 #include <vector>
 

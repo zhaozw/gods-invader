@@ -35,7 +35,7 @@ void Hero::reset()
 	this->setFireTime(0.5);
 	this->setPatrons(100);
 
-	this->setZ(Options::MIN_Z);
+	this->setZ(170);//Options::MIN_Z);
 
 	this->setHealth(100);
 

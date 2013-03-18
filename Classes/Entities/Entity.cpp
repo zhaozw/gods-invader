@@ -29,6 +29,7 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mWasTouched = false;
 
 	this->mIsShadow = false;
+	this->mIsDynamicShadow = false;
 	this->mIgnoreSorting = false;
 
 	this->mZ = Options::MIN_Z;
@@ -145,7 +146,12 @@ void Entity::setIsShadow()
 	this->setOpacity(80);
 
 	this->mIsShadow = true;
-}	
+}
+
+void Entity::setIsDynamicShadow()
+{
+	this->mIsDynamicShadow = true;
+}
 
 /**
  *
@@ -182,7 +188,7 @@ void Entity::setZ(float pZ)
 	if(this->mShadow != NULL)
 	{
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(60) - this->mZ);
-		this->mShadow->setScale(1.0f - this->mZ / 100);
+		this->mShadow->setScale(1.0f - this->mZ / 200);
 	}
 }
 
@@ -229,6 +235,11 @@ float Entity::getCenterY()
 bool Entity::isSetAsShadow()
 {
 	return this->mIsShadow;
+}
+
+bool Entity::isSetAsDynamicShadow()
+{
+	return this->mIsDynamicShadow;
 }
 
 bool Entity::collideWith(Entity* pEntity)
@@ -607,6 +618,8 @@ Entity* Entity::deepCopy()
 
 void Entity::update(float pDeltaTime)
 {
+	if(!this->isVisible()) return;
+
 	if(this->mAnimationStartTimeout >= 0)
 	{
 		this->mAnimationStartTimeout -= pDeltaTime;
@@ -619,7 +632,7 @@ void Entity::update(float pDeltaTime)
 
 			if(this->mAnimationTimeElapsed >= this->mAnimationTime)
 			{
-				this->mAnimationTimeElapsed = 0;
+				this->mAnimationTimeElapsed -= this->mAnimationTime;
 
 				if(this->mAnimationStartFrame == -1 && this->mAnimationFinishFrame == -1)
 				{
@@ -678,6 +691,17 @@ void Entity::update(float pDeltaTime)
 						}
 					}
 				}
+			}
+		}
+	}
+
+	if(this->mShadow)
+	{
+		if(this->mShadow->getParent())
+		{
+			if(this->mShadow->getParent() != this)
+			{
+				this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(60) - this->mZ);
 			}
 		}
 	}

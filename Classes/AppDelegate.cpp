@@ -46,14 +46,14 @@ void AppDelegate::applicationDidEnterBackground()
 {
 	CCDirector::sharedDirector()->pause();
 
-    SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+    //SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 }
 
 void AppDelegate::applicationWillEnterForeground()
 {
 	CCDirector::sharedDirector()->resume();
 
-    SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+    //SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
 }
 
 #endif

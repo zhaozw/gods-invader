@@ -225,21 +225,22 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  /home/igor/Development/gods-invader/proj.android/../../cocos2dx/touch_dispatcher/CCTouchDispatcher.h \
  /home/igor/Development/gods-invader/proj.android/../../cocos2dx/CCScheduler.h \
  /home/igor/Development/gods-invader/proj.android/../../cocos2dx/support/data_support/uthash.h \
- jni/../../Classes/Options.h jni/../../Classes/Entities/Entity.h \
- jni/../../Classes/Utils/Touchable.h jni/../../Classes/Graphics/Texture.h \
- jni/../../Classes/Utils/Utils.h \
- /home/igor/.android/ndk/sources/cxx-stl/gnu-libstdc++/include/4.6.3/cmath \
- jni/../../Classes/Screens/Screen.h jni/../../Classes/Options.h \
- jni/../../Classes/Screens/Preloader.h jni/../../Classes/AppDelegate.h \
- jni/../../Classes/Screens/Screen.h jni/../../Classes/Screens/Level.h \
  /home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/SimpleAudioEngine.h \
  /home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/Export.h \
- jni/../../Classes/Entities/Platform.h \
+ jni/../../Classes/Options.h jni/../../Classes/Screens/Screen.h \
+ jni/../../Classes/Utils/Touchable.h jni/../../Classes/Entities/Entity.h \
+ jni/../../Classes/Graphics/Texture.h jni/../../Classes/Utils/Utils.h \
+ /home/igor/.android/ndk/sources/cxx-stl/gnu-libstdc++/include/4.6.3/cmath \
+ jni/../../Classes/Options.h jni/../../Classes/Screens/Preloader.h \
+ jni/../../Classes/AppDelegate.h jni/../../Classes/Screens/Screen.h \
+ jni/../../Classes/Screens/Level.h jni/../../Classes/Entities/Platform.h \
  jni/../../Classes/Entities/Entity.h jni/../../Classes/Entities/Hero.h \
  jni/../../Classes/Entities/BarEntity.h \
  jni/../../Classes/Entities/BaseBullet.h \
  jni/../../Classes/Entities/Hero.h jni/../../Classes/Entities/Gas.h \
  jni/../../Classes/Managers/EntityManager.h \
+ jni/../../Classes/Entities/BaseEnemy.h \
+ jni/../../Classes/Entities/CastleEnemy.h \
  jni/../../Classes/Entities/BaseEnemy.h \
  jni/../../Classes/Entities/BaseBullet.h \
  jni/../../Classes/Entities/Pickup.h \
@@ -249,13 +250,15 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Entities/SmallCloud.h \
  jni/../../Classes/Entities/SmallCubic.h \
  jni/../../Classes/Entities/BaseCubic.h \
+ jni/../../Classes/Managers/EntityManagerGroup.h \
+ jni/../../Classes/Managers/EntityManager.h \
+ jni/../../Classes/Managers/LayerManager.h \
  jni/../../Classes/Managers/ScreenManager.h \
  jni/../../Classes/Screens/Level.h jni/../../Classes/Screens/GameOver.h \
  jni/../../Classes/Screens/GameWon.h jni/../../Classes/Options.cpp \
  jni/../../Classes/Graphics/Texture.cpp \
  jni/../../Classes/Graphics/Texture.h \
  jni/../../Classes/Managers/EntityManager.cpp \
- jni/../../Classes/Managers/EntityManager.h \
  jni/../../Classes/Entities/Entity.cpp \
  jni/../../Classes/Screens/Screen.cpp jni/../../Classes/Screens/Level.cpp \
  jni/../../Classes/Screens/Preloader.cpp \
@@ -277,7 +280,6 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Entities/Pickup.h \
  jni/../../Classes/Entities/BarEntity.cpp \
  jni/../../Classes/Entities/BaseEnemy.cpp \
- jni/../../Classes/Entities/BaseEnemy.h \
  jni/../../Classes/Entities/Star.cpp jni/../../Classes/Entities/Star.h \
  jni/../../Classes/Entities/Cloud.cpp jni/../../Classes/Entities/Cloud.h \
  jni/../../Classes/Utils/Touchable.cpp \
@@ -287,6 +289,12 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Entities/BaseCubic.cpp \
  jni/../../Classes/Entities/SmallCubic.cpp \
  jni/../../Classes/Entities/SmallCubic.h \
+ jni/../../Classes/Managers/EntityManagerGroup.cpp \
+ jni/../../Classes/Managers/EntityManagerGroup.h \
+ jni/../../Classes/Entities/CastleEnemy.cpp \
+ jni/../../Classes/Entities/CastleEnemy.h \
+ jni/../../Classes/Managers/LayerManager.cpp \
+ jni/../../Classes/Managers/LayerManager.h \
  jni/../../Classes/Entities/BaseExplosion.cpp \
  jni/../../Classes/Entities/BaseExplosion.h \
  /home/igor/Development/gods-invader/proj.android/../../cocos2dx/platform/android/jni/JniHelper.h \
@@ -746,19 +754,23 @@ jni/../../Classes/AppDelegate.h:
 
 /home/igor/Development/gods-invader/proj.android/../../cocos2dx/support/data_support/uthash.h:
 
+/home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/SimpleAudioEngine.h:
+
+/home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/Export.h:
+
 jni/../../Classes/Options.h:
 
-jni/../../Classes/Entities/Entity.h:
+jni/../../Classes/Screens/Screen.h:
 
 jni/../../Classes/Utils/Touchable.h:
+
+jni/../../Classes/Entities/Entity.h:
 
 jni/../../Classes/Graphics/Texture.h:
 
 jni/../../Classes/Utils/Utils.h:
 
 /home/igor/.android/ndk/sources/cxx-stl/gnu-libstdc++/include/4.6.3/cmath:
-
-jni/../../Classes/Screens/Screen.h:
 
 jni/../../Classes/Options.h:
 
@@ -769,10 +781,6 @@ jni/../../Classes/AppDelegate.h:
 jni/../../Classes/Screens/Screen.h:
 
 jni/../../Classes/Screens/Level.h:
-
-/home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/SimpleAudioEngine.h:
-
-/home/igor/Development/gods-invader/proj.android/../../CocosDenshion/android/../include/Export.h:
 
 jni/../../Classes/Entities/Platform.h:
 
@@ -789,6 +797,10 @@ jni/../../Classes/Entities/Hero.h:
 jni/../../Classes/Entities/Gas.h:
 
 jni/../../Classes/Managers/EntityManager.h:
+
+jni/../../Classes/Entities/BaseEnemy.h:
+
+jni/../../Classes/Entities/CastleEnemy.h:
 
 jni/../../Classes/Entities/BaseEnemy.h:
 
@@ -810,6 +822,12 @@ jni/../../Classes/Entities/SmallCubic.h:
 
 jni/../../Classes/Entities/BaseCubic.h:
 
+jni/../../Classes/Managers/EntityManagerGroup.h:
+
+jni/../../Classes/Managers/EntityManager.h:
+
+jni/../../Classes/Managers/LayerManager.h:
+
 jni/../../Classes/Managers/ScreenManager.h:
 
 jni/../../Classes/Screens/Level.h:
@@ -825,8 +843,6 @@ jni/../../Classes/Graphics/Texture.cpp:
 jni/../../Classes/Graphics/Texture.h:
 
 jni/../../Classes/Managers/EntityManager.cpp:
-
-jni/../../Classes/Managers/EntityManager.h:
 
 jni/../../Classes/Entities/Entity.cpp:
 
@@ -876,8 +892,6 @@ jni/../../Classes/Entities/BarEntity.cpp:
 
 jni/../../Classes/Entities/BaseEnemy.cpp:
 
-jni/../../Classes/Entities/BaseEnemy.h:
-
 jni/../../Classes/Entities/Star.cpp:
 
 jni/../../Classes/Entities/Star.h:
@@ -899,6 +913,18 @@ jni/../../Classes/Entities/BaseCubic.cpp:
 jni/../../Classes/Entities/SmallCubic.cpp:
 
 jni/../../Classes/Entities/SmallCubic.h:
+
+jni/../../Classes/Managers/EntityManagerGroup.cpp:
+
+jni/../../Classes/Managers/EntityManagerGroup.h:
+
+jni/../../Classes/Entities/CastleEnemy.cpp:
+
+jni/../../Classes/Entities/CastleEnemy.h:
+
+jni/../../Classes/Managers/LayerManager.cpp:
+
+jni/../../Classes/Managers/LayerManager.h:
 
 jni/../../Classes/Entities/BaseExplosion.cpp:
 

@@ -54,7 +54,18 @@ Entity* EntityManager::create()
 		return object;
 	}
 
-	return NULL;
+	// Create a new object if manager hasn't free object.
+
+	Entity* object = ((Entity*) this->objectAtIndex(0))->deepCopy(); // TODO: Increase CCArray capacity? Really? I think it's works like a charm!
+
+	object->setEntityManager(this);
+	object->setEntityManagerId(++this->mCapacity);
+
+	this->mParent->addChild(object);
+
+	this->addObject(object);
+
+	return object->create();
 }
 
 void EntityManager::destroy(int pIndex)
@@ -88,7 +99,7 @@ int EntityManager::getCapacity()
 	return this->mCapacity;
 }
 
-void EntityManager::clear() // Some problem in this method with elements which will change and thir ID
+void EntityManager::clear() // Some problem in this method with elements which will change and their ID
 {
 	for(int i = 0; i < this->getCapacity(); i++)
 	{

@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 	// eglView->setFrameSize(2048, 1536); 	// iPad 4
 	// eglView->setFrameSize(1280, 768); 	// Nokia Lumia 920
 
-	eglView->setFrameSize(1280/2, 720/2); 	// Developers resolution
+	eglView->setFrameSize(1280, 720); 	// Developers resolution
 
 	return CCApplication::sharedApplication()->run();
 }

@@ -17,11 +17,11 @@ class Entity : public CCSprite, public Touchable
 	protected:
 		const char* mTextureFileName;
 
-		int mWidth;
-		int mHeight;
+		float mWidth;
+		float mHeight;
 
-		int mFrameWidth;
-		int mFrameHeight;
+		float mFrameWidth;
+		float mFrameHeight;
 
 		int mFramesCount;
 
@@ -33,17 +33,10 @@ class Entity : public CCSprite, public Touchable
 		float* mFramesCoordinatesX;
 		float* mFramesCoordinatesY;
 
-<<<<<<< HEAD
-		float mCurrentCenterX;
-		float mCurrentCenterY;
-
-		bool mWasTouched;
-		bool mIsRegisterAsTouchable;
-=======
->>>>>>> 3517cfb04fec1c37656cd47ffb34a8d8f90357e3
 		bool mAnimationRunning;
 
 		bool mIsShadow;
+		bool mIsDynamicShadow;
 
 		float mSpeed;
 
@@ -90,8 +83,11 @@ class Entity : public CCSprite, public Touchable
 		float getHeight();
 
 		void setIsShadow();
+		void setIsDynamicShadow();
 
 		bool isSetAsShadow();
+		bool isSetAsDynamicShadow();
+
 		bool collideWith(Entity* pEntity);
 		bool collideWith(Entity* pEntity, float pFactor);
 		bool collideCoordinatesWith(float x, float y, Entity* pEntity);

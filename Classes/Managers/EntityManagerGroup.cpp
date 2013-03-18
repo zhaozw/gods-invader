@@ -14,6 +14,8 @@
 EntityManagerGroup::EntityManagerGroup(int pCapacity)
 {
 	this->initWithCapacity(pCapacity);
+
+	this->mCount = 0;
 }
 
 // ===========================================================
@@ -30,13 +32,13 @@ EntityManagerGroup::EntityManagerGroup(int pCapacity)
 
 void EntityManagerGroup::unpacking() // TODO: Maybe some perfomance refactoring? 
 {
-	for(int i = 0; i < this->capacity(); i++)
+	for(int i = 0; i < this->mCount; i++)
 	{
 		Entity* entity1 = ((Entity*) this->objectAtIndex(i));
 
 		if(!entity1->isVisible()) continue;
 
-		for(int j = 0; j < this->capacity(); j++)
+		for(int j = 0; j < this->mCount; j++)
 		{
 			Entity* entity2 = ((Entity*) this->objectAtIndex(j));
 
@@ -65,6 +67,8 @@ void EntityManagerGroup::add(EntityManager* pEntityManager) // TODO: Maybe some 
 	for(int i = 0; i < pEntityManager->getCapacity(); i++)
 	{
 		this->addObject(pEntityManager->objectAtIndex(i));
+
+		this->mCount++;
 	}
 }
 

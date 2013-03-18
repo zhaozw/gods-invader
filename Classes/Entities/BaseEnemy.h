@@ -18,6 +18,8 @@ class BaseEnemy : public BarEntity
 
 		Hero* mHero;
 
+		Entity* mPupil;
+
 		float mShootPadding;
 
 		float mFollowPaddingX;

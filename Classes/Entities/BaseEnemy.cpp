@@ -13,12 +13,15 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 	{
 		this->mHero = pHero;
 
+		this->mPupil = new Entity("enemies/onion/onion-pupil.png");
+		this->addChild(this->mPupil);
+		this->mPupil->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(9));
+
 		this->setBarsManagement(true, false);
 
 		this->mShadow = new Entity("stolen/shadow.png");
 		this->mShadow->setIsShadow();
-
-		this->addChild(this->mShadow);
+		this->mShadow->setIsDynamicShadow();
 
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(40)); // I should remove this to the own class
 
@@ -26,7 +29,7 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 		this->mFollowPaddingY = 0;//Utils::randomf(-500.0, 500.0);
 
 		this->setAnimationStartTimeout(Utils::randomf(0.0f, 1.0f));
-		this->animate(0.04);
+		this->animate(0.07);
 
 		this->mShootPadding = 0;
 
@@ -35,6 +38,13 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 
 Entity* BaseEnemy::create()
 {
+	this->mShadow->create();
+
+	if(!this->mShadow->getParent())
+	{
+		this->getParent()->addChild(this->mShadow);
+	}
+
 	this->setHealth(100);
 
 	this->mSpeedStandart = Utils::randomf(10.0f, 100.0f);
@@ -53,6 +63,8 @@ Entity* BaseEnemy::create()
 bool BaseEnemy::destroy()
 {
 	BarEntity::destroy();
+
+	this->mShadow->destroy(false);
 
 	if(Utils::probably(30))
 	{
@@ -77,16 +89,19 @@ BaseEnemy* BaseEnemy::deepCopy()
 	return new BaseEnemy("enemies/onion/onion-animation.png", 7, 2, this->mHero);
 }
 
-void BaseEnemy::update(float pDeltaTime)
+void BaseEnemy::update(float pDeltaTime) // TODO: Rewrite to the Utils::vectorNormalize()
 {
 	BarEntity::update(pDeltaTime);
+
+	float x;
+	float y;
 	
     // padding on collide
 
 	if(this->mShootPadding > 0)
 	{
-		float x = this->mShootVectorX;
-		float y = this->mShootVectorY;
+		x = this->mShootVectorX;
+		y = this->mShootVectorY;
 
 		float speedX = x / sqrt(x * x + y * y) * this->mShootPadding;
 		float speedY = y / sqrt(x * x + y * y) * this->mShootPadding;
@@ -103,8 +118,8 @@ void BaseEnemy::update(float pDeltaTime)
 	}
 	else
 	{
-		float x = this->getCenterX() - this->mHero->getCenterX() - this->mFollowPaddingX;
-		float y = this->getCenterY() - this->mHero->getCenterY() - this->mFollowPaddingY;
+		x = this->getCenterX() - this->mHero->getCenterX() - this->mFollowPaddingX;
+		y = this->getCenterY() - this->mHero->getCenterY() - this->mFollowPaddingY;
 
 		float speedX = x / sqrt(x * x + y * y) * this->getSpeed(pDeltaTime);
 		float speedY = y / sqrt(x * x + y * y) * this->getSpeed(pDeltaTime);
@@ -127,6 +142,10 @@ void BaseEnemy::update(float pDeltaTime)
 				this->setCenterPosition(this->getCenterX() - (this->getCenterX() > this->mHero->getCenterX() ? 1 : -1), this->getCenterY());
 			}
 		}
+
+		CCPoint look = Utils::vectorNormalize(this->getCenterX() - this->mHero->getCenterX() - this->mFollowPaddingX, this->getCenterY() - this->mHero->getCenterY() - this->mFollowPaddingY, 6.0f);
+
+		this->mPupil->setCenterPosition(this->getWidth() / 2 - look.x, this->getHeight() / 2 - Utils::coord(9) - look.y);
 	}
 }
 

@@ -38,13 +38,8 @@ Level::Level(void)
 	this->mPlatformPart1 = new Platform("platform/platform-part-1.png");
 	this->mPlatformPart2 = new Platform("platform/platform-part-2.png");
 	
-<<<<<<< HEAD
 	this->mCandyDecorator = new EntityManager(10, new Entity("platform/candy-sprite.png", 3, 1), mUnitsLayer);
 	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadow.png", 3, 1), mUnitsLayer);
-=======
-	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadow.png", 1, 1), mUnitsLayer);
-	this->mCandyDecorator = new EntityManager(10, new Entity("platform/candy-sprite.png", 1, 1), mUnitsLayer);
->>>>>>> 3517cfb04fec1c37656cd47ffb34a8d8f90357e3
 
 	for(int i = 0; i < 0; i++)
 	{
@@ -93,11 +88,11 @@ Level::Level(void)
 
 	mUnitsLayer->addChild(this->mHero);
 
-	this->mPickups = new EntityManager(100, new Pickup(), mUnitsLayer);
-	this->mBaseEnemies = new EntityManager(100, new BaseEnemy(mHero), mUnitsLayer);
-	this->mBaseEnemies2 = new EntityManager(100, new CastleEnemy(mHero), mUnitsLayer);
+	this->mPickups = new EntityManager(10, new Pickup(), mUnitsLayer);
+	this->mBaseEnemies2 = new EntityManager(25, new CastleEnemy(mHero), mUnitsLayer);
+	this->mBaseEnemies = new EntityManager(25, new BaseEnemy(mHero), mUnitsLayer);
 
-	this->mExplosions = new EntityManager(100, new BaseExplosion(), mUnitsLayer);
+	this->mExplosions = new EntityManager(10, new BaseExplosion(), mUnitsLayer);
 	this->setRegisterAsTouchable(true);
 	mUnitsLayer->addChild(this->mCastleShadow);
 
@@ -121,7 +116,7 @@ mControlLayer->setScale(1);
 this->addChild(mControlLayer);
 
 	this->mPlayButton = new PlayButton(this);
-	this->mPlayButton->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(300));
+	this->mPlayButton->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(100));
 	mControlLayer->addChild(this->mPlayButton);
 
 	this->mHero->setVisible(false);
@@ -142,6 +137,8 @@ this->addChild(mControlLayer);
 
 	this->mEnemiesGroup->add(this->mBaseEnemies);
 	this->mEnemiesGroup->add(this->mBaseEnemies2);
+
+	this->mUnitsLayer->popShadows(); // Important for shadows
 }
 
 void Level::restart()
@@ -263,8 +260,8 @@ void Level::update(float pDeltaTime)
 
 	if(!this->mIsMainMenu)
 	{
-		float potencialX = -this->mHero->getCenterX()*this->getScale() + Options::CAMERA_CENTER_X;
-		float potencialY = -this->mHero->getCenterY() + Options::CAMERA_CENTER_Y;
+		float potencialX = -this->mHero->getCenterX() * this->getScale() + Options::CAMERA_CENTER_X;
+		float potencialY = -this->mHero->getCenterY() + Options::CAMERA_CENTER_Y; // TODO: Maybe I should add Z coordinate?
 	
 		float padding;
 
@@ -286,7 +283,7 @@ void Level::update(float pDeltaTime)
 	else
 	{
 		float potencialX = Options::CAMERA_CENTER_X - this->mPlayButton->getCenterX()*this->getScale();
-		float potencialY = Options::CAMERA_CENTER_Y - this->mPlayButton->getCenterY() + Utils::coord(300);
+		float potencialY = Options::CAMERA_CENTER_Y - this->mPlayButton->getCenterY() + Utils::coord(100);
 	
 		this->setPosition(potencialX, potencialY);
 		this->setScale(0.5);
@@ -335,7 +332,7 @@ if(this->mIsGameRunning)
 	{
 		for(int i = 0; i < 25; i++)
 		{
-			this->mBaseEnemies2->create()->setCenterPosition(600, 600);
+			this->mBaseEnemies2->create()->setCenterPosition(1600, 1600);
 		}
 	}
 
