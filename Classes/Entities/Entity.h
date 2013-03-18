@@ -46,6 +46,8 @@ class Entity : public CCSprite, public Touchable
 		float mAnimationTime;
 		float mAnimationTimeElapsed;
 
+		float mAnimationStartTimeout;
+
 		float mAnimationScaleDownTime;
 		float mAnimationScaleUpTime;
 
@@ -163,6 +165,8 @@ class Entity : public CCSprite, public Touchable
 		void animate(float pAnimationTime, int pStartFrame, int pFinishFrame);
 
 		void setStartFrame(int pStartFrame);
+
+		void setAnimationStartTimeout(float pSecodsTimeout);
 
 		virtual void onAnimationStart();
 		virtual void onAnimationEnd();

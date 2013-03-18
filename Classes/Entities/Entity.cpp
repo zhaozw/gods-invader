@@ -70,6 +70,8 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mAnimationTime = 0;
 	this->mAnimationTimeElapsed = 0;
 
+	this->mAnimationStartTimeout = 0;
+
 	this->mPauseBeforeNewAnimationCircleTime = 0;
 	this->mPauseBeforeNewAnimationCircleTimeElapsed = 0;
 
@@ -473,6 +475,11 @@ void Entity::onAnimationCircleEnd()
 
 }
 
+void Entity::setAnimationStartTimeout(float pSecodsTimeout)
+{
+	this->mAnimationStartTimeout = pSecodsTimeout;
+}
+
 void Entity::setStartFrame(int pStartFrame)
 {
 	this->mAnimationFinishFrame = (this->mAnimationFinishFrame - this->mAnimationStartFrame) + pStartFrame;
@@ -569,68 +576,75 @@ Entity* Entity::deepCopy()
 
 void Entity::update(float pDeltaTime)
 {
-	if(this->mAnimationRunning && (this->mAnimationRepeatCount > 0 || this->mAnimationRepeatCount < 0))
+	if(this->mAnimationStartTimeout >= 0)
 	{
-		this->mAnimationTimeElapsed += pDeltaTime;
-
-		if(this->mAnimationTimeElapsed >= this->mAnimationTime)
+		this->mAnimationStartTimeout -= pDeltaTime;
+	}
+	else
+	{
+		if(this->mAnimationRunning && (this->mAnimationRepeatCount > 0 || this->mAnimationRepeatCount < 0))
 		{
-			this->mAnimationTimeElapsed = 0;
+			this->mAnimationTimeElapsed += pDeltaTime;
 
-			if(this->mAnimationStartFrame == -1 && this->mAnimationFinishFrame == -1)
+			if(this->mAnimationTimeElapsed >= this->mAnimationTime)
 			{
-				if(this->mAnimationRepeatCount > 0 && this->getCurrentFrameIndex() == this->mFramesCount - 1)
+				this->mAnimationTimeElapsed = 0;
+
+				if(this->mAnimationStartFrame == -1 && this->mAnimationFinishFrame == -1)
 				{
-					this->mAnimationRepeatCount--;
-
-					if(this->mAnimationRepeatCount == 0)
-					{
-						this->mAnimationRunning = false;
-
-						this->onAnimationEnd();
-					}
-				}
-
-				if(this->getCurrentFrameIndex() == this->mFramesCount - 1)
-				{
-					this->onAnimationCircleEnd();
-
-					if(this->mPauseBeforeNewAnimationCircleTime > 0)
-					{
-						this->mPauseBeforeNewAnimationCircleTimeElapsed += pDeltaTime;
-
-						if(this->mPauseBeforeNewAnimationCircleTimeElapsed < this->mPauseBeforeNewAnimationCircleTime)
-						{
-							return;
-						}
-						else
-						{
-							this->mPauseBeforeNewAnimationCircleTimeElapsed = 0;
-						}
-					}
-				}
-
-				this->nextFrameIndex();
-			}
-			else
-			{
-				if(this->getCurrentFrameIndex() < this->mAnimationFinishFrame)
-				{
-					this->setCurrentFrameIndex(this->mAnimationStartFrame + this->mAnimationFramesElaped + 1);
-
-					this->mAnimationFramesElaped++;
-				}
-				else
-				{
-					if(this->mAnimationRepeatCount > 0)
+					if(this->mAnimationRepeatCount > 0 && this->getCurrentFrameIndex() == this->mFramesCount - 1)
 					{
 						this->mAnimationRepeatCount--;
 
-						this->mAnimationFramesElaped = 0;
+						if(this->mAnimationRepeatCount == 0)
+						{
+							this->mAnimationRunning = false;
+
+							this->onAnimationEnd();
+						}
+					}
+
+					if(this->getCurrentFrameIndex() == this->mFramesCount - 1)
+					{
+						this->onAnimationCircleEnd();
+
+						if(this->mPauseBeforeNewAnimationCircleTime > 0)
+						{
+							this->mPauseBeforeNewAnimationCircleTimeElapsed += pDeltaTime;
+
+							if(this->mPauseBeforeNewAnimationCircleTimeElapsed < this->mPauseBeforeNewAnimationCircleTime)
+							{
+								return;
+							}
+							else
+							{
+								this->mPauseBeforeNewAnimationCircleTimeElapsed = 0;
+							}
+						}
+					}
+
+					this->nextFrameIndex();
+				}
+				else
+				{
+					if(this->getCurrentFrameIndex() < this->mAnimationFinishFrame)
+					{
+						this->setCurrentFrameIndex(this->mAnimationStartFrame + this->mAnimationFramesElaped + 1);
+
+						this->mAnimationFramesElaped++;
 					}
 					else
 					{
-						this->onAnimationEnd();
+						if(this->mAnimationRepeatCount > 0)
+						{
+							this->mAnimationRepeatCount--;
+
+							this->mAnimationFramesElaped = 0;
+						}
+						else
+						{
+							this->onAnimationEnd();
+						}
 					}
 				}
 			}
