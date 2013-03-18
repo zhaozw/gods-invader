@@ -62,10 +62,11 @@ class Entity : public CCSprite, public Touchable
 
 		int mAnimationRepeatCount;
 
+		bool mIsAnimationReverse;
+		bool mIsAnimationReverseNeed;
+
 		int id; // For the entities which is childs of EntityManagers
 		EntityManager* mEntityManager;
-
-		Entity* mShadow; // For shadowed entities
 
 		bool mIgnoreSorting;
 
@@ -78,6 +79,8 @@ class Entity : public CCSprite, public Touchable
 		Entity(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
 		Entity(const char* pszFileName, CCNode* pParent);
 		Entity(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, CCNode* pParent);
+
+		Entity* mShadow; // For shadowed entities
 		
 		float getWidth();
 		float getHeight();
@@ -159,6 +162,7 @@ class Entity : public CCSprite, public Touchable
 
 		virtual void setCurrentFrameIndex(int pIndex);
 
+		void previousFrameIndex();
 		void nextFrameIndex();
 
 		void changeTexture(Texture* pTexture);
@@ -167,6 +171,7 @@ class Entity : public CCSprite, public Touchable
 
 		void animate(float pAnimationTime);
 		void animate(float pAnimationTime, int pRepeatCount);
+		void animate(float pAnimationTime, int pRepeatCount, bool pNeedReverse);
 		void animate(float pAnimationTime, float pPauseBeforeNewAnimationCircleTime);
 		void animate(float pAnimationTime, int pRepeatCount, float pPauseBeforeNewAnimationCircleTime);
 		void animate(float pAnimationTime, int pStartFrame, int pFinishFrame, int pRepeatCount);

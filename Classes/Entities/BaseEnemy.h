@@ -19,6 +19,7 @@ class BaseEnemy : public BarEntity
 		Hero* mHero;
 
 		Entity* mPupil;
+		Entity* mEye;
 
 		float mShootPadding;
 
@@ -27,6 +28,9 @@ class BaseEnemy : public BarEntity
 
 		float mShootVectorX;
 		float mShootVectorY;
+
+		float mEyeAnimationTime;
+		float mEyeAnimationTimeElapsed;
 
 	private:
 

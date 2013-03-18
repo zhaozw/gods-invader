@@ -99,6 +99,9 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 
 	this->mAnimationFramesElaped = 0;
 
+	this->mIsAnimationReverse = false;
+	this->mIsAnimationReverseNeed = false;
+
 	this->scheduleUpdate();
 
 	this->retain();
@@ -415,6 +418,13 @@ void Entity::setCurrentFrameIndex(int pIndex)
 	}
 }
 
+void Entity::previousFrameIndex()
+{
+	int potencialNextFrame = this->getCurrentFrameIndex() - 1;
+
+	this->setCurrentFrameIndex(potencialNextFrame > 0 ? potencialNextFrame : 0);
+}
+
 void Entity::nextFrameIndex()
 {
 	int potencialNextFrame = this->getCurrentFrameIndex() + 1;
@@ -471,6 +481,13 @@ void Entity::animate(float pAnimationTime, int pRepeatCount)
 	this->mAnimationRepeatCount = pRepeatCount;
 
 	this->animate(pAnimationTime);
+}
+
+void Entity::animate(float pAnimationTime, int pRepeatCount, bool pReverseNeed)
+{
+	this->mIsAnimationReverseNeed = pReverseNeed;
+
+	this->animate(pAnimationTime, pRepeatCount);
 }
 
 void Entity::animate(float pAnimationTime, float pPauseBeforeNewAnimationCircleTime)
@@ -636,15 +653,41 @@ void Entity::update(float pDeltaTime)
 
 				if(this->mAnimationStartFrame == -1 && this->mAnimationFinishFrame == -1)
 				{
+					if(this->mIsAnimationReverse && this->getCurrentFrameIndex() == 0) // TODO: Add animation repeat counter.
+					{
+						this->mAnimationRunning = false;
+						this->mIsAnimationReverse = false;
+
+						this->mAnimationRunning = false;
+
+						this->onAnimationEnd();
+							
+						return;
+					}
+
 					if(this->mAnimationRepeatCount > 0 && this->getCurrentFrameIndex() == this->mFramesCount - 1)
 					{
 						this->mAnimationRepeatCount--;
 
 						if(this->mAnimationRepeatCount == 0)
 						{
-							this->mAnimationRunning = false;
+							if(this->mIsAnimationReverseNeed)
+							{
+								this->mAnimationRepeatCount++;
 
-							this->onAnimationEnd();
+								this->mIsAnimationReverseNeed = false;
+								this->mIsAnimationReverse = true;
+						
+								this->previousFrameIndex();
+
+								return;
+							}
+							else
+							{
+								this->mAnimationRunning = false;
+
+								this->onAnimationEnd();
+							}
 						}
 					}
 
@@ -667,7 +710,14 @@ void Entity::update(float pDeltaTime)
 						}
 					}
 
-					this->nextFrameIndex();
+					if(this->mIsAnimationReverse)
+					{
+						this->previousFrameIndex();
+					}
+					else
+					{
+						this->nextFrameIndex();
+					}
 				}
 				else
 				{

@@ -83,10 +83,11 @@ Level::Level(void)
 
 	mUnitsLayer->addChild(this->mCastle);
 
+	mUnitsLayer->addChild(this->mHero);
+
+	this->addChild(this->mHero->mShadow);
 	this->mHero->mGasesShadows->setParent(this);
 	this->mHero->mGases->setParent(this);
-
-	mUnitsLayer->addChild(this->mHero);
 
 	this->mPickups = new EntityManager(10, new Pickup(), mUnitsLayer);
 	this->mBaseEnemies2 = new EntityManager(25, new CastleEnemy(mHero), mUnitsLayer);
@@ -97,7 +98,6 @@ Level::Level(void)
 	mUnitsLayer->addChild(this->mCastleShadow);
 
 	this->addChild(mUnitsLayer);
-
 	this->mCastle->setCurrentFrameIndex(7);
 
 	this->mClouds = new EntityManager(2, new Cloud(), mCloudsLayer);
@@ -137,8 +137,6 @@ this->addChild(mControlLayer);
 
 	this->mEnemiesGroup->add(this->mBaseEnemies);
 	this->mEnemiesGroup->add(this->mBaseEnemies2);
-
-	this->mUnitsLayer->popShadows(); // Important for shadows
 }
 
 void Level::restart()
@@ -157,6 +155,7 @@ void Level::restart()
 	this->mCastle->setCenterPosition(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100));
 
 	this->mBaseEnemies->clear();
+	this->mBaseEnemies2->clear();
 	this->mPickups->clear();
 	this->mStaticPickups->clear();
 

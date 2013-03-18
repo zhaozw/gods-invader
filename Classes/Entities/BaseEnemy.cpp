@@ -17,6 +17,10 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 		this->addChild(this->mPupil);
 		this->mPupil->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(9));
 
+		this->mEye = new Entity("enemies/onion/onion-eye-animation.png", 7, 2);
+		this->mEye->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2);
+		this->addChild(this->mEye);
+
 		this->setBarsManagement(true, false);
 
 		this->mShadow = new Entity("stolen/shadow.png");
@@ -29,9 +33,12 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 		this->mFollowPaddingY = 0;//Utils::randomf(-500.0, 500.0);
 
 		this->setAnimationStartTimeout(Utils::randomf(0.0f, 1.0f));
-		this->animate(0.07);
+		this->animate(0.07f);
 
 		this->mShootPadding = 0;
+
+		this->mEyeAnimationTime = Utils::randomf(2.0f, 20.0f);
+		this->mEyeAnimationTimeElapsed = 0;
 
 		this->resumeSchedulerAndActions();
 	}
@@ -146,6 +153,15 @@ void BaseEnemy::update(float pDeltaTime) // TODO: Rewrite to the Utils::vectorNo
 		CCPoint look = Utils::vectorNormalize(this->getCenterX() - this->mHero->getCenterX() - this->mFollowPaddingX, this->getCenterY() - this->mHero->getCenterY() - this->mFollowPaddingY, 6.0f);
 
 		this->mPupil->setCenterPosition(this->getWidth() / 2 - look.x, this->getHeight() / 2 - Utils::coord(9) - look.y);
+	}
+
+	this->mEyeAnimationTimeElapsed += pDeltaTime;
+
+	if(this->mEyeAnimationTimeElapsed >= this->mEyeAnimationTime)
+	{
+		this->mEyeAnimationTimeElapsed -= this->mEyeAnimationTime;
+
+		this->mEye->animate(0.03f, 1, true);
 	}
 }
 

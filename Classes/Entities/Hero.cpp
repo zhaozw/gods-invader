@@ -7,10 +7,8 @@ Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizon
 	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
 		this->mShadow = new Entity("stolen/shadow.png");
-		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(60));
 		this->mShadow->setIsShadow();
-
-		this->addChild(this->mShadow);
+		this->mShadow->setIsDynamicShadow();
 
 		this->mGasesAnimationTime = 0.2f;
 
@@ -35,7 +33,7 @@ void Hero::reset()
 	this->setFireTime(0.5);
 	this->setPatrons(100);
 
-	this->setZ(170);//Options::MIN_Z);
+	this->setZ(Options::MIN_Z);
 
 	this->setHealth(100);
 
@@ -173,6 +171,8 @@ void Hero::fire(float pVectorX, float pVectorY)
 bool Hero::destroy()
 {
 	BarEntity::destroy();
+
+	this->mShadow->destroy();
 
 	return false;
 }
