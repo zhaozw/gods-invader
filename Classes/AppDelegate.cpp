@@ -45,11 +45,15 @@ bool AppDelegate::applicationDidFinishLaunching()
 void AppDelegate::applicationDidEnterBackground()
 {
 	CCDirector::sharedDirector()->pause();
+
+    SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 }
 
 void AppDelegate::applicationWillEnterForeground()
 {
 	CCDirector::sharedDirector()->resume();
+
+    SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
 }
 
 #endif

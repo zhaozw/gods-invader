@@ -307,7 +307,7 @@ void Level::update(float pDeltaTime)
 if(this->mIsGameRunning)
 {
 	this->mUnitsLayer->update(pDeltaTime);
-	
+
 	// Clouds 
 
 	this->generateCloud();
@@ -320,7 +320,7 @@ if(this->mIsGameRunning)
 
 	if(this->mBaseEnemies->getCount() < 1)
 	{
-		for(int i = 0; i < 5; i++)
+		for(int i = 0; i < 25; i++)
 		{
 			this->mBaseEnemies->create()->setCenterPosition(100, 100);
 		}
@@ -328,7 +328,7 @@ if(this->mIsGameRunning)
 
 	if(this->mBaseEnemies2->getCount() < 1)
 	{
-		for(int i = 0; i < 5; i++)
+		for(int i = 0; i < 25; i++)
 		{
 			this->mBaseEnemies2->create()->setCenterPosition(600, 600);
 		}
