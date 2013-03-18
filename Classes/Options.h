@@ -1,7 +1,7 @@
 #ifndef CONST_OPTIONS_H
 #define CONST_OPTIONS_H
 
-#include "Entity.h"
+class Entity;
 
 class Options
 {
@@ -20,6 +20,8 @@ class Options
 
 		static int CAMERA_CENTER_X;
 		static int CAMERA_CENTER_Y;
+
+		static float MIN_Z;
 
 		static bool MUSIC_ENABLE;
 

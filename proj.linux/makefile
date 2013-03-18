@@ -5,8 +5,8 @@ CCFLAGS = -Wall
 CXXFLAGS = -Wall
 VISIBILITY = 
 
-COCOS2DX_PATH = /home/igor/Development/cocos2d-x/cocos2dx
-COCOS_PATH = /home/igor/Development/cocos2d-x
+COCOS2DX_PATH = /home/igor/git/cocos2d-x/cocos2dx
+COCOS_PATH = /home/igor/git/cocos2d-x
 
 INCLUDES =  -I../ \
 			-I../Classes \
@@ -47,12 +47,15 @@ OBJECTS = ./main.o \
 			../Classes/Entities/Hero.o \
 			../Classes/Entities/Castle.o \
 			../Classes/Entities/BaseEnemy.o \
+			../Classes/Entities/CastleEnemy.o \
 			../Classes/Entities/BaseBullet.o \
 			../Classes/Entities/Star.o \
 			../Classes/Entities/Cloud.o \
 			../Classes/Entities/SmallCloud.o \
 			../Classes/Entities/BaseExplosion.o \
 			../Classes/Managers/EntityManager.o \
+			../Classes/Managers/EntityManagerGroup.o \
+			../Classes/Managers/LayerManager.o \
 			../Classes/Screens/Screen.o \
 			../Classes/Screens/Level.o \
 			../Classes/Screens/Preloader.o \

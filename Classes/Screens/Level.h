@@ -8,6 +8,7 @@
 #include "Platform.h"
 #include "Hero.h"
 #include "BaseEnemy.h"
+#include "CastleEnemy.h"
 #include "BaseBullet.h"
 #include "Pickup.h"
 #include "BaseExplosion.h"
@@ -17,6 +18,8 @@
 #include "SmallCloud.h"
 #include "SmallCubic.h"
 #include "EntityManager.h"
+#include "EntityManagerGroup.h"
+#include "LayerManager.h"
 #include "Screen.h"
 #include "Options.h"
 #include "Utils.h"
@@ -61,10 +64,11 @@ class Level : public Screen
 		float mPointerX;
 		float mPointerY;
 
-		float mSortEntitiesTime;
-		float mSortEntitiesTimeElapsed;
-
 		EntityManager* mBaseEnemies;
+		EntityManager* mBaseEnemies2;
+
+		EntityManagerGroup* mEnemiesGroup;
+
 		EntityManager* mBaseBullets;
 		EntityManager* mExplosions;
 		EntityManager* mPickups;
@@ -75,6 +79,8 @@ class Level : public Screen
 		EntityManager* mCandyDecorator;
 		EntityManager* mCandyShadowsDecorator;
 		EntityManager* mSmallCubics;
+
+		LayerManager* mUnitsLayer;
 		
 		Entity* mPlayButton;
 
@@ -98,8 +104,6 @@ class Level : public Screen
 		Level(void);
 
 		void restart();
-
-		void sortEntities();
 
 		void checkCollisions();
 

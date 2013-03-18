@@ -3,6 +3,8 @@
 
 #include "Options.h"
 
+#include "Entity.h"
+
 int Options::CENTER_X = 0;
 int Options::CENTER_Y = 0;
 
@@ -17,6 +19,8 @@ int Options::CAMERA_HEIGHT = 0;
 
 int Options::CAMERA_CENTER_X = 0;
 int Options::CAMERA_CENTER_Y = 0;
+
+float Options::MIN_Z = 1.0f;
 
 bool Options::MUSIC_ENABLE = true;
 

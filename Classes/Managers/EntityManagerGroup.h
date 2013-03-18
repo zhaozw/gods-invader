@@ -1,14 +1,14 @@
-#ifndef CONST_PICKUP_H
-#define CONST_PICKUP_H
+#ifndef CONST_ENTITYMANAGERGROUP_H
+#define CONST_ENTITYMANAGERGROUP_H
 
 #include "cocos2d.h"
 
 #include "Entity.h"
-#include "Utils.h"
+#include "EntityManager.h"
 
 using namespace cocos2d;
 
-class Pickup : public Entity
+class EntityManagerGroup : public CCArray
 {
 	protected:
 		// ===========================================================
@@ -20,42 +20,26 @@ class Pickup : public Entity
 		// Constructor private function
 		// ===========================================================
 
-		void constructor();
-
 		// ===========================================================
 		// Private fields
 		// ===========================================================
-		
-		float mCenterX;
-		float mCenterY;
-
-		float mPaddingY;
-
-		float mAnimationTime;
-		float mAnimationTimeElapsed;
-
-		float mDeathAnimationTime;
-		float mDeathAnimationTimeElapsed;
-
-		bool mIsAnimationReverse;
 
 		// ===========================================================
 		// Private methods
 		// ===========================================================
 
-	public:
+		void unpacking();
 
-		bool mIsMustDestroy; // TODO: Remove to private.
+	public:
 		// ===========================================================
 		// Public fields
 		// ===========================================================
-
+		
 		// ===========================================================
 		// Constructors
 		// ===========================================================
 
-		Pickup();
-		Pickup(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
+		EntityManagerGroup(int pCapacity);
 
 		// ===========================================================
 		// Getters
@@ -77,21 +61,13 @@ class Pickup : public Entity
 		// Methods
 		// ===========================================================
 
-		void follow(float pVectorX, float pVectorY);
+		void add(EntityManager* pEntityManager);
 
-		void reset();
-
-		void startDestroy();
+		void update(float pDeltaTime);
 
 		// ===========================================================
 		// Virtual methods
 		// ===========================================================
-
-		virtual Entity* create();
-
-		virtual void update(float pDeltaTime);
-
-		virtual Pickup* deepCopy();	
 };
 
 #endif

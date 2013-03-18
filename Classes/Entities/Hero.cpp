@@ -6,6 +6,12 @@
 Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount) :
 	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
+		this->mShadow = new Entity("stolen/shadow.png");
+		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(60));
+		this->mShadow->setIsShadow();
+
+		this->addChild(this->mShadow);
+
 		this->mGasesAnimationTime = 0.2f;
 
 		this->mGasesShadows = new EntityManager(10, new GasShadow());
@@ -28,6 +34,8 @@ void Hero::reset()
 	this->setBarsManagement(true, true);
 	this->setFireTime(0.5);
 	this->setPatrons(100);
+
+	this->setZ(Options::MIN_Z);
 
 	this->setHealth(100);
 
@@ -65,15 +73,15 @@ void Hero::setFollowCoordinates(float pX, float pY)
 	this->mIsMove = true;
 
 	this->mFollowCoordinateX = pX;
-	this->mFollowCoordinateY = pY;
+	this->mFollowCoordinateY = pY + this->getZ();
 }
 
 void Hero::follow(float pDeltaTime)
 {
 	if(this->mIsMove)
 	{
-		float x = this->mFollowCoordinateX / this->getSpeed(pDeltaTime);
-		float y = this->mFollowCoordinateY / this->getSpeed(pDeltaTime);
+		float x = this->mFollowCoordinateX / this->getSpeed(1); // TODO: I should use Utils::vectorNormalize here.
+		float y = this->mFollowCoordinateY / this->getSpeed(1);
 
 		float maxSpeed = Utils::coord(3);
 		
@@ -104,7 +112,7 @@ void Hero::fire(float pVectorX, float pVectorY)
 	if(BarEntity::fire(pVectorX, pVectorY))
 	{
 		BaseBullet* bullet = ((BaseBullet*) this->mBulletsManager->create());
-		bullet->fire(this->getCenterX(), this->getCenterY(), pVectorX, pVectorY);
+		bullet->fire(this->getCenterX(), this->getCenterY() + this->getZ(), pVectorX, pVectorY);
 	
 		// this->mShootPadding = 100; // TODO: Too big value?
 
@@ -188,8 +196,8 @@ void Hero::update(float pDeltaTime)
 	int pontencialFrame = 2;
 
 	int padding1 = Utils::coord(50);
-	int padding2 = 150;
-	int padding3 = 100;
+	int padding2 = Utils::coord(150);
+	int padding3 = Utils::coord(100);
 
 	if(this->mFollowCoordinateY > padding1)
 	{
@@ -250,7 +258,7 @@ void Hero::update(float pDeltaTime)
 	
 		this->mGasesAnimationTimeElapsed += pDeltaTime;
 
-		if(this->mGasesAnimationTimeElapsed >= this->mGasesAnimationTime)
+		if(this->mGasesAnimationTimeElapsed >= this->mGasesAnimationTime && this->getZ() <= Options::MIN_Z)
 		{
 			this->mGasesAnimationTimeElapsed = 0;
 

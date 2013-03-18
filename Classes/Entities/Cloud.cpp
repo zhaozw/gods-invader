@@ -81,7 +81,7 @@ Entity* Cloud::create()
 	}
 
 	entity->setCurrentFrameIndex(Utils::random(0, 2));
-	entity->setSpeed(Utils::randomf(2.0, 5.0));
+	entity->setSpeed(Utils::randomf(100.0f, 250.0f));
 
 	return entity;
 }

@@ -30,4 +30,12 @@ bool Utils::probably(int pProbably)
 	return Utils::random(0, 100) < pProbably;
 }
 
+CCPoint Utils::vectorNormalize(float pVectorX, float pVectorY, float pMultipleFactor)
+{
+	float x = pVectorX / sqrt(pVectorX * pVectorX + pVectorY * pVectorY) * pMultipleFactor;
+	float y = pVectorY / sqrt(pVectorX * pVectorX + pVectorY * pVectorY) * pMultipleFactor;
+
+	return ccp(x, y);
+}
+
 #endif

@@ -25,10 +25,10 @@ Level::Level(void)
 	Options::CENTER_X = Options::CAMERA_CENTER_X + Utils::coord(50);
 	Options::CENTER_Y = Options::CAMERA_CENTER_Y + Utils::coord(200);
 
-	this->mSortEntitiesTime = 0.1f;
-	this->mSortEntitiesTimeElapsed = 1000;
+	this->mEnemiesGroup = new EntityManagerGroup(200);
 
-	CCLayer* mUnitsLayer = new CCLayer();
+	this->mUnitsLayer = new LayerManager();
+
 	CCLayer* mCloudsLayer = new CCLayer();
 	this->mControlLayer = new CCLayer();
 
@@ -38,18 +38,25 @@ Level::Level(void)
 	this->mPlatformPart1 = new Platform("platform/platform-part-1.png");
 	this->mPlatformPart2 = new Platform("platform/platform-part-2.png");
 	
+<<<<<<< HEAD
+	this->mCandyDecorator = new EntityManager(10, new Entity("platform/candy-sprite.png", 3, 1), mUnitsLayer);
+	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadow.png", 3, 1), mUnitsLayer);
+=======
 	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadow.png", 1, 1), mUnitsLayer);
 	this->mCandyDecorator = new EntityManager(10, new Entity("platform/candy-sprite.png", 1, 1), mUnitsLayer);
+>>>>>>> 3517cfb04fec1c37656cd47ffb34a8d8f90357e3
 
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < 0; i++)
 	{
 		Entity* decoration = this->mCandyDecorator->create();
+		decoration->setCurrentFrameIndex(Utils::random(0, 2));
 		decoration->setCenterPosition(Utils::random(this->mPlatformPart1->getX(), this->mPlatformPart2->getX() + this->mPlatformPart2->getWidth()), Utils::random(this->mPlatformPart1->getY() + Utils::coord(700), this->mPlatformPart1->getY() - this->mPlatformPart1->getHeight() + Utils::coord(700)));
 		
 		Entity* shadow = this->mCandyShadowsDecorator->create();
 		shadow->setIsShadow();
 		shadow->setIgnoreSorting(true);
-		shadow->setCenterPosition(decoration->getCenterX(), decoration->getCenterY() - decoration->getHeight());
+		shadow->setCurrentFrameIndex(decoration->getCurrentFrameIndex());
+		shadow->setCenterPosition(decoration->getCenterX(), decoration->getCenterY() - shadow->getHeight() / 2);
 	}
 
 	this->mSmallCubics = new EntityManager(100, new SmallCubic(), mUnitsLayer);
@@ -88,6 +95,7 @@ Level::Level(void)
 
 	this->mPickups = new EntityManager(100, new Pickup(), mUnitsLayer);
 	this->mBaseEnemies = new EntityManager(100, new BaseEnemy(mHero), mUnitsLayer);
+	this->mBaseEnemies2 = new EntityManager(100, new CastleEnemy(mHero), mUnitsLayer);
 
 	this->mExplosions = new EntityManager(100, new BaseExplosion(), mUnitsLayer);
 	this->setRegisterAsTouchable(true);
@@ -131,6 +139,9 @@ this->addChild(mControlLayer);
 
 	this->mSmallCubicGenerationTimeElapsed = 0;
 	this->mSmallCubicGenerationTime = 1;
+
+	this->mEnemiesGroup->add(this->mBaseEnemies);
+	this->mEnemiesGroup->add(this->mBaseEnemies2);
 }
 
 void Level::restart()
@@ -154,18 +165,6 @@ void Level::restart()
 
 	this->mHero->reset();
 	this->mHero->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
-
-	/////////////////// TEST //////////////////////
-
-	for(int i = 0; i < 5; i++)
-	{
-		float x = Utils::random(-100, 100);
-		float y = Utils::random(-100, 100);
-
-		this->mBaseEnemies->create()->setCenterPosition(x, y);
-	}
-	/////////////////// TEST //////////////////////
-
 
 	this->mShaking = false;
 		
@@ -293,21 +292,6 @@ void Level::update(float pDeltaTime)
 		this->setScale(0.5);
 	}
 
-	/**
-	 *
-	 * Sort entities
-	 *
-	 */
-
-	this->mSortEntitiesTimeElapsed += pDeltaTime;
-
-	if(this->mSortEntitiesTimeElapsed >= this->mSortEntitiesTime)
-	{
-		this->mSortEntitiesTimeElapsed = 0;
-
-		this->sortEntities();
-	}
-
 	// Castle shadow
 
 	if(this->mCastle->getCurrentFrameIndex() >= 5)
@@ -327,6 +311,8 @@ void Level::update(float pDeltaTime)
 
 if(this->mIsGameRunning)
 {
+	this->mUnitsLayer->update(pDeltaTime);
+
 	// Clouds 
 
 	this->generateCloud();
@@ -344,7 +330,16 @@ if(this->mIsGameRunning)
 			this->mBaseEnemies->create()->setCenterPosition(100, 100);
 		}
 	}
-	this->mBaseEnemies->update(pDeltaTime);
+
+	if(this->mBaseEnemies2->getCount() < 1)
+	{
+		for(int i = 0; i < 25; i++)
+		{
+			this->mBaseEnemies2->create()->setCenterPosition(600, 600);
+		}
+	}
+
+	this->mEnemiesGroup->update(pDeltaTime);
 	/////////////////// TEST //////////////////////
 
 	this->mPickups->update(pDeltaTime);
@@ -362,14 +357,9 @@ if(this->mIsGameRunning)
 
 		if(Utils::probably(100))
 		{
-			this->mSmallCubics->create()->setCenterPosition(Utils::random(this->mPlatformPart1->getX(), this->mPlatformPart2->getX() + this->mPlatformPart2->getWidth()), Utils::random(this->mPlatformPart1->getY() + Utils::coord(700), this->mPlatformPart1->getY() - this->mPlatformPart1->getHeight() + Utils::coord(700)));
+			//this->mSmallCubics->create()->setCenterPosition(Utils::random(this->mPlatformPart1->getX(), this->mPlatformPart2->getX() + this->mPlatformPart2->getWidth()), Utils::random(this->mPlatformPart1->getY() + Utils::coord(700), this->mPlatformPart1->getY() - this->mPlatformPart1->getHeight() + Utils::coord(700)));
 		}
 	}
-}
-
-void Level::sortEntities()
-{
-	this->mBaseEnemies->sortChildrenByYPosition();
 }
 
 void Level::checkCollisions()
@@ -430,6 +420,65 @@ void Level::checkCollisions()
 		}
 	}
 
+ ///////////////////////////////////////// HOLY SHIIIIIIIT!!!!!!!!!!!!! ////////////////////////////
+
+
+	for(int i = 0; i < this->mBaseEnemies2->getCount(); i++)
+	{
+		BaseEnemy* enemy = ((BaseEnemy*) this->mBaseEnemies2->objectAtIndex(i));
+
+		for(int j = 0; j < this->mBaseBullets->getCount(); j++)
+		{
+			BaseBullet* bullet = ((BaseBullet*) this->mBaseBullets->objectAtIndex(j));
+
+			if (bullet->collideWith(enemy))
+			{
+				enemy->onCollide(bullet);
+				bullet->destroy();
+			}
+		}
+
+		// EXPLOSIONS
+		for(int j = 0; j < this->mExplosions->getCount(); j++)
+		{
+			Entity* explosion = ((Entity*) this->mExplosions->objectAtIndex(j));
+
+			if(explosion->collideWith(enemy))
+			{
+				float padding = Utils::coord(3.5f);
+
+				enemy->setCenterPosition(enemy->getCenterX() + (enemy->getCenterX() > explosion->getCenterX() ? padding : -padding), enemy->getCenterY() + (enemy->getCenterY() > explosion->getCenterY() ? padding : -padding));
+				enemy->removeHealth(3.0f);
+			}
+		}
+
+		// HERO
+
+		if(this->mHero->collideWith(enemy))
+		{
+			this->mHero->removeHealth(1);
+		}
+
+		if(enemy->getHealth() <= 0)
+		{
+			if(Options::MUSIC_ENABLE)
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/ai_death.wav");
+			}
+
+			if(enemy->destroy())
+			{
+				this->mPickups->create()->setCenterPosition(enemy->getCenterX(), enemy->getCenterY());
+			}
+
+			this->mExplosions->create()->setCenterPosition(enemy->getCenterX(), enemy->getCenterY());
+
+			this->shake(0.5f, 4.0f);
+
+			continue;
+		}
+	}
+	////////////////////////////////////////////////////////////////
 
 	for(int i = 0; i < this->mPickups->getCount(); i++)
 	{
@@ -440,7 +489,7 @@ void Level::checkCollisions()
 			pickup->follow(this->mHero->getCenterX(), this->mHero->getCenterY());
 		}
 
-		if(this->mHero->collideWith(pickup))
+		if(this->mHero->collideWith(pickup) && !pickup->mIsMustDestroy)
 		{
 			switch(pickup->getCurrentFrameIndex())
 			{
@@ -476,7 +525,7 @@ void Level::checkCollisions()
 			pic->setCurrentFrameIndex(pickup->getCurrentFrameIndex());
 			pic->setCenterPosition(50 + pic->getWidth()/2 * (this->mStaticPickups->getCount() + 1), pic->getHeight() - Utils::coord(25));
 
-			pickup->destroy();
+			pickup->startDestroy();
 		}
 	}
 

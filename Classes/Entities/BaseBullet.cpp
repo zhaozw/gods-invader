@@ -19,7 +19,7 @@ BaseBullet::BaseBullet(const char* pszFileName, int pHorizontalFramesCount, int 
 		this->mShadow->setIsShadow();
 
 		this->setPower(20);
-		this->setSpeed(20);
+		this->setSpeed(1000);
 
 		this->mLifeTime = 3;
 
@@ -79,10 +79,9 @@ void BaseBullet::update(float pDeltaTime)
 			this->destroy();
 		}
 
-		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
-		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
+		CCPoint vector = Utils::vectorNormalize(this->mVectorX, this->mVectorY, this->getSpeed(pDeltaTime));
 
-		this->setCenterPosition(this->getCenterX() + speedX, this->getCenterY() + speedY);
+		this->setCenterPosition(this->getCenterX() + vector.x, this->getCenterY() + vector.y);
 
 		float angle = atan2(this->mVectorX, this->mVectorY) * 180 / Utils::Pi + 90;
 

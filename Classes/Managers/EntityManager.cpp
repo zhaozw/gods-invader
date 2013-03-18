@@ -27,10 +27,6 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 		
 		currentEntity->destroy(false);
 	}
-
-	this->mIsSortY = true;
-
-	this->mIsUnpacking = true; // TODO: change to false and write setter
 }
 
 EntityManager::EntityManager(int pCreateCount, Entity* pEntity)
@@ -115,74 +111,8 @@ void EntityManager::setParent(CCNode* pScreen)
 	}
 }
 
-void EntityManager::sortChildrenByYPosition()
-{
-	if(!this->mIsSortY)
-	{
-		return;
-	}
-
-	int length = this->mParent->getChildren()->count();
-	int i;
-
-	for(int j = 0; j < length; j++)
-	{
-		Entity* testValue = (Entity*) this->mParent->getChildren()->objectAtIndex(j);
-
-		if(testValue->isIgnoreSorting())
-		{
-			continue;
-		}
-
-		for(i = j - 1; i >= 0 && ((Entity*) this->mParent->getChildren()->objectAtIndex(i))->getCenterY() < testValue->getCenterY() && !testValue->isSetAsShadow() && !((Entity*) this->mParent->getChildren()->objectAtIndex(i))->isIgnoreSorting(); i--)
-		{
-			this->mParent->getChildren()->replaceObjectAtIndex(i + 1, this->mParent->getChildren()->objectAtIndex(i));
-		}
-		
-		this->mParent->getChildren()->replaceObjectAtIndex(i + 1, testValue);
-	}
-}
-
-void EntityManager::disableSort()
-{
-	this->mIsSortY = false;
-}
-
-void EntityManager::unpacking() // TODO: Maybe some perfomance refactoring?
-{
-	for(int i = 0; i < this->getCount(); i++)
-	{
-		Entity* entity1 = ((Entity*) this->objectAtIndex(i));
-
-		for(int j = 0; j < this->getCount(); j++)
-		{
-			Entity* entity2 = ((Entity*) this->objectAtIndex(j));
-
-			if(i == j || !entity1->hasShadow() || !entity2->hasShadow()) continue;
-
-			if(entity1->getShadow()->collideWith(entity2->getShadow()))
-			{
-				float x1 = entity1->getCenterX();
-				float x2 = entity2->getCenterX();
-
-				float y1 = entity1->getCenterY();
-				float y2 = entity2->getCenterY();
-
-				float padding = Utils::coord(0.5f);
-
-				entity1->setCenterPosition(x1 + (x1 > x2 ? padding : -padding), y1 + (y1 > y2 ? padding : -padding));
-				entity2->setCenterPosition(x2 + (x2 > x1 ? padding : -padding), y2 + (y2 > y1 ? padding : -padding));
-			}
-		}
-	}
-}
-
 void EntityManager::update(float pDeltaTime)
 {
-	if(this->mIsUnpacking)
-	{
-		this->unpacking();
-	}
 }
 
 #endif
