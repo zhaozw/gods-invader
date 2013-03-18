@@ -1,15 +1,11 @@
-#ifndef CONST_SCREEN_H
-#define CONST_SCREEN_H
+#ifndef CONST_TEMPLATE_H
+#define CONST_TEMPLATE_H
 
 #include "cocos2d.h"
 
-#include "Touchable.h"
-#include "Entity.h"
-#include "Options.h"
-
 using namespace cocos2d;
 
-class Screen : public CCScene, public Touchable
+class Texture
 {
 	protected:
 		// ===========================================================
@@ -35,8 +31,6 @@ class Screen : public CCScene, public Touchable
 		// ===========================================================
 		// Virtual Methods
 		// ===========================================================
-		
-		bool containsTouchLocation(CCTouch* touch);
 
 	private:
 		// ===========================================================
@@ -80,8 +74,6 @@ class Screen : public CCScene, public Touchable
 		// Constructors
 		// ===========================================================
 
-		Screen();
-
 		// ===========================================================
 		// Methods
 		// ===========================================================
@@ -89,9 +81,6 @@ class Screen : public CCScene, public Touchable
 		// ===========================================================
 		// Virtual Methods
 		// ===========================================================
-
-		void onEnter();
-		void onExit();
 };
 
 #endif

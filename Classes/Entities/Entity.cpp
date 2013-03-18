@@ -419,13 +419,13 @@ void Entity::changeTexture(Texture* pTexture)
 	this->mWidth  = this->getTextureRect().size.width;
 	this->mHeight = this->getTextureRect().size.height;
 
-	this->mFrameWidth = this->mWidth / pTexture->mHorizontalFramesCount;
-	this->mFrameHeight = this->mHeight / pTexture->mVerticalFramesCount; 
+	this->mFrameWidth = this->mWidth / pTexture->getHorizontalFramesCount();
+	this->mFrameHeight = this->mHeight / pTexture->getVerticalFramesCount(); 
 
-	this->mFramesCount = pTexture->mHorizontalFramesCount * pTexture->mVerticalFramesCount;
+	this->mFramesCount = pTexture->getHorizontalFramesCount() * pTexture->getVerticalFramesCount();
 
-	this->mHorizontalFramesCount = pTexture->mHorizontalFramesCount;
-	this->mVerticalFramesCount   = pTexture->mVerticalFramesCount;
+	this->mHorizontalFramesCount = pTexture->getHorizontalFramesCount();
+	this->mVerticalFramesCount   = pTexture->getVerticalFramesCount();
 
 	int counter = 0;
 
@@ -537,12 +537,12 @@ void Entity::onExit()
 
 bool Entity::ccTouchBegan(CCTouch* touch, CCEvent* event)
 {
-	if(!this->mIsRegisterAsTouchable || !this->isVisible() || !this->getParent()->isVisible())
+	if(!this->containsTouchLocation(touch) || !this->isVisible() || !this->getParent()->isVisible())
 	{
 		return false;
 	}
 
-	if(containsTouchLocation(touch))
+	if(Touchable::ccTouchBegan(touch, event))
 	{
 		this->mWasTouched = true;
 
@@ -560,7 +560,7 @@ void Entity::ccTouchMoved(CCTouch* touch, CCEvent* event)
 	{
 		if(this->mWasTouched)
 		{
-		if(this->getScale() < this->mAnimationScaleUpFactor)
+			if(this->getScale() < this->mAnimationScaleUpFactor)
 			{
 				this->runAction(CCScaleTo::create(this->mAnimationScaleUpTime, this->mAnimationScaleUpFactor));
 
@@ -584,16 +584,7 @@ void Entity::ccTouchEnded(CCTouch* touch, CCEvent* event)
 
 bool Entity::containsTouchLocation(CCTouch* touch)
 {
-	return CCRectMake(-this->mFrameWidth/ 2, -this->mFrameHeight / 2, this->mFrameWidth, this->mFrameHeight).containsPoint(convertTouchToNodeSpaceAR(touch));
-}
-
-void Entity::setRegisterAsTouchable(bool pTouchable)
-{
-	this->mIsRegisterAsTouchable = pTouchable;
-}
-
-void Entity::onTouch(CCTouch* touch, CCEvent* event)
-{
+	return CCRectMake(-this->mFrameWidth/ 2, -this->mFrameHeight / 2, this->mFrameWidth, this->mFrameHeight).containsPoint(this->convertTouchToNodeSpaceAR(touch));
 }
 
 /**

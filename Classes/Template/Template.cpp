@@ -1,7 +1,7 @@
-#ifndef CONST_TEXTURE
-#define CONST_TEXTURE
+#ifndef CONST_TEMPLATE
+#define CONST_TEMPLATE
 
-#include "Texture.h"
+#include "Template.h"
 
 // ===========================================================
 // Inner Classes
@@ -19,35 +19,32 @@
 // Constructors
 // ===========================================================
 
-Texture::Texture(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount)
-{
-	this->mTexture = CCTextureCache::sharedTextureCache()->addImage(pszFileName);
-			
-	this->mHorizontalFramesCount = pHorizontalFramesCount;
-	this->mVerticalFramesCount   = pVerticalFramesCount;
-}
+// ===========================================================
+// Methods
+// ===========================================================
+
+// ===========================================================
+// Virtual Methods
+// ===========================================================
+
+// ===========================================================
+// Constructors
+// ===========================================================
+
+// ===========================================================
+// Getters
+// ===========================================================
+
+// ===========================================================
+// Setters
+// ===========================================================
 
 // ===========================================================
 // Methods
 // ===========================================================
 
-int Texture::getHorizontalFramesCount()
-{
-	return this->mHorizontalFramesCount;
-}
-
-int Texture::getVerticalFramesCount()
-{
-	return this->mVerticalFramesCount;
-}
-
-CCTexture2D* Texture::getTexture()
-{
-	return this->mTexture;
-}
-
 // ===========================================================
-// Virtual Methods
+// Virtual methods
 // ===========================================================
 
 #endif

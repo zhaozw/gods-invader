@@ -4,7 +4,15 @@
 #include "ScreenManager.h"
 
 // ===========================================================
-// Init
+// Inner Classes
+// ===========================================================
+
+// ===========================================================
+// Constants
+// ===========================================================
+
+// ===========================================================
+// Fields
 // ===========================================================
 
 // ===========================================================
@@ -15,6 +23,18 @@ ScreenManager::ScreenManager()
 {
 	this->generate();
 }
+
+// ===========================================================
+// Methods
+// ===========================================================
+
+// ===========================================================
+// Virtual Methods
+// ===========================================================
+
+// ===========================================================
+// Constructors
+// ===========================================================
 
 // ===========================================================
 // Getters
@@ -28,19 +48,19 @@ ScreenManager::ScreenManager()
 // Methods
 // ===========================================================
 
+void ScreenManager::generate()
+{
+	this->mScreens[0] = new Level();
+	this->mScreens[1] = new GameOver();
+	this->mScreens[2] = new GameWon();
+}
+
 void ScreenManager::set(float pAnimationTime, int pIndex)
 {
 	CCTransitionScene* transition = CCTransitionFade::create(pAnimationTime, this->mScreens[pIndex]);
 
 	CCDirector::sharedDirector()->setDepthTest(true);
 	CCDirector::sharedDirector()->pushScene(transition);
-}
-
-void ScreenManager::generate()
-{
-	this->mScreens[0] = new Level();
-	this->mScreens[1] = new GameOver();
-	this->mScreens[2] = new GameWon();
 }
 
 // ===========================================================
