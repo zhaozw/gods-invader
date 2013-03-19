@@ -3,15 +3,17 @@
 
 #include "BaseEnemy.h"
 
-BaseEnemy::BaseEnemy(Hero* pHero)
+BaseEnemy::BaseEnemy(Hero* pHero, EntityManager* pBullets)
 {
 	this->mHero = pHero;
+	this->mBullets = pBullets;
 }
 
-BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero) :
+BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero, EntityManager* pBullets) :
 	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
 		this->mHero = pHero;
+		this->mBullets = pBullets;
 
 		this->mPupil = new Entity("enemies/onion/onion-pupil.png");
 		this->addChild(this->mPupil);
@@ -21,7 +23,7 @@ BaseEnemy::BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pV
 		this->mEye->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2);
 		this->addChild(this->mEye);
 
-		this->setBarsManagement(true, false);
+		this->setBarsManagement(true, true);
 
 		this->mShadow = new Entity("stolen/shadow.png");
 		this->mShadow->setIsShadow();
@@ -52,7 +54,8 @@ Entity* BaseEnemy::create()
 		this->getParent()->addChild(this->mShadow);
 	}
 
-	this->setHealth(100);
+	this->setHealth(100.0f);
+	this->setFireTime(Utils::randomf(3.0f, 15.0f));
 
 	this->mSpeedStandart = Utils::randomf(10.0f, 100.0f);
 
@@ -93,11 +96,13 @@ void BaseEnemy::onCollide(BaseBullet* pBullet)
 
 BaseEnemy* BaseEnemy::deepCopy()
 {
-	return new BaseEnemy("enemies/onion/onion-animation.png", 7, 2, this->mHero);
+	return new BaseEnemy("enemies/onion/onion-animation.png", 7, 2, this->mHero, this->mBullets);
 }
 
 void BaseEnemy::update(float pDeltaTime) // TODO: Rewrite to the Utils::vectorNormalize()
 {
+	if(!this->isVisible()) return;
+
 	BarEntity::update(pDeltaTime);
 
 	float x;
@@ -121,7 +126,7 @@ void BaseEnemy::update(float pDeltaTime) // TODO: Rewrite to the Utils::vectorNo
 			this->setCenterPosition(x, y);
 		}
 
-		this->mShootPadding -= Utils::coord(0.5);
+		this->mShootPadding -= Utils::coord(0.3f);
 	}
 	else
 	{
@@ -162,6 +167,26 @@ void BaseEnemy::update(float pDeltaTime) // TODO: Rewrite to the Utils::vectorNo
 		this->mEyeAnimationTimeElapsed -= this->mEyeAnimationTime;
 
 		this->mEye->animate(0.03f, 1, true);
+	}
+
+	// Fire
+
+	if(BarEntity::fire(this->mHero->getCenterX(), this->mHero->getCenterY()))
+	{
+		this->fire();
+	}
+}
+
+void BaseEnemy::fire()
+{
+	BaseBullet* bullet = ((BaseBullet*) this->mBullets->create());
+	bullet->setSpeed(250);
+	bullet->setPower(1);
+	bullet->fire(this->getCenterX(), this->getCenterY() + this->getZ(), this->mHero->getCenterX(), this->mHero->getCenterY() + this->mHero->getZ());
+	
+	if(Options::MUSIC_ENABLE)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/alienshot.wav");
 	}
 }
 

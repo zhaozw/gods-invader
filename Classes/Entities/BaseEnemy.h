@@ -2,8 +2,11 @@
 #define CONST_BASEENEMY_H
 
 #include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 
+#include "Texture.h"
 #include "BarEntity.h"
+#include "EntityManager.h"
 #include "BaseBullet.h"
 #include "Hero.h"
 #include "Options.h"
@@ -17,6 +20,7 @@ class BaseEnemy : public BarEntity
 		float mSpeedStandart;
 
 		Hero* mHero;
+		EntityManager* mBullets;
 
 		Entity* mPupil;
 		Entity* mEye;
@@ -35,8 +39,8 @@ class BaseEnemy : public BarEntity
 	private:
 
 	public:
-		BaseEnemy(Hero* pHero);
-		BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero);
+		BaseEnemy(Hero* pHero, EntityManager* pBullets);
+		BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero, EntityManager* pBullets);
 
 		virtual Entity* create();
 		virtual bool destroy();
@@ -44,6 +48,8 @@ class BaseEnemy : public BarEntity
 		void onCollide(BaseBullet* pBullet);
 
 		void update(float pDeltaTime);
+
+		void fire();
 
 		/**
 		 *

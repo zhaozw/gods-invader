@@ -14,8 +14,8 @@ class CastleEnemy : public BaseEnemy
 	private:
 
 	public:
-		CastleEnemy(Hero* pHero);
-		CastleEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero);
+		CastleEnemy(Hero* pHero, EntityManager* pBullets);
+		CastleEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero, EntityManager* pBullets);
 
 		virtual CastleEnemy* deepCopy();	
 };

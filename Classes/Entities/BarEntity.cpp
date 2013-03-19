@@ -137,6 +137,7 @@ void BarEntity::addHealth(float pHealth)
 	}
 
 	this->updateBars(HEALTH_BAR_INDEX);
+	this->updateBars(FIRE_BAR_INDEX); // TODO: I don't want to do that! :(
 }
 
 void BarEntity::removeHealth(float pHealth)
@@ -153,6 +154,7 @@ void BarEntity::removeHealth(float pHealth)
 	}
 
 	this->updateBars(HEALTH_BAR_INDEX);
+	this->updateBars(FIRE_BAR_INDEX); // TODO: I don't want to do that! :(
 }
 
 void BarEntity::updateBars(int pBarIndex)

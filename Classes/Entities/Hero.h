@@ -5,13 +5,14 @@
 #include "SimpleAudioEngine.h"
 
 #include "BarEntity.h"
-#include "BaseBullet.h"
 #include "Gas.h"
 #include "EntityManager.h"
 #include "Utils.h"
 #include "Options.h"
 
 using namespace cocos2d;
+
+class BaseBullet;
 
 class GasShadow : public Entity
 {
@@ -75,6 +76,9 @@ class Hero : public BarEntity
 		float mHealthRegenerationTime;
 		float mHealthRegenerationTimeElapsed;
 
+		float mShootVectorX;
+		float mShootVectorY;
+
 		bool mIsMove;
 
 		bool mShootFromLeftHand;
@@ -103,13 +107,13 @@ class Hero : public BarEntity
 		void setFollowCoordinates(float pX, float pY);
 		void follow(float pDeltaTime);
 
+		void onCollide(BaseBullet* pBullet);
+
 		virtual void setCurrentFrameIndex(int pIndex);
 
 		void fire(float pVectorX, float pVectorY);
 
 		void update(float pDeltaTime);
-
-		virtual void draw();
 };
 
 #endif

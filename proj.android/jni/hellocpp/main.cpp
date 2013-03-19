@@ -24,6 +24,7 @@
 #include "SmallCloud.cpp"
 #include "BaseCubic.cpp"
 #include "SmallCubic.cpp"
+#include "Label.cpp"
 #include "EntityManagerGroup.cpp"
 #include "CastleEnemy.cpp"
 #include "LayerManager.cpp"

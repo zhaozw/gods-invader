@@ -6,6 +6,7 @@
 #include "SimpleAudioEngine.h"
 
 #include "Platform.h"
+#include "Label.h"
 #include "Hero.h"
 #include "BaseEnemy.h"
 #include "CastleEnemy.h"
@@ -49,6 +50,8 @@ class Level : public Screen
 	};
 
 	private:
+		static int LEVEL;
+
 		Entity* mBackgroundPart1;
 		Entity* mBackgroundPart2;
 
@@ -70,6 +73,7 @@ class Level : public Screen
 		EntityManagerGroup* mEnemiesGroup;
 
 		EntityManager* mBaseBullets;
+		EntityManager* mEnemyBullets;
 		EntityManager* mExplosions;
 		EntityManager* mPickups;
 		EntityManager* mSmallClouds;
@@ -81,6 +85,11 @@ class Level : public Screen
 		EntityManager* mSmallCubics;
 
 		LayerManager* mUnitsLayer;
+
+		Label* mLowHealthLabel;
+		Label* mPrepareForBattleLabel;
+		Label* mLevelClearedLabel;
+		Label* mLevelNumberLabel;
 		
 		Entity* mPlayButton;
 
@@ -100,10 +109,16 @@ class Level : public Screen
 		float mSmallCubicGenerationTime;
 		float mSmallCubicGenerationTimeElapsed;
 
+		float mLastLowHealthLabelShowedTime;
+
+		bool mLevelShouldStart;
+		float mLevelStartTime;
+
 	public:
 		Level(void);
 
 		void restart();
+		void startLevel();
 
 		void checkCollisions();
 

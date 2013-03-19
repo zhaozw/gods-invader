@@ -17,7 +17,7 @@ void Pickup::constructor()
 	this->addChild(this->mShadow);
 
 	this->mAnimationTime = 2.0f;
-	this->mDeathAnimationTime = 1.0f;
+	this->mDeathAnimationTime = 0.5f;
 
 	this->reset();
 }
@@ -106,7 +106,7 @@ void Pickup::startDestroy()
 {
 	this->mIsMustDestroy = true;
 
-	this->runAction(CCFadeTo::create(1.0f, 0.0f));
+	this->runAction(CCFadeTo::create(this->mDeathAnimationTime, 0.0f));
 }
 
 void Pickup::update(float pDeltaTime)

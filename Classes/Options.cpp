@@ -22,7 +22,7 @@ int Options::CAMERA_CENTER_Y = 0;
 
 float Options::MIN_Z = 1.0f;
 
-bool Options::MUSIC_ENABLE = false;
+bool Options::MUSIC_ENABLE = true;
 
 Entity* Options::BASE = new Entity();
 

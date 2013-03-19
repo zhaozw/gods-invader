@@ -59,11 +59,13 @@ Entity* EntityManager::create()
 	Entity* object = ((Entity*) this->objectAtIndex(0))->deepCopy(); // TODO: Increase CCArray capacity? Really? I think it's works like a charm!
 
 	object->setEntityManager(this);
-	object->setEntityManagerId(++this->mCapacity);
+	object->setEntityManagerId(this->mCapacity);
 
 	this->mParent->addChild(object);
 
 	this->addObject(object);
+
+	this->mCapacity++;
 
 	return object->create();
 }

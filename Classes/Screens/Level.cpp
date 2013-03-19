@@ -7,6 +7,8 @@ int Level::PICKUP_1_COUNT = 0;
 int Level::PICKUP_3_COUNT = 0;
 int Level::PICKUP_2_COUNT = 0;
 
+int Level::LEVEL = 0;
+
 // ===========================================================
 // Help classes
 // ===========================================================
@@ -24,6 +26,8 @@ Level::Level(void)
 
 	Options::CENTER_X = Options::CAMERA_CENTER_X + Utils::coord(50);
 	Options::CENTER_Y = Options::CAMERA_CENTER_Y + Utils::coord(200);
+
+	this->mLastLowHealthLabelShowedTime = 0;
 
 	this->mEnemiesGroup = new EntityManagerGroup(200);
 
@@ -54,10 +58,14 @@ Level::Level(void)
 		shadow->setCenterPosition(decoration->getCenterX(), decoration->getCenterY() - shadow->getHeight() / 2);
 	}
 
-	this->mSmallCubics = new EntityManager(100, new SmallCubic(), mUnitsLayer);
+	this->mSmallCubics = new EntityManager(25, new SmallCubic(), mUnitsLayer);
 
-	this->mBaseBullets = new EntityManager(100, new BaseBullet(), mUnitsLayer);
+	this->mBaseBullets = new EntityManager(25, new BaseBullet(), mUnitsLayer);
+	this->mEnemyBullets = new EntityManager(125, new BaseBullet(), mUnitsLayer);
 	this->mHero = new Hero("main-character/main-char-sprite.png", this->mBaseBullets, 1, 5);
+
+
+	this->mEnemyBullets->changeTexture(new Texture("stolen/alienbullet.png", 1, 1));
 
 	this->mCastle = new Castle("base/base.png", 4, 2);
 	this->mCastle->setCenterPosition(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100) - Utils::coord(700));
@@ -90,30 +98,29 @@ Level::Level(void)
 	this->mHero->mGases->setParent(this);
 
 	this->mPickups = new EntityManager(10, new Pickup(), mUnitsLayer);
-	this->mBaseEnemies2 = new EntityManager(25, new CastleEnemy(mHero), mUnitsLayer);
-	this->mBaseEnemies = new EntityManager(25, new BaseEnemy(mHero), mUnitsLayer);
+	this->mBaseEnemies2 = new EntityManager(25, new CastleEnemy(mHero, mEnemyBullets), mUnitsLayer);
+	this->mBaseEnemies = new EntityManager(25, new BaseEnemy(mHero, mEnemyBullets), mUnitsLayer);
 
 	this->mExplosions = new EntityManager(10, new BaseExplosion(), mUnitsLayer);
 	this->setRegisterAsTouchable(true);
 	mUnitsLayer->addChild(this->mCastleShadow);
 
 	this->addChild(mUnitsLayer);
-	this->mCastle->setCurrentFrameIndex(7);
 
 	this->mClouds = new EntityManager(2, new Cloud(), mCloudsLayer);
 	this->addChild(mCloudsLayer);
 
 
-Options::BASE = new Entity("test/base-test.png");
-Options::BASE->setCenterPosition(Options::CENTER_X, Options::CENTER_Y);
-//Options::BASE->setColor(ccc3(26.0,129.0,253.0));
-Options::BASE->setVisible(false);
+	Options::BASE = new Entity("test/base-test.png");
+	Options::BASE->setCenterPosition(Options::CENTER_X, Options::CENTER_Y);
+	Options::BASE->setVisible(false);
+
 	this->addChild(Options::BASE);
 
 	this->generateStartSmalClouds();
 
-mControlLayer->setScale(1);
-this->addChild(mControlLayer);
+	mControlLayer->setScale(1);
+	this->addChild(mControlLayer);
 
 	this->mPlayButton = new PlayButton(this);
 	this->mPlayButton->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(100));
@@ -137,6 +144,24 @@ this->addChild(mControlLayer);
 
 	this->mEnemiesGroup->add(this->mBaseEnemies);
 	this->mEnemiesGroup->add(this->mBaseEnemies2);
+
+	this->mPrepareForBattleLabel = new Label("labels/prepare.png");
+	this->mLowHealthLabel = new Label("labels/low-health.png");
+	this->mLevelClearedLabel = new Label("labels/level-cleared.png");
+	this->mLevelNumberLabel = new Label("labels/level-number.png", 1, 2);
+
+	this->mLowHealthLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(200));
+	this->mPrepareForBattleLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(200));
+	this->mLevelClearedLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y - Utils::coord(200));
+	this->mLevelNumberLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y - Utils::coord(200));
+
+	this->mStaticLayer->addChild(this->mLowHealthLabel);
+	this->mStaticLayer->addChild(this->mPrepareForBattleLabel);
+	this->mStaticLayer->addChild(this->mLevelClearedLabel);
+	this->mStaticLayer->addChild(this->mLevelNumberLabel);
+
+	this->mLevelShouldStart = false;
+	this->mLevelStartTime = 0;
 }
 
 void Level::restart()
@@ -169,6 +194,33 @@ void Level::restart()
 	this->mShakeIntensity = 0;
 
 	this->mIsGameRunning = true;
+
+	this->mPrepareForBattleLabel->show(3.0f, 5.0f);
+
+	this->mLevelShouldStart = true;
+	this->mLevelStartTime = 10.0f;
+}
+
+void Level::startLevel()
+{
+	/////////////////// TEST //////////////////////
+
+	if(this->mBaseEnemies->getCount() < 1)
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			this->mBaseEnemies->create()->setCenterPosition(100, 100);
+		}
+	}
+
+	/////////////////// TEST //////////////////////
+
+	this->mLevelShouldStart = false;
+
+	this->mLevelNumberLabel->setCurrentFrameIndex(LEVEL);
+	this->mLevelNumberLabel->show(3.0f);
+
+	LEVEL++;
 }
 
 void Level::runMainMenuanimation()
@@ -288,6 +340,43 @@ void Level::update(float pDeltaTime)
 		this->setScale(0.5);
 	}
 
+	//
+
+	if(!this->mIsMainMenu)
+	{
+		
+	if(this->mLevelShouldStart)
+	{
+		this->mLevelStartTime -= pDeltaTime;
+
+		if(this->mLevelStartTime <= 0)
+		{
+			this->startLevel();
+		}
+	}
+	else if(LEVEL > 0)
+	{
+		if(this->mBaseEnemies->getCount() == 0)
+		{
+			this->mLevelClearedLabel->show(5.0f);
+
+			this->mLevelShouldStart = true;
+			this->mLevelStartTime = 10.0f;
+		}
+	}
+
+	// Lables
+
+this->mLastLowHealthLabelShowedTime += pDeltaTime;
+
+		if(this->mHero->getHealth() <= this->mHero->getMaxHealth() / 3 && this->mLastLowHealthLabelShowedTime >= 10.0f)
+		{
+			this->mLowHealthLabel->show(3.0f);
+
+			this->mLastLowHealthLabelShowedTime = 0;
+		}
+	}
+
 	// Castle shadow
 
 	if(this->mCastle->getCurrentFrameIndex() >= 5)
@@ -317,26 +406,7 @@ if(this->mIsGameRunning)
 
 	this->checkCollisions();
 
-	/////////////////// TEST //////////////////////
-
-	if(this->mBaseEnemies->getCount() < 1)
-	{
-		for(int i = 0; i < 25; i++)
-		{
-			this->mBaseEnemies->create()->setCenterPosition(100, 100);
-		}
-	}
-
-	if(this->mBaseEnemies2->getCount() < 1)
-	{
-		for(int i = 0; i < 25; i++)
-		{
-			this->mBaseEnemies2->create()->setCenterPosition(1600, 1600);
-		}
-	}
-
 	this->mEnemiesGroup->update(pDeltaTime);
-	/////////////////// TEST //////////////////////
 
 	this->mPickups->update(pDeltaTime);
 }
@@ -413,6 +483,18 @@ void Level::checkCollisions()
 			this->shake(0.5f, 4.0f);
 
 			continue;
+		}
+	}
+
+	for(int i = 0; i < this->mEnemyBullets->getCount(); i++)
+	{
+		BaseBullet* bullet = (BaseBullet*) this->mEnemyBullets->objectAtIndex(i);
+
+		if(this->mHero->collideWith(bullet))
+		{
+			this->mHero->onCollide(bullet);
+
+			bullet->destroy();
 		}
 	}
 

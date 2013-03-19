@@ -37,6 +37,7 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->setAnchorPoint(ccp(0.5f, 0.5f));
 
 	this->mShadow = NULL;
+	this->mEntityManager = NULL;
 
 	/**
 	 *
@@ -343,7 +344,7 @@ bool Entity::isIgnoreSorting()
 Entity* Entity::create()
 {
 	this->setVisible(true);
-	this->setCurrentFrameIndex(0);
+	//this->setCurrentFrameIndex(0); // TODO: Check is that really don't need here.
 
 	return this;
 }
@@ -531,7 +532,6 @@ void Entity::onAnimationEnd()
 
 void Entity::onAnimationCircleEnd()
 {
-
 }
 
 void Entity::setAnimationStartTimeout(float pSecodsTimeout)

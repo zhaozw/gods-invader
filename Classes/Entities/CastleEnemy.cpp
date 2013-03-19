@@ -3,20 +3,20 @@
 
 #include "CastleEnemy.h"
 
-CastleEnemy::CastleEnemy(Hero* pHero) :
- BaseEnemy(pHero)
+CastleEnemy::CastleEnemy(Hero* pHero, EntityManager* pBullets) :
+ BaseEnemy(pHero, pBullets)
 {
 }
 
-CastleEnemy::CastleEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero) :
-	BaseEnemy(pszFileName, pHorizontalFramesCount, pVerticalFramesCount, pHero)
+CastleEnemy::CastleEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero, EntityManager* pBullets) :
+	BaseEnemy(pszFileName, pHorizontalFramesCount, pVerticalFramesCount, pHero, pBullets)
 	{
 		
 	}
 
 CastleEnemy* CastleEnemy::deepCopy()
 {
-	return new CastleEnemy("stolen/alien1.png", 8, 1, this->mHero);
+	return new CastleEnemy("test/garlic.png", 1, 1, this->mHero, this->mBullets);
 }
 
 #endif

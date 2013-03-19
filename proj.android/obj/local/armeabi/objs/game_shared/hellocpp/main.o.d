@@ -234,12 +234,12 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Options.h jni/../../Classes/Screens/Preloader.h \
  jni/../../Classes/AppDelegate.h jni/../../Classes/Screens/Screen.h \
  jni/../../Classes/Screens/Level.h jni/../../Classes/Entities/Platform.h \
- jni/../../Classes/Entities/Entity.h jni/../../Classes/Entities/Hero.h \
- jni/../../Classes/Entities/BarEntity.h \
- jni/../../Classes/Entities/BaseBullet.h \
- jni/../../Classes/Entities/Hero.h jni/../../Classes/Entities/Gas.h \
+ jni/../../Classes/Entities/Entity.h jni/../../Classes/Entities/Label.h \
+ jni/../../Classes/Entities/Hero.h jni/../../Classes/Entities/BarEntity.h \
+ jni/../../Classes/Entities/Gas.h jni/../../Classes/Entities/Hero.h \
  jni/../../Classes/Managers/EntityManager.h \
  jni/../../Classes/Entities/BaseEnemy.h \
+ jni/../../Classes/Entities/BaseBullet.h \
  jni/../../Classes/Entities/CastleEnemy.h \
  jni/../../Classes/Entities/BaseEnemy.h \
  jni/../../Classes/Entities/BaseBullet.h \
@@ -289,6 +289,7 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Entities/BaseCubic.cpp \
  jni/../../Classes/Entities/SmallCubic.cpp \
  jni/../../Classes/Entities/SmallCubic.h \
+ jni/../../Classes/Entities/Label.cpp jni/../../Classes/Entities/Label.h \
  jni/../../Classes/Managers/EntityManagerGroup.cpp \
  jni/../../Classes/Managers/EntityManagerGroup.h \
  jni/../../Classes/Entities/CastleEnemy.cpp \
@@ -786,19 +787,21 @@ jni/../../Classes/Entities/Platform.h:
 
 jni/../../Classes/Entities/Entity.h:
 
+jni/../../Classes/Entities/Label.h:
+
 jni/../../Classes/Entities/Hero.h:
 
 jni/../../Classes/Entities/BarEntity.h:
 
-jni/../../Classes/Entities/BaseBullet.h:
+jni/../../Classes/Entities/Gas.h:
 
 jni/../../Classes/Entities/Hero.h:
-
-jni/../../Classes/Entities/Gas.h:
 
 jni/../../Classes/Managers/EntityManager.h:
 
 jni/../../Classes/Entities/BaseEnemy.h:
+
+jni/../../Classes/Entities/BaseBullet.h:
 
 jni/../../Classes/Entities/CastleEnemy.h:
 
@@ -913,6 +916,10 @@ jni/../../Classes/Entities/BaseCubic.cpp:
 jni/../../Classes/Entities/SmallCubic.cpp:
 
 jni/../../Classes/Entities/SmallCubic.h:
+
+jni/../../Classes/Entities/Label.cpp:
+
+jni/../../Classes/Entities/Label.h:
 
 jni/../../Classes/Managers/EntityManagerGroup.cpp:
 

@@ -2,6 +2,7 @@
 #define CONST_HERO
 
 #include "Hero.h"
+#include "BaseBullet.h"
 
 Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount) :
 	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
@@ -45,7 +46,7 @@ void Hero::reset()
 	this->mFollowCoordinateX = 0;
 	this->mFollowCoordinateY = 0;
 
-	this->mShootPaddingStandart = 200;
+	this->mShootPaddingStandart = 0;
 	this->mShootPadding = this->mShootPaddingStandart;
 
 	this->mIsMove = false;
@@ -98,9 +99,9 @@ void Hero::follow(float pDeltaTime)
 		}
 		else
 		{
-			this->mShootPadding = 100;
+			//this->mShootPadding = 100;
 
-			this->setSpeed(this->mSpeedStandart * 10);
+			//this->setSpeed(this->mSpeedStandart * 10);
 		}
 	}
 }
@@ -166,6 +167,16 @@ void Hero::fire(float pVectorX, float pVectorY)
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/shot.wav");
 		}
 	}
+}
+
+void Hero::onCollide(BaseBullet* pBullet)
+{
+	this->removeHealth(pBullet->getPower());
+	
+	this->mShootVectorX = pBullet->mVectorX;
+	this->mShootVectorY = pBullet->mVectorY;
+
+	this->mShootPadding = Utils::coord(5); // UPGRADE
 }
 
 bool Hero::destroy()
@@ -234,21 +245,30 @@ void Hero::update(float pDeltaTime)
 
 	this->setCurrentFrameIndex(pontencialFrame);
 
-	if(this->mShootPadding < this->mShootPaddingStandart)
+	
+    // padding on collide
+
+	if(this->mShootPadding > 0)
 	{
-		float x = this->getCenterX() + this->mFollowCoordinateX / this->mShootPadding;
-		float y = this->getCenterY() + this->mFollowCoordinateY / this->mShootPadding;
+		float x = this->mShootVectorX;
+		float y = this->mShootVectorY;
+
+		float speedX = x / sqrt(x * x + y * y) * this->mShootPadding;
+		float speedY = y / sqrt(x * x + y * y) * this->mShootPadding;
+
+		x = this->getCenterX() + speedX;
+		y = this->getCenterY() + speedY;
 
 		if(!this->collideCoordinatesWith(x, y, Options::BASE))
 		{
 			this->setCenterPosition(x, y);
 		}
 
-		this->mShootPadding += 3;
+		this->mShootPadding -= Utils::coord(0.3f);
 	}
 	else if(this->getSpeed(pDeltaTime) > this->mSpeedStandart)
 	{
-		this->setSpeed(this->getSpeed(pDeltaTime) - 50);
+		//this->setSpeed(this->getSpeed(pDeltaTime) - 50);
 
 		this->mIsMove = false;
 	}
@@ -256,14 +276,14 @@ void Hero::update(float pDeltaTime)
 	//this->mAltitude = this->mGas->getCurrentFrameIndex();
 
 	
-		this->mGasesAnimationTimeElapsed += pDeltaTime;
+	this->mGasesAnimationTimeElapsed += pDeltaTime;
 
-		if(this->mGasesAnimationTimeElapsed >= this->mGasesAnimationTime && this->getZ() <= Options::MIN_Z)
-		{
-			this->mGasesAnimationTimeElapsed = 0;
+	if(this->mGasesAnimationTimeElapsed >= this->mGasesAnimationTime && this->getZ() <= Options::MIN_Z)
+	{
+		this->mGasesAnimationTimeElapsed = 0;
 
-			this->mGases->create();
-		}
+		this->mGases->create();
+	}
 
 	this->mHealthRegenerationTimeElapsed += pDeltaTime;
 
@@ -272,119 +292,6 @@ void Hero::update(float pDeltaTime)
 		this->mHealthRegenerationTimeElapsed = 0;
 
 		this->addHealth(1);
-	}
-}
-
-void Hero::draw()
-{
-	BarEntity::draw();
-return;
-	float x1;
-	float x2;
-
-	float y1;
-	float y2;
-
-	if(this->getHealth() < 100)
-	{
-		x1 = 27;
-		x2 = this->getWidth() - 27;
-
-		y1 = -11;
-		y2 = -19;
-
-		CCPoint vertices1[] = {
-			ccp(x1, y1),
-			ccp(x2, y1),
-			ccp(x2, y2),
-			ccp(x1, y2)
-		};
-
-		float full = (this->getWidth() - 29);
-
-		if(this->getScaleX() > 0)
-		{
-			x1 = 29;
-			x2 = full * (this->getHealth() / 100);
-		}
-		else
-		{
-			x1 = 29;
-			x2 = full * (this->getHealth() / 100);
-
-			x1 += full - x2;
-			x2 += full - x2;
-		}
-
-		y1 = -13;
-		y2 = -17;
-
-		CCPoint vertices2[] = {
-			ccp(x1, y1),
-			ccp(x2, y1),
-			ccp(x2, y2),
-			ccp(x1, y2)
-		};
-
-		ccDrawSolidPoly(vertices1, 4, ccc4f(0.0f / 255.0f, 000.0f / 255.0f, 0.0f / 255.0f, 1));
-
-		if(this->getHealth() > 75)
-		{
-			ccDrawSolidPoly(vertices2, 4, ccc4f(0.0f / 255.0f, 255.0f / 255.0f, 0.0f / 255.0f, 1));
-		}
-		else if(this->getHealth() > 45)
-		{
-			ccDrawSolidPoly(vertices2, 4, ccc4f(255.0f / 255.0f, 255.0f / 255.0f, 0.0f / 255.0f, 1));
-		}
-		else
-		{
-			ccDrawSolidPoly(vertices2, 4, ccc4f(255.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 1));
-		}
-	}
-
-	if(this->getPatrons() < 100)
-	{
-		x1 = 27;
-		x2 = this->getWidth() - 27;
-
-		y1 = -21;
-		y2 = -29;
-
-		CCPoint vertices1[] = {
-			ccp(x1, y1),
-			ccp(x2, y1),
-			ccp(x2, y2),
-			ccp(x1, y2)
-		};
-
-		float full = (this->getWidth() - 29);
-
-		if(this->getScaleX() > 0)
-		{
-			x1 = 29;
-			x2 = full * (this->getPatrons() / 100);
-		}
-		else
-		{
-			x1 = 29;
-			x2 = full * (this->getPatrons() / 100);
-
-			x1 += full - x2;
-			x2 += full - x2;
-		}
-
-		y1 = -23;
-		y2 = -27;
-
-		CCPoint vertices2[] = {
-			ccp(x1, y1),
-			ccp(x2, y1),
-			ccp(x2, y2),
-			ccp(x1, y2)
-		};
-
-		ccDrawSolidPoly(vertices1, 4, ccc4f(0.0f / 255.0f, 000.0f / 255.0f, 0.0f / 255.0f, 1));
-		ccDrawSolidPoly(vertices2, 4, ccc4f(0.0f / 255.0f, 200.0f / 255.0f, 255.0f / 250.0f, 1));
 	}
 }
 
