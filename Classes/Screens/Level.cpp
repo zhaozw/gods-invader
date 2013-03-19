@@ -150,15 +150,21 @@ Level::Level(void)
 	this->mLevelClearedLabel = new Label("labels/level-cleared.png");
 	this->mLevelNumberLabel = new Label("labels/level-number.png", 1, 2);
 
+	this->mJumpButton = new JumpButton(this->mHero);
+
 	this->mLowHealthLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(200));
 	this->mPrepareForBattleLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(200));
 	this->mLevelClearedLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y - Utils::coord(200));
 	this->mLevelNumberLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y - Utils::coord(200));
 
+	this->mJumpButton->setCenterPosition(Options::CAMERA_WIDTH - Utils::coord(100), Utils::coord(200));
+
 	this->mStaticLayer->addChild(this->mLowHealthLabel);
 	this->mStaticLayer->addChild(this->mPrepareForBattleLabel);
 	this->mStaticLayer->addChild(this->mLevelClearedLabel);
 	this->mStaticLayer->addChild(this->mLevelNumberLabel);
+
+	this->mStaticLayer->addChild(this->mJumpButton);
 
 	this->mLevelShouldStart = false;
 	this->mLevelStartTime = 0;

@@ -49,6 +49,26 @@ class Level : public Screen
 			}
 	};
 
+	class JumpButton : public Entity
+	{
+		private:
+			Hero* mHero;
+
+		public:
+			JumpButton(Hero* pHero) :
+				Entity("controls/jump.png")
+				{
+					this->mHero = pHero;
+
+					this->setRegisterAsTouchable(true);
+				}
+
+			void onTouch(CCTouch* touch, CCEvent* event)
+			{
+				this->mHero->setZ(this->mHero->getZ() + 5);
+			}
+	};
+
 	private:
 		static int LEVEL;
 
@@ -90,6 +110,8 @@ class Level : public Screen
 		Label* mPrepareForBattleLabel;
 		Label* mLevelClearedLabel;
 		Label* mLevelNumberLabel;
+
+		JumpButton* mJumpButton;
 		
 		Entity* mPlayButton;
 

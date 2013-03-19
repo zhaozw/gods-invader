@@ -191,8 +191,8 @@ void Entity::setZ(float pZ)
 
 	if(this->mShadow != NULL)
 	{
-		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(60) - this->mZ);
-		this->mShadow->setScale(1.0f - this->mZ / 200);
+		//this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(60) - this->mZ);
+		//this->mShadow->setScale(1.0f - this->mZ / 200);
 	}
 }
 
