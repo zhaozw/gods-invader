@@ -102,14 +102,14 @@ void Cloud::update(float pDeltaTime)
 {
 	Entity::update(pDeltaTime);
 
-	this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(550));
-
 	if(this->mIsMove)
 	{
 		float speedX = this->mVectorX / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
 		float speedY = this->mVectorY / sqrt(this->mVectorX * this->mVectorX + this->mVectorY * this->mVectorY) * this->getSpeed(pDeltaTime);
 
 		this->setCenterPosition(this->getCenterX() + speedX, this->getCenterY() + speedY);
+
+		this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(550));
 	}
 
 	if(!this->collideWithCoordinates(this->mBoundsX1, this->mBoundsX2, this->mBoundsY1, this->mBoundsY2))

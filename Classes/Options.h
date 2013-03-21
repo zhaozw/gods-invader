@@ -22,8 +22,10 @@ class Options
 		static int CAMERA_CENTER_Y;
 
 		static float MIN_Z;
+		static float MAX_Z;
 
 		static bool MUSIC_ENABLE;
+		static bool SOUND_ENABLE;
 
 		static Entity* BASE;
 };

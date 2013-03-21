@@ -162,7 +162,7 @@ void Hero::fire(float pVectorX, float pVectorY)
 			}
 		}
 	
-		if(Options::MUSIC_ENABLE)
+		if(Options::SOUND_ENABLE)
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/shot.wav");
 		}

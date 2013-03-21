@@ -19,10 +19,12 @@ int Level::LEVEL = 0;
 
 Level::Level(void)
 {
-	if(Options::MUSIC_ENABLE)
+	if(Options::SOUND_ENABLE)
 	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Music/game-music.ogg", true);
 	}
+
+	this->mHeroMustJump = false;
 
 	Options::CENTER_X = Options::CAMERA_CENTER_X + Utils::coord(50);
 	Options::CENTER_Y = Options::CAMERA_CENTER_Y + Utils::coord(200);
@@ -32,9 +34,11 @@ Level::Level(void)
 	this->mEnemiesGroup = new EntityManagerGroup(200);
 
 	this->mUnitsLayer = new LayerManager();
+	this->mUnitsLayer->setVisible(false);
 
-	CCLayer* mCloudsLayer = new CCLayer();
-	this->mControlLayer = new CCLayer();
+	Layer* mCloudsLayer = new Layer();
+	this->mControlLayer = new Layer();
+	this->mMainLayer = new Layer();
 
 	this->mBackgroundPart1 = new Entity("main-menu/main-menu-background-part-1.png");
 	this->mBackgroundPart2 = new Entity("main-menu/main-menu-background-part-2.png");
@@ -44,19 +48,6 @@ Level::Level(void)
 	
 	this->mCandyDecorator = new EntityManager(10, new Entity("platform/candy-sprite.png", 3, 1), mUnitsLayer);
 	this->mCandyShadowsDecorator = new EntityManager(10, new Entity("platform/candy-sprite-shadow.png", 3, 1), mUnitsLayer);
-
-	for(int i = 0; i < 0; i++)
-	{
-		Entity* decoration = this->mCandyDecorator->create();
-		decoration->setCurrentFrameIndex(Utils::random(0, 2));
-		decoration->setCenterPosition(Utils::random(this->mPlatformPart1->getX(), this->mPlatformPart2->getX() + this->mPlatformPart2->getWidth()), Utils::random(this->mPlatformPart1->getY() + Utils::coord(700), this->mPlatformPart1->getY() - this->mPlatformPart1->getHeight() + Utils::coord(700)));
-		
-		Entity* shadow = this->mCandyShadowsDecorator->create();
-		shadow->setIsShadow();
-		shadow->setIgnoreSorting(true);
-		shadow->setCurrentFrameIndex(decoration->getCurrentFrameIndex());
-		shadow->setCenterPosition(decoration->getCenterX(), decoration->getCenterY() - shadow->getHeight() / 2);
-	}
 
 	this->mSmallCubics = new EntityManager(25, new SmallCubic(), mUnitsLayer);
 
@@ -74,28 +65,42 @@ Level::Level(void)
 	this->mCastleShadow->setCenterPosition(Options::CENTER_X + Utils::coord(18), Options::CENTER_Y - Utils::coord(110) - Utils::coord(700));
 	this->mCastleShadow->setIsShadow();
 
-	this->mBackgroundPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y + Utils::coord(200));
-	this->mBackgroundPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y + Utils::coord(200));
+	this->mBackgroundPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y - Utils::coord(200));
+	this->mBackgroundPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y - Utils::coord(200));
 
-	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y - Utils::coord(700));
-	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y - Utils::coord(700));
+	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y - Utils::coord(1200));
+	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y - Utils::coord(1200));
 
-	this->addChild(this->mBackgroundPart1);
-	this->addChild(this->mBackgroundPart2);
+	for(int i = 0; i < 0; i++) // TODO: Candies.
+	{
+		Entity* decoration = this->mCandyDecorator->create();
+		decoration->setCurrentFrameIndex(Utils::random(0, 2));
+		decoration->setCenterPosition(Utils::random(this->mPlatformPart1->getX(), this->mPlatformPart2->getX() + this->mPlatformPart2->getWidth()),
+			Utils::random(this->mPlatformPart1->getY() + Utils::coord(700), this->mPlatformPart1->getY() - this->mPlatformPart1->getHeight() + Utils::coord(700)));
+		
+		Entity* shadow = this->mCandyShadowsDecorator->create();
+		shadow->setIsShadow();
+		shadow->setIgnoreSorting(true);
+		shadow->setCurrentFrameIndex(decoration->getCurrentFrameIndex());
+		shadow->setCenterPosition(decoration->getCenterX(), decoration->getCenterY() - shadow->getHeight() + Utils::coord(25));
+	}
 
-	this->mSmallClouds = new EntityManager(20, new SmallCloud(), this);
-	this->mStars = new EntityManager(20, new Star(), this);
+	this->mMainLayer->addChild(this->mBackgroundPart1);
+	this->mMainLayer->addChild(this->mBackgroundPart2);
 
-	this->addChild(this->mPlatformPart1);
-	this->addChild(this->mPlatformPart2);
+	this->mSmallClouds = new EntityManager(20, new SmallCloud(), this->mMainLayer);
+	this->mStars = new EntityManager(20, new Star(), this->mMainLayer);
+
+	this->mMainLayer->addChild(this->mPlatformPart1);
+	this->mMainLayer->addChild(this->mPlatformPart2);
 
 	mUnitsLayer->addChild(this->mCastle);
 
 	mUnitsLayer->addChild(this->mHero);
 
-	this->addChild(this->mHero->mShadow);
-	this->mHero->mGasesShadows->setParent(this);
-	this->mHero->mGases->setParent(this);
+	this->mMainLayer->addChild(this->mHero->mShadow);
+	this->mHero->mGasesShadows->setParent(this->mMainLayer);
+	this->mHero->mGases->setParent(this->mMainLayer);
 
 	this->mPickups = new EntityManager(10, new Pickup(), mUnitsLayer);
 	this->mBaseEnemies2 = new EntityManager(25, new CastleEnemy(mHero, mEnemyBullets), mUnitsLayer);
@@ -105,22 +110,68 @@ Level::Level(void)
 	this->setRegisterAsTouchable(true);
 	mUnitsLayer->addChild(this->mCastleShadow);
 
-	this->addChild(mUnitsLayer);
+	this->mMainLayer->addChild(mUnitsLayer);
 
 	this->mClouds = new EntityManager(2, new Cloud(), mCloudsLayer);
-	this->addChild(mCloudsLayer);
-
+	this->mMainLayer->addChild(mCloudsLayer);
 
 	Options::BASE = new Entity("test/base-test.png");
 	Options::BASE->setCenterPosition(Options::CENTER_X, Options::CENTER_Y);
 	Options::BASE->setVisible(false);
 
-	this->addChild(Options::BASE);
+	this->mMainLayer->addChild(Options::BASE);
 
 	this->generateStartSmalClouds();
 
-	mControlLayer->setScale(1);
-	this->addChild(mControlLayer);
+	// BUTTONS
+
+	this->mButtonsHolder1 = new ButtonHolder("controls/context-bg.png");
+	this->mButtonsHolder2 = new ButtonHolder("controls/context-bg.png");
+
+	this->mSettingsButton = new SettingsButton(this);
+	this->mSocialButton = new SocialButton(this);
+
+	this->mCreditsButton = new CreditsButton();
+
+	this->mMusicButton = new MusicButton();
+	this->mSoundButton = new SoundButton();
+
+	this->mMoreGamesButton = new MoreGamesButton();
+	this->mFacebookButton = new FacebookButton();
+	this->mTwitterButton = new TwitterButton();
+
+	this->mButtonsHolder1->setCenterPosition(Utils::coord(90), Utils::coord(90));
+	this->mButtonsHolder2->setCenterPosition(Options::CAMERA_WIDTH - Utils::coord(90), Utils::coord(90));
+
+	this->mSettingsButton->setCenterPosition(Utils::coord(90), Utils::coord(90));
+	this->mSocialButton->setCenterPosition(Options::CAMERA_WIDTH - Utils::coord(90), Utils::coord(90));
+
+	this->mCreditsButton->setCenterPosition(Utils::coord(90), Utils::coord(0));
+	this->mMusicButton->setCenterPosition(Utils::coord(90), -Utils::coord(80));
+	this->mSoundButton->setCenterPosition(Utils::coord(90), -Utils::coord(170));
+
+	this->mMoreGamesButton->setCenterPosition(Options::CAMERA_WIDTH - Utils::coord(90), Utils::coord(0));
+	this->mFacebookButton->setCenterPosition(Options::CAMERA_WIDTH - Utils::coord(90), -Utils::coord(80));
+	this->mTwitterButton->setCenterPosition(Options::CAMERA_WIDTH - Utils::coord(90), -Utils::coord(170));
+
+	mControlLayer->addChild(mButtonsHolder1);
+	mControlLayer->addChild(mButtonsHolder2);
+
+	mControlLayer->addChild(this->mCreditsButton);
+	mControlLayer->addChild(this->mMusicButton);
+	mControlLayer->addChild(this->mSoundButton);
+
+	mControlLayer->addChild(this->mMoreGamesButton);
+	mControlLayer->addChild(this->mFacebookButton);
+	mControlLayer->addChild(this->mTwitterButton);
+
+	mControlLayer->addChild(mSettingsButton);
+	mControlLayer->addChild(mSocialButton);
+
+	this->mMusicButton->setCurrentFrameIndex(Options::MUSIC_ENABLE ? 0 : 1);
+	this->mSoundButton->setCurrentFrameIndex(Options::SOUND_ENABLE ? 0 : 1);
+
+	//
 
 	this->mPlayButton = new PlayButton(this);
 	this->mPlayButton->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(100));
@@ -135,9 +186,18 @@ Level::Level(void)
 
 	this->mHero->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
 
-	this->mStaticLayer = new CCLayer();
-	this->addChild(mStaticLayer);
+	this->mStaticLayer = new Layer();
 	this->mStaticPickups = new EntityManager(100, new Entity("stolen/pickup-icon.png", 1, 3), mStaticLayer);
+
+	//
+
+	this->mPauseButton = new PauseButton();
+
+	this->mPauseButton->setPosition(Options::CAMERA_WIDTH - Utils::coord(20), Options::CAMERA_HEIGHT - Utils::coord(110));
+
+	this->mStaticLayer->addChild(this->mPauseButton);
+
+	//
 
 	this->mSmallCubicGenerationTimeElapsed = 0;
 	this->mSmallCubicGenerationTime = 1;
@@ -148,9 +208,9 @@ Level::Level(void)
 	this->mPrepareForBattleLabel = new Label("labels/prepare.png");
 	this->mLowHealthLabel = new Label("labels/low-health.png");
 	this->mLevelClearedLabel = new Label("labels/level-cleared.png");
-	this->mLevelNumberLabel = new Label("labels/level-number.png", 1, 2);
+	this->mLevelNumberLabel = new Label("labels/level-number.png");
 
-	this->mJumpButton = new JumpButton(this->mHero);
+	this->mJumpButton = new JumpButton(this);
 
 	this->mLowHealthLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(200));
 	this->mPrepareForBattleLabel->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(200));
@@ -168,6 +228,16 @@ Level::Level(void)
 
 	this->mLevelShouldStart = false;
 	this->mLevelStartTime = 0;
+
+	this->addChild(this->mMainLayer);
+	this->addChild(this->mControlLayer);
+	this->addChild(this->mStaticLayer);
+
+	this->mStaticLayer->setOpacity(0.0f);
+	this->mControlLayer->setOpacity(255.0f);
+
+	this->mMainLayer->setPosition(this->mMainLayer->getPosition().x, this->mMainLayer->getPosition().y - Utils::coord(250));
+	this->mMainLayer->setScale(0.5);
 }
 
 void Level::restart()
@@ -176,6 +246,8 @@ void Level::restart()
 	PICKUP_3_COUNT = 0;
 	PICKUP_2_COUNT = 0;
 
+	LEVEL = 0;
+
 	this->mIsMainMenu = false;
 
 	this->removeChild(this->mControlLayer);
@@ -183,7 +255,15 @@ void Level::restart()
 	this->mPlatformPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y);
 	this->mPlatformPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y);
 
+	this->mBackgroundPart1->setCenterPosition(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y + Utils::coord(200));
+	this->mBackgroundPart2->setCenterPosition(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y + Utils::coord(200));
+
 	this->mCastle->setCenterPosition(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100));
+
+	this->mLowHealthLabel->destroy();
+	this->mPrepareForBattleLabel->destroy();
+	this->mLevelClearedLabel->destroy();
+	this->mLevelNumberLabel->destroy();
 
 	this->mBaseEnemies->clear();
 	this->mBaseEnemies2->clear();
@@ -205,6 +285,8 @@ void Level::restart()
 
 	this->mLevelShouldStart = true;
 	this->mLevelStartTime = 10.0f;
+
+	this->mUnitsLayer->setVisible(true);
 }
 
 void Level::startLevel()
@@ -223,7 +305,6 @@ void Level::startLevel()
 
 	this->mLevelShouldStart = false;
 
-	this->mLevelNumberLabel->setCurrentFrameIndex(LEVEL);
 	this->mLevelNumberLabel->show(3.0f);
 
 	LEVEL++;
@@ -234,19 +315,25 @@ void Level::runMainMenuanimation()
 	this->mIsMainMenu = false;
 	this->mIsMainMenuAnimationRunning = true;
 
+	this->mBackgroundPart1->runAction(CCMoveTo::create(1.0f, ccp(Options::CAMERA_CENTER_X - this->mBackgroundPart1->getWidth() / 2, Options::CAMERA_CENTER_Y + Utils::coord(200))));
+	this->mBackgroundPart2->runAction(CCMoveTo::create(1.0f, ccp(Options::CAMERA_CENTER_X + this->mBackgroundPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y + Utils::coord(200))));
+
 	this->mPlatformPart1->runAction(CCMoveTo::create(1.0f, ccp(Options::CAMERA_CENTER_X - this->mPlatformPart1->getWidth() / 2, Options::CAMERA_CENTER_Y)));
 	this->mPlatformPart2->runAction(CCMoveTo::create(1.0f, ccp(Options::CAMERA_CENTER_X + this->mPlatformPart1->getWidth() / 2 - 1, Options::CAMERA_CENTER_Y)));
 
 	this->mCastle->runAction(CCMoveTo::create(1.0f, ccp(Options::CENTER_X, Options::CENTER_Y + Utils::coord(100))));
 
-	this->runAction(CCScaleTo::create(1.0f, 1.0f));
+	this->mMainLayer->runAction(CCScaleTo::create(1.0f, 1.0f));
+
+	this->mControlLayer->runAction(CCFadeTo::create(1.0f, 0.0f));
+	this->mStaticLayer->runAction(CCFadeTo::create(1.0f, 255.0f));
 }
 
 bool Level::ccTouchBegan(CCTouch* touch, CCEvent* event)
 {
 	if(Screen::ccTouchBegan(touch, event))
 	{
-		CCPoint location  = convertTouchToNodeSpaceAR(touch);
+		CCPoint location  = mUnitsLayer->convertTouchToNodeSpaceAR(touch);
 
 		this->mPointerX = location.x;
 		this->mPointerY = location.y;
@@ -271,7 +358,7 @@ void Level::ccTouchEnded(CCTouch* touch, CCEvent* event)
 {
 	if(this->mHero->mIsShouldFire)
 	{
-		CCPoint location  = convertTouchToNodeSpaceAR(touch);
+		CCPoint location  = mUnitsLayer->convertTouchToNodeSpaceAR(touch);
 
 		this->mHero->fire(location.x, location.y);
 	}
@@ -279,7 +366,7 @@ void Level::ccTouchEnded(CCTouch* touch, CCEvent* event)
 
 void Level::ccTouchMoved(CCTouch* touch, CCEvent* event)
 {
-	CCPoint location  = convertTouchToNodeSpaceAR(touch);
+	CCPoint location  = mUnitsLayer->convertTouchToNodeSpaceAR(touch);
 
 	if(abs(this->mPointerX - location.x) > 10 || abs(this->mPointerY - location.y) > 10 )
 	{
@@ -301,7 +388,7 @@ void Level::update(float pDeltaTime)
 {
 	if(this->mIsMainMenuAnimationRunning)
 	{
-		if(this->getScale() == 1)
+		if(this->mMainLayer->getScale() == 1)
 		{
 			this->mIsMainMenuAnimationRunning = false;
 
@@ -315,35 +402,12 @@ void Level::update(float pDeltaTime)
 	 *
 	 */
 
-	if(!this->mIsMainMenu)
+	if(true)
 	{
-		float potencialX = -this->mHero->getCenterX() * this->getScale() + Options::CAMERA_CENTER_X;
-		float potencialY = -this->mHero->getCenterY() + Options::CAMERA_CENTER_Y; // TODO: Maybe I should add Z coordinate?
-	
-		float padding;
+		float potencialX = -this->mHero->getCenterX() + Options::CAMERA_CENTER_X;
+		float potencialY = -this->mHero->getCenterY() + Options::CAMERA_CENTER_Y + this->mHero->getZ();
 
-		if(this->mIsMainMenuAnimationRunning)
-		{
-			padding = 1.0f;
-		}
-		else
-		{
-			padding = 0;
-		}
-
-		this->setPosition(potencialX, potencialY - padding);
-
-		potencialX = this->mHero->getCenterX() - Options::CAMERA_CENTER_X;
-		potencialY = this->mHero->getCenterY() - Options::CAMERA_CENTER_Y;
-		this->mStaticLayer->setPosition(potencialX, potencialY - padding);
-	}
-	else
-	{
-		float potencialX = Options::CAMERA_CENTER_X - this->mPlayButton->getCenterX()*this->getScale();
-		float potencialY = Options::CAMERA_CENTER_Y - this->mPlayButton->getCenterY() + Utils::coord(100);
-	
-		this->setPosition(potencialX, potencialY);
-		this->setScale(0.5);
+		this->mMainLayer->setPosition(potencialX, potencialY);
 	}
 
 	//
@@ -351,35 +415,54 @@ void Level::update(float pDeltaTime)
 	if(!this->mIsMainMenu)
 	{
 		
-	if(this->mLevelShouldStart)
-	{
-		this->mLevelStartTime -= pDeltaTime;
-
-		if(this->mLevelStartTime <= 0)
+		if(this->mLevelShouldStart)
 		{
-			this->startLevel();
+			this->mLevelStartTime -= pDeltaTime;
+
+			if(this->mLevelStartTime <= 0)
+			{
+				this->startLevel();
+			}
 		}
-	}
-	else if(LEVEL > 0)
-	{
-		if(this->mBaseEnemies->getCount() == 0)
+		else if(LEVEL > 0)
 		{
-			this->mLevelClearedLabel->show(5.0f);
+			if(this->mBaseEnemies->getCount() == 0)
+			{
+				if(LEVEL > 10) // TODO: Last level.
+				{
+					AppDelegate::screens->set(3.0f, 2);
+				}
 
-			this->mLevelShouldStart = true;
-			this->mLevelStartTime = 10.0f;
+				this->mLevelClearedLabel->show(5.0f);
+
+				this->mLevelShouldStart = true;
+				this->mLevelStartTime = 10.0f;
+			}
 		}
-	}
 
-	// Lables
+		// Lables
 
-this->mLastLowHealthLabelShowedTime += pDeltaTime;
+		this->mLastLowHealthLabelShowedTime += pDeltaTime;
 
 		if(this->mHero->getHealth() <= this->mHero->getMaxHealth() / 3 && this->mLastLowHealthLabelShowedTime >= 10.0f)
 		{
 			this->mLowHealthLabel->show(3.0f);
 
 			this->mLastLowHealthLabelShowedTime = 0;
+		}
+	}
+
+	// Hero jump
+
+	if(this->mHeroMustJump)
+	{
+			this->mHero->addZ(3);
+	}
+	else
+	{
+		if(this->mHero->getZ() > Options::MIN_Z)
+		{
+			this->mHero->removeZ(1);
 		}
 	}
 
@@ -469,12 +552,12 @@ void Level::checkCollisions()
 
 		if(this->mHero->collideWith(enemy))
 		{
-			this->mHero->removeHealth(1);
+			this->mHero->removeHealth(0.1f);
 		}
 
 		if(enemy->getHealth() <= 0)
 		{
-			if(Options::MUSIC_ENABLE)
+			if(Options::SOUND_ENABLE)
 			{
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/ai_death.wav");
 			}
@@ -540,12 +623,12 @@ void Level::checkCollisions()
 
 		if(this->mHero->collideWith(enemy))
 		{
-			this->mHero->removeHealth(1);
+			this->mHero->removeHealth(0.1f);
 		}
 
 		if(enemy->getHealth() <= 0)
 		{
-			if(Options::MUSIC_ENABLE)
+			if(Options::SOUND_ENABLE)
 			{
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/ai_death.wav");
 			}
@@ -570,7 +653,7 @@ void Level::checkCollisions()
 
 		if(this->mHero->collideWith(pickup, Utils::coord(4.0f)))
 		{
-			pickup->follow(this->mHero->getCenterX(), this->mHero->getCenterY());
+			pickup->follow(this->mHero->getCenterX(), this->mHero->getCenterY() + this->mHero->getZ());
 		}
 
 		if(this->mHero->collideWith(pickup) && !pickup->mIsMustDestroy)
@@ -578,7 +661,7 @@ void Level::checkCollisions()
 			switch(pickup->getCurrentFrameIndex())
 			{
 				case 0:
-					if(Options::MUSIC_ENABLE)
+					if(Options::SOUND_ENABLE)
 					{
 						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/health.wav");
 					}
@@ -586,7 +669,7 @@ void Level::checkCollisions()
 					PICKUP_1_COUNT++;
 				break;
 				case 1:
-					if(Options::MUSIC_ENABLE)
+					if(Options::SOUND_ENABLE)
 					{
 						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/coin.wav");
 					}
@@ -594,7 +677,7 @@ void Level::checkCollisions()
 					PICKUP_2_COUNT++;
 				break;
 				case 2:
-					if(Options::MUSIC_ENABLE)
+					if(Options::SOUND_ENABLE)
 					{
 						CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/health.wav");
 					}
@@ -617,7 +700,7 @@ void Level::checkCollisions()
 	{
 		this->mExplosions->create()->setCenterPosition(this->mHero->getCenterX(), this->mHero->getCenterY());
 	
-		if(Options::MUSIC_ENABLE)
+		if(Options::SOUND_ENABLE)
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/player_death.wav");
 		}
@@ -694,7 +777,7 @@ void Level::updateShake(float pDeltaTime)
 			if(Utils::randomf(0, 1) < 0.5) sentitX = -1;
 			if(Utils::randomf(0, 1) < 0.5) sentitY = -1;
 
-			this->setPosition(this->getPosition().x + Utils::randomf(0, 1) * this->mShakeIntensity * sentitX, this->getPosition().y + Utils::randomf(0, 1) * this->mShakeIntensity * sentitY);
+			this->mMainLayer->setPosition(this->mMainLayer->getPosition().x + Utils::randomf(0, 1) * this->mShakeIntensity * sentitX, this->mMainLayer->getPosition().y + Utils::randomf(0, 1) * this->mShakeIntensity * sentitY);
 		}
 	}
 }

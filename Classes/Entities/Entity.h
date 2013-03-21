@@ -108,6 +108,9 @@ class Entity : public CCSprite, public Touchable
 		void setY(float pY);
 		void setZ(float pZ);
 
+		void addZ(float pZ);
+		void removeZ(float pZ);
+
 		float getCenterPosition();
 		float getX();
 		float getY();

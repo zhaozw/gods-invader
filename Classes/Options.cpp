@@ -21,8 +21,10 @@ int Options::CAMERA_CENTER_X = 0;
 int Options::CAMERA_CENTER_Y = 0;
 
 float Options::MIN_Z = 1.0f;
+float Options::MAX_Z = 200.0f;
 
-bool Options::MUSIC_ENABLE = true;
+bool Options::MUSIC_ENABLE = false;
+bool Options::SOUND_ENABLE = false;
 
 Entity* Options::BASE = new Entity();
 

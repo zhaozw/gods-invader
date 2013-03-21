@@ -3,7 +3,16 @@
 
 #include "Utils.h"
 
-float Utils::Pi = std::atan(1.0) * 4;
+float Utils::Pi = atan(1.0) * 4;
+
+string Utils::intToString(int i)
+{
+	stringstream s;
+
+    s << i;
+
+    return s.str();
+}
 
 float Utils::randomf(float min, float max)
 {

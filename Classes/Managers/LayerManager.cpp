@@ -60,7 +60,18 @@ void LayerManager::sortChildrenByYPosition() // TODO: Code refactoring.
 			continue;
 		}
 
-		for(i = j - 1; i >= 0 && (((Entity*) this->getChildren()->objectAtIndex(i))->getY() - ((Entity*) this->getChildren()->objectAtIndex(i))->getHeight() - ((Entity*) this->getChildren()->objectAtIndex(i))->getZ()) < (testValue->getY() - testValue->getHeight() - testValue->getZ()) && !testValue->isSetAsShadow() && !((Entity*) this->getChildren()->objectAtIndex(i))->isIgnoreSorting(); i--)
+		for(i = j - 1; i >= 0 &&
+			(((Entity*) this->getChildren()->objectAtIndex(i))->getY() - ((Entity*) this->getChildren()->objectAtIndex(i))->getHeight()) <=
+			(testValue->getY() - testValue->getHeight()) &&
+
+			((Entity*) this->getChildren()->objectAtIndex(i))->getZ() >=
+			(testValue->getZ()) &&
+
+			!testValue->isSetAsShadow() &&
+			!testValue->isIgnoreSorting() &&
+			!((Entity*) this->getChildren()->objectAtIndex(i))->isIgnoreSorting() &&
+			!((Entity*) this->getChildren()->objectAtIndex(i))->isSetAsShadow();
+			i--)
 		{
 			this->getChildren()->replaceObjectAtIndex(i + 1, this->getChildren()->objectAtIndex(i));
 		}

@@ -2,7 +2,8 @@
 #define CONST_GAMEWON_H
 
 #include "cocos2d.h"
-#include "Screen.h"
+
+#include "AppDelegate.h"
 
 using namespace cocos2d;
 
@@ -22,6 +23,12 @@ class GameWon : public Screen
 		// Private fields
 		// ===========================================================
 
+		Entity* mBackground;
+		Entity* mBackgroundTitle;
+
+		Entity* mMenuButton;
+		Entity* mRestartButton;
+
 		// ===========================================================
 		// Private methods
 		// ===========================================================
@@ -34,6 +41,8 @@ class GameWon : public Screen
 		// ===========================================================
 		// Constructors
 		// ===========================================================
+
+		GameWon();
 
 		// ===========================================================
 		// Getters

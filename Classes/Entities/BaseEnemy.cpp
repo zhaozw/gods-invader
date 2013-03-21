@@ -182,9 +182,9 @@ void BaseEnemy::fire()
 	BaseBullet* bullet = ((BaseBullet*) this->mBullets->create());
 	bullet->setSpeed(250);
 	bullet->setPower(1);
-	bullet->fire(this->getCenterX(), this->getCenterY() + this->getZ(), this->mHero->getCenterX(), this->mHero->getCenterY() + this->mHero->getZ());
+	bullet->fire(this->getCenterX(), this->getCenterY(), this->mHero->getCenterX(), this->mHero->getCenterY());
 	
-	if(Options::MUSIC_ENABLE)
+	if(Options::SOUND_ENABLE)
 	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/alienshot.wav");
 	}

@@ -234,9 +234,10 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Options.h jni/../../Classes/Screens/Preloader.h \
  jni/../../Classes/AppDelegate.h jni/../../Classes/Screens/Screen.h \
  jni/../../Classes/Screens/Level.h jni/../../Classes/Entities/Platform.h \
- jni/../../Classes/Entities/Entity.h jni/../../Classes/Entities/Label.h \
- jni/../../Classes/Entities/Hero.h jni/../../Classes/Entities/BarEntity.h \
- jni/../../Classes/Entities/Gas.h jni/../../Classes/Entities/Hero.h \
+ jni/../../Classes/Entities/Entity.h jni/../../Classes/Entities/Layer.h \
+ jni/../../Classes/Entities/Label.h jni/../../Classes/Entities/Hero.h \
+ jni/../../Classes/Entities/BarEntity.h jni/../../Classes/Entities/Gas.h \
+ jni/../../Classes/Entities/Hero.h \
  jni/../../Classes/Managers/EntityManager.h \
  jni/../../Classes/Entities/BaseEnemy.h \
  jni/../../Classes/Entities/BaseBullet.h \
@@ -268,7 +269,8 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Screens/GameOver.cpp \
  jni/../../Classes/Screens/GameOver.h \
  jni/../../Classes/Screens/GameWon.cpp \
- jni/../../Classes/Screens/GameWon.h jni/../../Classes/Entities/Hero.cpp \
+ jni/../../Classes/Screens/GameWon.h jni/../../Classes/Entities/Layer.cpp \
+ jni/../../Classes/Entities/Layer.h jni/../../Classes/Entities/Hero.cpp \
  jni/../../Classes/Utils/Utils.cpp jni/../../Classes/Utils/Utils.h \
  jni/../../Classes/Entities/Gas.cpp \
  jni/../../Classes/Entities/Platform.cpp \
@@ -787,6 +789,8 @@ jni/../../Classes/Entities/Platform.h:
 
 jni/../../Classes/Entities/Entity.h:
 
+jni/../../Classes/Entities/Layer.h:
+
 jni/../../Classes/Entities/Label.h:
 
 jni/../../Classes/Entities/Hero.h:
@@ -868,6 +872,10 @@ jni/../../Classes/Screens/GameOver.h:
 jni/../../Classes/Screens/GameWon.cpp:
 
 jni/../../Classes/Screens/GameWon.h:
+
+jni/../../Classes/Entities/Layer.cpp:
+
+jni/../../Classes/Entities/Layer.h:
 
 jni/../../Classes/Entities/Hero.cpp:
 

@@ -3,14 +3,18 @@
 
 #include "cocos2d.h"
 
+#include <string>
+#include <sstream>
 #include <stdlib.h>
 #include <cmath>
 
+using namespace std;
 using namespace cocos2d;
 
 class Utils
 {
 	public:
+		static string intToString(int i);
 		static float randomf(float min, float max);
 		static int random(int min, int max);
 		static float coord(float pCoordinate);

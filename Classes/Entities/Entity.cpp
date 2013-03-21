@@ -187,13 +187,30 @@ void Entity::setZ(float pZ)
 {
 	CCAssert(pZ < Options::MIN_Z, "Z coordinate cannot be < MIN_Z"); // TODO: Don't work?
 
-	this->mZ = pZ;
-
 	if(this->mShadow != NULL)
 	{
-		//this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(60) - this->mZ);
-		//this->mShadow->setScale(1.0f - this->mZ / 200);
+		this->mShadow->setScale(1.0f - this->mZ / Options::MAX_Z);
 	}
+
+	this->mZ = pZ;
+}
+
+void Entity::addZ(float pZ)
+{
+	if(this->mZ - pZ >= Options::MAX_Z) return;
+
+	this->setZ(this->mZ + pZ);
+
+	this->setCenterPosition(this->getCenterX(), this->getCenterY() + pZ);
+}
+
+void Entity::removeZ(float pZ)
+{
+	if(this->mZ - pZ <= Options::MIN_Z) return;
+
+	this->setZ(this->mZ - pZ);
+
+	this->setCenterPosition(this->getCenterX(), this->getCenterY() - pZ);
 }
 
 float Entity::getCenterPosition()
@@ -751,7 +768,7 @@ void Entity::update(float pDeltaTime)
 		{
 			if(this->mShadow->getParent() != this)
 			{
-				this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(60) - this->mZ);
+				this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(60)); // I must transfer this to once call.
 			}
 		}
 	}

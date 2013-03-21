@@ -4,14 +4,29 @@
 #include "GameOver.h"
 
 // ===========================================================
-// Help classes
+// Inner Classes
 // ===========================================================
 
-class PlayAgainButton : public Entity
+class GameOverMenuButton : public Entity
 {
 	public:
-		PlayAgainButton() :
-			Entity("game-over/play.png")
+		GameOverMenuButton() :
+			Entity("controls/menu-button.png")
+			{
+				this->setRegisterAsTouchable(true);
+			}
+
+		void onTouch(CCTouch* touch, CCEvent* event)
+		{
+			// TODO: Restore MainMenu layer.
+		}
+};
+
+class GameOverRestartButton : public Entity
+{
+	public:
+		GameOverRestartButton() :
+			Entity("controls/restart-button.png")
 			{
 				this->setRegisterAsTouchable(true);
 			}
@@ -23,7 +38,11 @@ class PlayAgainButton : public Entity
 };
 
 // ===========================================================
-// Init
+// Constants
+// ===========================================================
+
+// ===========================================================
+// Fields
 // ===========================================================
 
 // ===========================================================
@@ -33,29 +52,30 @@ class PlayAgainButton : public Entity
 GameOver::GameOver()
 {
 	this->mBackground = new Entity("game-over/background.png");
-	this->mPlayAgainButton = new PlayAgainButton();
+	this->mBackgroundTitle = new Entity("game-over/title.png");
+
+	this->mMenuButton = new GameOverMenuButton();
+	this->mRestartButton = new GameOverRestartButton();
 
 	this->mBackground->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y);
-	this->mPlayAgainButton->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y - Utils::coord(200));
+	this->mBackgroundTitle->setCenterPosition(Options::CAMERA_CENTER_X, Options::CAMERA_CENTER_Y + Utils::coord(200));
+
+	this->mMenuButton->setCenterPosition(Options::CAMERA_CENTER_X - Utils::coord(80), Utils::coord(90));
+	this->mRestartButton->setCenterPosition(Options::CAMERA_CENTER_X + Utils::coord(80), Utils::coord(90));
 
 	this->addChild(this->mBackground);
-	this->addChild(this->mPlayAgainButton);
+	this->addChild(this->mBackgroundTitle);
+
+	this->addChild(this->mMenuButton);
+	this->addChild(this->mRestartButton);
 }
-
-// ===========================================================
-// Getters
-// ===========================================================
-
-// ===========================================================
-// Setters
-// ===========================================================
 
 // ===========================================================
 // Methods
 // ===========================================================
 
 // ===========================================================
-// Virtual methods
+// Virtual Methods
 // ===========================================================
 
 #endif

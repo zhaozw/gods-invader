@@ -9,6 +9,7 @@
 #include "ScreenManager.cpp"
 #include "GameOver.cpp"
 #include "GameWon.cpp"
+#include "Layer.cpp"
 #include "Hero.cpp"
 #include "Utils.cpp"
 #include "Gas.cpp"

@@ -21,6 +21,8 @@ class Preloader : public Screen
 		Entity* mBarBackground;
 		Entity* mBar;
 
+		CCLabelTTF* mLoadingText;
+
 	public:
 		Preloader(void);
 
