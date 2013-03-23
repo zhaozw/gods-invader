@@ -14,6 +14,7 @@
 LayerManager::LayerManager()
 {
 	this->mSortEntitiesTime = 0.1f;
+
 	this->mSortEntitiesTimeElapsed = 1000;
 }
 
@@ -28,23 +29,6 @@ LayerManager::LayerManager()
 // ===========================================================
 // Methods
 // ===========================================================
-
-void LayerManager::popShadows()
-{
-	int length = this->getChildren()->count();
-
-	int replacesCount = 0;
-
-	for(int i = 0; i < length; i++)
-	{
-		Entity* object = (Entity*) this->getChildren()->objectAtIndex(i);
-
-		if(object->isSetAsDynamicShadow())
-		{
-			this->getChildren()->exchangeObjectAtIndex(replacesCount++, i);
-		}
-	}
-}
 
 void LayerManager::sortChildrenByYPosition() // TODO: Code refactoring.
 {
@@ -91,8 +75,6 @@ void LayerManager::update(float pDeltaTime)
 		this->mSortEntitiesTimeElapsed = 0;
 
 		this->sortChildrenByYPosition();
-
-		this->popShadows(); // TODO: Remove this instruction to the own place.
 	}
 }
 

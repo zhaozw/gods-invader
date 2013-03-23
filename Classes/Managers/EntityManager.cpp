@@ -3,7 +3,7 @@
 
 #include "EntityManager.h"
 
-void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen)
+void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen, int pZOrder)
 {
 	this->initWithCapacity(pCreateCount);
 
@@ -22,7 +22,7 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 
 		if(pScreen != NULL)
 		{
-			this->mParent->addChild(currentEntity);
+			this->mParent->addChild(currentEntity, pZOrder);
 		}
 		
 		currentEntity->destroy(false);
@@ -31,17 +31,22 @@ void EntityManager::init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNod
 
 EntityManager::EntityManager(int pCreateCount, Entity* pEntity)
 {
-	this->init(pCreateCount, -1, pEntity, NULL);
+	this->init(pCreateCount, -1, pEntity, NULL, 0);
 }
 
 EntityManager::EntityManager(int pCreateCount, Entity* pEntity, CCNode* pScreen)
 {
-	this->init(pCreateCount, -1, pEntity, pScreen);
+	this->init(pCreateCount, -1, pEntity, pScreen, 0);
 }
 
 EntityManager::EntityManager(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen)
 {
-	this->init(pCreateCount, pMaxCount, pEntity, pScreen);
+	this->init(pCreateCount, pMaxCount, pEntity, pScreen, 0);
+}
+
+EntityManager::EntityManager(int pCreateCount, Entity* pEntity, CCNode* pScreen, int pZOrder)
+{
+	this->init(pCreateCount, -1, pEntity, pScreen, pZOrder);
 }
 
 Entity* EntityManager::create()

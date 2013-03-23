@@ -88,23 +88,24 @@ Level::Level(void)
 	this->mMainLayer->addChild(this->mBackgroundPart1);
 	this->mMainLayer->addChild(this->mBackgroundPart2);
 
-	this->mSmallClouds = new EntityManager(20, new SmallCloud(), this->mMainLayer);
 	this->mStars = new EntityManager(20, new Star(), this->mMainLayer);
+	this->mSmallClouds = new EntityManager(20, new SmallCloud(), this->mMainLayer);
 
 	this->mMainLayer->addChild(this->mPlatformPart1);
 	this->mMainLayer->addChild(this->mPlatformPart2);
 
-	mUnitsLayer->addChild(this->mCastle);
+	mUnitsLayer->addChild(this->mCastle, 1);
+	this->mCastle->setIgnoreSorting(true);
 
-	mUnitsLayer->addChild(this->mHero);
+	mUnitsLayer->addChild(this->mHero, 1);
 
 	this->mMainLayer->addChild(this->mHero->mShadow);
 	this->mHero->mGasesShadows->setParent(this->mMainLayer);
 	this->mHero->mGases->setParent(this->mMainLayer);
 
 	this->mPickups = new EntityManager(10, new Pickup(), mUnitsLayer);
-	this->mBaseEnemies2 = new EntityManager(25, new CastleEnemy(mHero, mEnemyBullets), mUnitsLayer);
-	this->mBaseEnemies = new EntityManager(25, new BaseEnemy(mHero, mEnemyBullets), mUnitsLayer);
+	this->mBaseEnemies2 = new EntityManager(25, new CastleEnemy(), mUnitsLayer, 1);
+	this->mBaseEnemies = new EntityManager(25, new FollowEnemy(mHero), mUnitsLayer, 1);
 
 	this->mExplosions = new EntityManager(10, new BaseExplosion(), mUnitsLayer);
 	this->setRegisterAsTouchable(true);
@@ -291,13 +292,43 @@ void Level::restart()
 
 void Level::startLevel()
 {
+	if(Options::SOUND_ENABLE)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Sound/start_level.wav");
+	}
+
 	/////////////////// TEST //////////////////////
 
-	if(this->mBaseEnemies->getCount() < 1)
+	if(this->mBaseEnemies->getCount() < 1 && this->mBaseEnemies2->getCount() < 1)
 	{
+		float x = 100;
+		float y = 100;
+
 		for(int i = 0; i < 10; i++)
 		{
-			this->mBaseEnemies->create()->setCenterPosition(100, 100);
+			x += 40;
+
+			if(i==5) {
+				x= 100;
+				y += 40;
+			}
+
+			this->mBaseEnemies->create()->setCenterPosition(x, y);
+		}
+
+		x = 400;
+		y = 400;
+
+		for(int i = 0; i < 10; i++)
+		{
+			x += 40;
+
+			if(i==5) {
+				x= 100;
+				y += 40;
+			}
+
+			this->mBaseEnemies2->create()->setCenterPosition(x, y);
 		}
 	}
 
@@ -552,6 +583,8 @@ void Level::checkCollisions()
 
 		if(this->mHero->collideWith(enemy))
 		{
+			enemy->onCollide(this->mHero);
+
 			this->mHero->removeHealth(0.1f);
 		}
 

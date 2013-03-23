@@ -27,6 +27,7 @@
 #include "SmallCubic.cpp"
 #include "Label.cpp"
 #include "EntityManagerGroup.cpp"
+#include "FollowEnemy.cpp"
 #include "CastleEnemy.cpp"
 #include "LayerManager.cpp"
 #include "Options.cpp"

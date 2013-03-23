@@ -68,16 +68,12 @@ class Hero : public BarEntity
 		float mFollowCoordinateY;
 
 		float mShootPaddingStandart;
-		float mShootPadding;
 
 		float mGasesAnimationTime;
 		float mGasesAnimationTimeElapsed;
 
 		float mHealthRegenerationTime;
 		float mHealthRegenerationTimeElapsed;
-
-		float mShootVectorX;
-		float mShootVectorY;
 
 		bool mIsMove;
 
@@ -89,6 +85,11 @@ class Hero : public BarEntity
 	private:
 
 	public:
+		float mShootVectorX;
+		float mShootVectorY;
+
+		float mShootPadding;
+
 		EntityManager* mGases;
 		EntityManager* mGasesShadows;
 

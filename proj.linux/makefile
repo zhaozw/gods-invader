@@ -44,6 +44,7 @@ OBJECTS = ./main.o \
 			../Classes/Entities/Pickup.o \
 			../Classes/Entities/Platform.o \
 			../Classes/Entities/Layer.o \
+			../Classes/Entities/FollowEnemy.o \
 			../Classes/Entities/BarEntity.o \
 			../Classes/Entities/Hero.o \
 			../Classes/Entities/Castle.o \

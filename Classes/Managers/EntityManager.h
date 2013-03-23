@@ -16,12 +16,13 @@ class EntityManager : public CCArray
 		int mCapacity;
 
 	private:
-		void init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen);
+		void init(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen, int pZOrder);
 
 	public:
 		EntityManager(int pCreateCount, Entity* pEntity);
 		EntityManager(int pCreateCount, Entity* pEntity, CCNode* pScreen);
 		EntityManager(int pCreateCount, int pMaxCount, Entity* pEntity, CCNode* pScreen);
+		EntityManager(int pCreateCount, Entity* pEntity, CCNode* pScreen, int pZOrder);
 
 		Entity* create();
 		void destroy(int pIndex);

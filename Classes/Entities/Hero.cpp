@@ -7,9 +7,10 @@
 Hero::Hero(const char* pszFileName, EntityManager* pBulletsManager, int pHorizontalFramesCount, int pVerticalFramesCount) :
 	BarEntity(pszFileName, pHorizontalFramesCount, pVerticalFramesCount)
 	{
+		this->setAsCollidable();
+
 		this->mShadow = new Entity("stolen/shadow.png");
 		this->mShadow->setIsShadow();
-		this->mShadow->setIsDynamicShadow();
 
 		this->mGasesAnimationTime = 0.2f;
 
@@ -31,7 +32,7 @@ void Hero::reset()
 	this->mGasesAnimationTimeElapsed = 0;
 
 	this->setBarsManagement(true, true);
-	this->setFireTime(0.5);
+	this->setFireTime(0.05);
 	this->setPatrons(100);
 
 	this->setZ(Options::MIN_Z);
@@ -43,6 +44,7 @@ void Hero::reset()
 	this->setSpeed(this->mSpeedStandart); // I should remove this
 
 	this->setCurrentFrameIndex(2);
+
 	this->mFollowCoordinateX = 0;
 	this->mFollowCoordinateY = 0;
 
@@ -93,16 +95,7 @@ void Hero::follow(float pDeltaTime)
 		x = this->getCenterX() - x;
 		y = this->getCenterY() - y;
 
-		if(!this->collideCoordinatesWith(x, y, Options::BASE))
-		{
-			this->setCenterPosition(x, y);
-		}
-		else
-		{
-			//this->mShootPadding = 100;
-
-			//this->setSpeed(this->mSpeedStandart * 10);
-		}
+		this->setCenterPosition(x, y);
 	}
 }
 
@@ -123,7 +116,7 @@ void Hero::fire(float pVectorX, float pVectorY)
 		{
 			Entity* shootAnimator = this->mShootAnimators->create();
 			shootAnimator->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2);
-			shootAnimator->animate(0.08f, (this->getCurrentFrameIndex() - 1) * 12 + (this->mShootFromLeftHand ? 5 : 0), (this->getCurrentFrameIndex() - 1) * 12 +  + (this->mShootFromLeftHand ? 10 : 5));
+			shootAnimator->animate(0.08f, (this->getCurrentFrameIndex() - 1) * 12 + (this->mShootFromLeftHand ? 5 : 0), (this->getCurrentFrameIndex() - 1) * 12 +  + (this->mShootFromLeftHand ? 10 : 5), 1);
 
 			this->mShootFromLeftHand = !this->mShootFromLeftHand;
 
@@ -259,10 +252,7 @@ void Hero::update(float pDeltaTime)
 		x = this->getCenterX() + speedX;
 		y = this->getCenterY() + speedY;
 
-		if(!this->collideCoordinatesWith(x, y, Options::BASE))
-		{
-			this->setCenterPosition(x, y);
-		}
+		this->setCenterPosition(x, y);
 
 		this->mShootPadding -= Utils::coord(0.3f);
 	}

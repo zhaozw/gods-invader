@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 
 #include "Entity.h"
+#include "BaseEnemy.h"
 #include "EntityManager.h"
 
 using namespace cocos2d;

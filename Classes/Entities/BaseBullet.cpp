@@ -18,7 +18,7 @@ BaseBullet::BaseBullet(const char* pszFileName, int pHorizontalFramesCount, int 
 		this->mShadow->setCenterPosition(this->getWidth() / 2, this->getHeight() / 2 - Utils::coord(20));
 		this->mShadow->setIsShadow();
 
-		this->setPower(50);
+		this->setPower(20);
 		this->setSpeed(1000);
 
 		this->mLifeTime = 3;

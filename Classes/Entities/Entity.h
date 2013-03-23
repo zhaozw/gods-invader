@@ -36,7 +36,7 @@ class Entity : public CCSprite, public Touchable
 		bool mAnimationRunning;
 
 		bool mIsShadow;
-		bool mIsDynamicShadow;
+		bool mIsCollidable;
 
 		float mSpeed;
 
@@ -58,7 +58,7 @@ class Entity : public CCSprite, public Touchable
 
 		int mAnimationStartFrame;
 		int mAnimationFinishFrame;
-		int mAnimationFramesElaped;
+		int mAnimationFramesElapsed;
 
 		int mAnimationRepeatCount;
 
@@ -86,15 +86,19 @@ class Entity : public CCSprite, public Touchable
 		float getHeight();
 
 		void setIsShadow();
-		void setIsDynamicShadow();
+		void setAsCollidable();
 
 		bool isSetAsShadow();
-		bool isSetAsDynamicShadow();
+		bool isSetAsCollidable();
 
 		bool collideWith(Entity* pEntity);
 		bool collideWith(Entity* pEntity, float pFactor);
 		bool collideCoordinatesWith(float x, float y, Entity* pEntity);
 		bool collideWithCoordinates(float pX1, float pX2, float pY1, float pY2);
+
+		bool circlesCollide(Entity* entity);
+		bool circlesCollideWithCoordinates(float pX, float pY, float pRadius);
+		bool circlesCollideCoordinatesWith(float pX1, float pY1, float pX2, float pY2, float pRadius);
 		
 		/**
 		 *
@@ -181,6 +185,7 @@ class Entity : public CCSprite, public Touchable
 		void animate(float pAnimationTime, int pStartFrame, int pFinishFrame);
 
 		void setStartFrame(int pStartFrame);
+		void setFinishFrame(int pFinishFrame);
 
 		void setAnimationStartTimeout(float pSecodsTimeout);
 

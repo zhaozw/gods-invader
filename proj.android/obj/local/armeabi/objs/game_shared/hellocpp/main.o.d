@@ -243,6 +243,7 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Entities/BaseBullet.h \
  jni/../../Classes/Entities/CastleEnemy.h \
  jni/../../Classes/Entities/BaseEnemy.h \
+ jni/../../Classes/Entities/FollowEnemy.h \
  jni/../../Classes/Entities/BaseBullet.h \
  jni/../../Classes/Entities/Pickup.h \
  jni/../../Classes/Entities/BaseExplosion.h \
@@ -294,6 +295,8 @@ obj/local/armeabi/objs/game_shared/hellocpp/main.o: jni/hellocpp/main.cpp \
  jni/../../Classes/Entities/Label.cpp jni/../../Classes/Entities/Label.h \
  jni/../../Classes/Managers/EntityManagerGroup.cpp \
  jni/../../Classes/Managers/EntityManagerGroup.h \
+ jni/../../Classes/Entities/FollowEnemy.cpp \
+ jni/../../Classes/Entities/FollowEnemy.h \
  jni/../../Classes/Entities/CastleEnemy.cpp \
  jni/../../Classes/Entities/CastleEnemy.h \
  jni/../../Classes/Managers/LayerManager.cpp \
@@ -811,6 +814,8 @@ jni/../../Classes/Entities/CastleEnemy.h:
 
 jni/../../Classes/Entities/BaseEnemy.h:
 
+jni/../../Classes/Entities/FollowEnemy.h:
+
 jni/../../Classes/Entities/BaseBullet.h:
 
 jni/../../Classes/Entities/Pickup.h:
@@ -932,6 +937,10 @@ jni/../../Classes/Entities/Label.h:
 jni/../../Classes/Managers/EntityManagerGroup.cpp:
 
 jni/../../Classes/Managers/EntityManagerGroup.h:
+
+jni/../../Classes/Entities/FollowEnemy.cpp:
+
+jni/../../Classes/Entities/FollowEnemy.h:
 
 jni/../../Classes/Entities/CastleEnemy.cpp:
 

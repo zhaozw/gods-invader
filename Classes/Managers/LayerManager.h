@@ -63,8 +63,6 @@ class LayerManager : public CCLayer
 		// Methods
 		// ===========================================================
 
-		void popShadows();
-
 		void update(float pDeltaTime);
 
 		// ===========================================================

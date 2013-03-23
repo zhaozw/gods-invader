@@ -22,9 +22,6 @@ class BaseEnemy : public BarEntity
 		Hero* mHero;
 		EntityManager* mBullets;
 
-		Entity* mPupil;
-		Entity* mEye;
-
 		float mShootPadding;
 
 		float mFollowPaddingX;
@@ -33,31 +30,25 @@ class BaseEnemy : public BarEntity
 		float mShootVectorX;
 		float mShootVectorY;
 
-		float mEyeAnimationTime;
-		float mEyeAnimationTimeElapsed;
-
 	private:
 
 	public:
+		BaseEnemy();
 		BaseEnemy(Hero* pHero, EntityManager* pBullets);
+		BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount);
 		BaseEnemy(const char* pszFileName, int pHorizontalFramesCount, int pVerticalFramesCount, Hero* pHero, EntityManager* pBullets);
 
 		virtual Entity* create();
 		virtual bool destroy();
 
-		void onCollide(BaseBullet* pBullet);
+		virtual void onCollide(BaseBullet* pBullet);
+		virtual void onCollide(Hero* pEntity);
 
 		void update(float pDeltaTime);
 
 		void fire();
 
-		/**
-		 *
-		 * Let's take care about object copy
-		 *
-		 */
-
-		virtual BaseEnemy* deepCopy();	
+		virtual void move(float pDeltaTime);
 };
 
 #endif

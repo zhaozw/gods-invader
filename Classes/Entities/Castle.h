@@ -41,6 +41,8 @@ class Castle : public BarEntity
 		void fire(float pVectorX, float pVectorY);
 
 		virtual void update(float pDeltaTime);
+
+		void draw();
 };
 
 #endif

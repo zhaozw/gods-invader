@@ -11,6 +11,7 @@
 #include "Hero.h"
 #include "BaseEnemy.h"
 #include "CastleEnemy.h"
+#include "FollowEnemy.h"
 #include "BaseBullet.h"
 #include "Pickup.h"
 #include "BaseExplosion.h"

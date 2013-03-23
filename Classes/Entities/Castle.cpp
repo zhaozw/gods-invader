@@ -35,4 +35,9 @@ void Castle::fire(float pVectorX, float pVectorY)
 	}
 }
 
+void Castle::draw()
+{
+	Entity::draw();
+}
+
 #endif

@@ -29,8 +29,8 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mWasTouched = false;
 
 	this->mIsShadow = false;
-	this->mIsDynamicShadow = false;
 	this->mIgnoreSorting = false;
+	this->mIsCollidable = false;
 
 	this->mZ = Options::MIN_Z;
 
@@ -98,7 +98,7 @@ void Entity::constructor(const char* pszFileName, int pHorizontalFramesCount, in
 	this->mAnimationStartFrame = -1;
 	this->mAnimationFinishFrame = -1;
 
-	this->mAnimationFramesElaped = 0;
+	this->mAnimationFramesElapsed = 0;
 
 	this->mIsAnimationReverse = false;
 	this->mIsAnimationReverseNeed = false;
@@ -152,9 +152,9 @@ void Entity::setIsShadow()
 	this->mIsShadow = true;
 }
 
-void Entity::setIsDynamicShadow()
+void Entity::setAsCollidable()
 {
-	this->mIsDynamicShadow = true;
+	this->mIsCollidable = true;
 }
 
 /**
@@ -206,7 +206,12 @@ void Entity::addZ(float pZ)
 
 void Entity::removeZ(float pZ)
 {
-	if(this->mZ - pZ <= Options::MIN_Z) return;
+	if(this->mZ - pZ <= Options::MIN_Z)
+	{
+		this->mZ = Options::MIN_Z;
+
+		return;
+	}
 
 	this->setZ(this->mZ - pZ);
 
@@ -258,9 +263,9 @@ bool Entity::isSetAsShadow()
 	return this->mIsShadow;
 }
 
-bool Entity::isSetAsDynamicShadow()
+bool Entity::isSetAsCollidable()
 {
-	return this->mIsDynamicShadow;
+	return this->mIsCollidable;
 }
 
 bool Entity::collideWith(Entity* pEntity)
@@ -317,6 +322,33 @@ bool Entity::collideWith(Entity* pEntity, float pFactor)
 	return false;
 }
 
+bool Entity::circlesCollide(Entity* entity) {
+	float x = this->getCenterX() - entity->getCenterX();
+	float y = this->getCenterY() - entity->getCenterY();
+
+	float d = this->getWidth() / 2 + entity->getWidth() / 2;
+
+	return x * x + y * y < d * d;
+}
+
+bool Entity::circlesCollideWithCoordinates(float pX, float pY, float pRadius) {
+	float x = this->getCenterX() - pX;
+	float y = this->getCenterY() - pY;
+
+	float d = MAX(this->getWidth(), this->getHeight()) / 2 + pRadius;
+
+	return x * x + y * y < d * d;
+}
+
+bool Entity::circlesCollideCoordinatesWith(float pX1, float pY1, float pX2, float pY2, float pRadius) {
+	float x = pX1 - pX2;
+	float y = pY1 - pY2;
+
+	float d = MAX(this->getWidth(), this->getHeight()) / 2 + pRadius;
+
+	return x * x + y * y < d * d;
+}
+
 void Entity::setSpeed(float pSpeed)
 {
 	this->mSpeed = Utils::coord(pSpeed);
@@ -361,7 +393,6 @@ bool Entity::isIgnoreSorting()
 Entity* Entity::create()
 {
 	this->setVisible(true);
-	//this->setCurrentFrameIndex(0); // TODO: Check is that really don't need here.
 
 	return this;
 }
@@ -484,7 +515,7 @@ void Entity::changeTexture(Texture* pTexture)
 
 void Entity::animate(float pAnimationTime)
 {
-	this->mAnimationFramesElaped = 0;
+	this->mAnimationFramesElapsed = 0;
 
 	this->mAnimationTimeElapsed = 0;
 	this->mAnimationTime = pAnimationTime;
@@ -529,14 +560,14 @@ void Entity::animate(float pAnimationTime, int pStartFrame, int pFinishFrame, in
 	this->mAnimationStartFrame = pStartFrame;
 	this->mAnimationFinishFrame = pFinishFrame;
 
-	this->mAnimationRepeatCount = pRepeatCount - 1;
+	this->mAnimationRepeatCount = pRepeatCount;
 
 	this->setCurrentFrameIndex(pStartFrame);
 }
 
 void Entity::animate(float pAnimationTime, int pStartFrame, int pFinishFrame)
 {
-	this->animate(pAnimationTime, pStartFrame, pFinishFrame, 0);
+	this->animate(pAnimationTime, pStartFrame, pFinishFrame, -1);
 }
 
 void Entity::onAnimationStart()
@@ -562,6 +593,11 @@ void Entity::setStartFrame(int pStartFrame)
 	this->mAnimationStartFrame = pStartFrame;
 }
 
+void Entity::setFinishFrame(int pFinishFrame)
+{
+	this->mAnimationFinishFrame = pFinishFrame;
+}
+
 bool Entity::isAnimationRunning()
 {
 	return this->mAnimationRunning;
@@ -577,6 +613,7 @@ void Entity::onEnter()
 {
 	CCDirector* pDirector = CCDirector::sharedDirector();
 	pDirector->getTouchDispatcher()->addTargetedDelegate(this, 0, true);
+
 	CCSprite::onEnter();
 }
 
@@ -584,6 +621,7 @@ void Entity::onExit()
 {
 	CCDirector* pDirector = CCDirector::sharedDirector();
 	pDirector->getTouchDispatcher()->removeDelegate(this);
+
 	CCSprite::onExit();
 }
 
@@ -740,9 +778,9 @@ void Entity::update(float pDeltaTime)
 				{
 					if(this->getCurrentFrameIndex() < this->mAnimationFinishFrame)
 					{
-						this->setCurrentFrameIndex(this->mAnimationStartFrame + this->mAnimationFramesElaped + 1);
+						this->setCurrentFrameIndex(this->mAnimationStartFrame + this->mAnimationFramesElapsed + 1);
 
-						this->mAnimationFramesElaped++;
+						this->mAnimationFramesElapsed++;
 					}
 					else
 					{
@@ -750,11 +788,20 @@ void Entity::update(float pDeltaTime)
 						{
 							this->mAnimationRepeatCount--;
 
-							this->mAnimationFramesElaped = 0;
+							this->mAnimationFramesElapsed = 0;
+
+							if(this->mAnimationRepeatCount == 0)
+							{
+								this->mAnimationRunning = false;
+
+								this->onAnimationEnd();
+							}
 						}
 						else
 						{
-							this->onAnimationEnd();
+							this->mAnimationFramesElapsed = 0;
+
+							this->setCurrentFrameIndex(this->mAnimationStartFrame);
 						}
 					}
 				}
@@ -770,6 +817,25 @@ void Entity::update(float pDeltaTime)
 			{
 				this->mShadow->setCenterPosition(this->getCenterX(), this->getCenterY() - Utils::coord(60)); // I must transfer this to once call.
 			}
+		}
+	}
+	
+	if(this->mIsCollidable)
+	{
+		if(this->circlesCollideCoordinatesWith(this->getCenterX(), this->getCenterY(), Options::CENTER_X, Options::CENTER_Y + Utils::coord(30), Utils::coord((60.0f))))
+		{
+			float radius = MAX(this->getWidth(), this->getHeight()) + Utils::coord(120.0f);
+
+            float dx = (Options::CENTER_X - this->getCenterX()) * 2.0f;
+            float dy = (Options::CENTER_Y + Utils::coord(30) - this->getCenterY()) * 2.0f;
+            {
+                float dist = sqrt(dx * dx + dy * dy);
+
+                dx = Options::CENTER_X - (float) (dx / dist) * radius * 0.5f;
+               	dy = Options::CENTER_Y + Utils::coord(30) - (float) (dy / dist) * radius * 0.5f;
+            }
+
+    		this->setCenterPosition(dx, dy);
 		}
 	}
 }
